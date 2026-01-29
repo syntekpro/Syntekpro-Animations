@@ -95,6 +95,12 @@ class Syntekpro_Animations_Admin {
         register_setting('syntekpro_anim_general', 'syntekpro_anim_load_scrolltrigger');
         register_setting('syntekpro_anim_general', 'syntekpro_anim_smooth_scroll');
         register_setting('syntekpro_anim_general', 'syntekpro_anim_enable_developer_mode');
+        register_setting('syntekpro_anim_general', 'syntekpro_anim_disable_mobile');
+        register_setting('syntekpro_anim_general', 'syntekpro_anim_lazy_load');
+        register_setting('syntekpro_anim_general', 'syntekpro_anim_reduced_motion');
+        register_setting('syntekpro_anim_general', 'syntekpro_anim_debug_mode');
+        register_setting('syntekpro_anim_general', 'syntekpro_anim_default_duration');
+        register_setting('syntekpro_anim_general', 'syntekpro_anim_default_ease');
         
         // Free Plugins
         register_setting('syntekpro_anim_plugins', 'syntekpro_anim_load_flip');
@@ -246,39 +252,40 @@ class Syntekpro_Animations_Admin {
      */
     private function render_general_tab() {
         ?>
-        <h2><?php _e('Core Settings', 'syntekpro-animations'); ?></h2>
+        <h2>⚙️ <?php _e('Core Settings', 'syntekpro-animations'); ?></h2>
         
         <form method="post" action="options.php">
             <?php settings_fields('syntekpro_anim_general'); ?>
             <input type="hidden" name="syntekpro_anim_general_nonce" value="<?php echo wp_create_nonce('syntekpro_anim_general_action'); ?>">
             
-            <table class="form-table">
+            <table class="form-table" role="presentation">
+                <tbody>
                 <tr>
                     <th scope="row">
                         <label for="syntekpro_anim_load_gsap"><?php _e('Animation Engine', 'syntekpro-animations'); ?></label>
                     </th>
                     <td>
-                        <label>
+                        <label class="syntekpro-toggle">
                             <input type="checkbox" id="syntekpro_anim_load_gsap" name="syntekpro_anim_load_gsap" value="yes" <?php checked(get_option('syntekpro_anim_load_gsap', 'yes'), 'yes'); ?>>
                             <strong><?php _e('Enable Animation Engine', 'syntekpro-animations'); ?></strong>
                         </label>
                         <p class="description">
-                            <span class="icon-check">✓</span> <?php _e('Required for all animations. Disabling this will break animations.', 'syntekpro-animations'); ?>
+                            <span style="color:#2e7d32;">✓</span> <?php _e('Required for all animations. Disabling this will break animations.', 'syntekpro-animations'); ?>
                         </p>
                     </td>
                 </tr>
                 
                 <tr>
                     <th scope="row">
-                        <label for="syntekpro_anim_load_scrolltrigger"><?php _e('ScrollTrigger Plugin', 'syntekpro-animations'); ?></label>
+                        <label for="syntekpro_anim_load_scrolltrigger"><?php _e('Scroll Animations', 'syntekpro-animations'); ?></label>
                     </th>
                     <td>
-                        <label>
+                        <label class="syntekpro-toggle">
                             <input type="checkbox" id="syntekpro_anim_load_scrolltrigger" name="syntekpro_anim_load_scrolltrigger" value="yes" <?php checked(get_option('syntekpro_anim_load_scrolltrigger', 'yes'), 'yes'); ?>>
                             <strong><?php _e('Enable Scroll-Based Animations', 'syntekpro-animations'); ?></strong>
                         </label>
                         <p class="description">
-                            <span class="icon-check">✓</span> <?php _e('Lets you trigger animations when scrolling the page. Highly recommended.', 'syntekpro-animations'); ?>
+                            <span style="color:#2e7d32;">✓</span> <?php _e('Trigger animations when scrolling. Highly recommended.', 'syntekpro-animations'); ?>
                         </p>
                     </td>
                 </tr>
@@ -288,15 +295,145 @@ class Syntekpro_Animations_Admin {
                         <label for="syntekpro_anim_smooth_scroll"><?php _e('Smooth Scrolling', 'syntekpro-animations'); ?></label>
                     </th>
                     <td>
-                        <label>
+                        <label class="syntekpro-toggle">
                             <input type="checkbox" id="syntekpro_anim_smooth_scroll" name="syntekpro_anim_smooth_scroll" value="yes" <?php checked(get_option('syntekpro_anim_smooth_scroll', 'no'), 'yes'); ?> <?php if (!syntekpro_animations()->is_pro_active()) echo 'disabled'; ?>>
-                            <strong><?php _e('Enable Buttery Smooth Scrolling', 'syntekpro-animations'); ?></strong>
+                            <strong><?php _e('Enable Smooth Scrolling', 'syntekpro-animations'); ?></strong>
                             <?php if (!syntekpro_animations()->is_pro_active()) : ?>
-                                <span class="icon-pro" style="color:#ec407a;"> 🔒 PRO</span>
+                                <span style="color:#ec407a;"> 🔒 PRO</span>
                             <?php endif; ?>
                         </label>
                         <p class="description">
-                            <?php _e('Uses ScrollSmoother for silky-smooth scrolling effects.', 'syntekpro-animations'); ?>
+                            <?php _e('Creates buttery-smooth scrolling effects using ScrollSmoother.', 'syntekpro-animations'); ?>
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="color:#1565c0;font-size:1.1em;margin-top:35px;border-bottom:2px solid #1565c0;padding-bottom:8px;">🚀 <?php _e('Performance Settings', 'syntekpro-animations'); ?></h3>
+            
+            <table class="form-table" role="presentation">
+                <tbody>
+                <tr>
+                    <th scope="row">
+                        <label for="syntekpro_anim_disable_mobile"><?php _e('Mobile Optimization', 'syntekpro-animations'); ?></label>
+                    </th>
+                    <td>
+                        <label class="syntekpro-toggle">
+                            <input type="checkbox" id="syntekpro_anim_disable_mobile" name="syntekpro_anim_disable_mobile" value="yes" <?php checked(get_option('syntekpro_anim_disable_mobile', 'no'), 'yes'); ?>>
+                            <strong><?php _e('Disable Animations on Mobile Devices', 'syntekpro-animations'); ?></strong>
+                        </label>
+                        <p class="description">
+                            <?php _e('Improves performance on mobile by disabling complex animations.', 'syntekpro-animations'); ?>
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
+                        <label for="syntekpro_anim_lazy_load"><?php _e('Lazy Loading', 'syntekpro-animations'); ?></label>
+                    </th>
+                    <td>
+                        <label class="syntekpro-toggle">
+                            <input type="checkbox" id="syntekpro_anim_lazy_load" name="syntekpro_anim_lazy_load" value="yes" <?php checked(get_option('syntekpro_anim_lazy_load', 'yes'), 'yes'); ?>>
+                            <strong><?php _e('Enable Lazy Loading for Animations', 'syntekpro-animations'); ?></strong>
+                        </label>
+                        <p class="description">
+                            <?php _e('Only load animations when they\'re about to be visible. Improves page load speed.', 'syntekpro-animations'); ?>
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
+                        <label for="syntekpro_anim_default_duration"><?php _e('Default Duration', 'syntekpro-animations'); ?></label>
+                    </th>
+                    <td>
+                        <input type="number" id="syntekpro_anim_default_duration" name="syntekpro_anim_default_duration" value="<?php echo esc_attr(get_option('syntekpro_anim_default_duration', '1')); ?>" step="0.1" min="0.1" max="5" style="width:80px;"> <?php _e('seconds', 'syntekpro-animations'); ?>
+                        <p class="description">
+                            <?php _e('Default animation duration for all animations (0.5 - 2 seconds recommended).', 'syntekpro-animations'); ?>
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
+                        <label for="syntekpro_anim_default_ease"><?php _e('Default Easing', 'syntekpro-animations'); ?></label>
+                    </th>
+                    <td>
+                        <select id="syntekpro_anim_default_ease" name="syntekpro_anim_default_ease" style="width:200px;">
+                            <option value="none" <?php selected(get_option('syntekpro_anim_default_ease', 'power2.out'), 'none'); ?>>Linear</option>
+                            <option value="power1.out" <?php selected(get_option('syntekpro_anim_default_ease', 'power2.out'), 'power1.out'); ?>>Power 1 (Gentle)</option>
+                            <option value="power2.out" <?php selected(get_option('syntekpro_anim_default_ease', 'power2.out'), 'power2.out'); ?>>Power 2 (Standard)</option>
+                            <option value="power3.out" <?php selected(get_option('syntekpro_anim_default_ease', 'power2.out'), 'power3.out'); ?>>Power 3 (Strong)</option>
+                            <option value="back.out(1.7)" <?php selected(get_option('syntekpro_anim_default_ease', 'power2.out'), 'back.out(1.7)'); ?>>Back (Bouncy)</option>
+                            <option value="elastic.out(1,0.3)" <?php selected(get_option('syntekpro_anim_default_ease', 'power2.out'), 'elastic.out(1,0.3)'); ?>>Elastic</option>
+                            <option value="bounce.out" <?php selected(get_option('syntekpro_anim_default_ease', 'power2.out'), 'bounce.out'); ?>>Bounce</option>
+                        </select>
+                        <p class="description">
+                            <?php _e('Default easing function for all animations. Power 2 is recommended for most cases.', 'syntekpro-animations'); ?>
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="color:#2e7d32;font-size:1.1em;margin-top:35px;border-bottom:2px solid #2e7d32;padding-bottom:8px;">♿ <?php _e('Accessibility Settings', 'syntekpro-animations'); ?></h3>
+            
+            <table class="form-table" role="presentation">
+                <tbody>
+                <tr>
+                    <th scope="row">
+                        <label for="syntekpro_anim_reduced_motion"><?php _e('Respect Reduced Motion', 'syntekpro-animations'); ?></label>
+                    </th>
+                    <td>
+                        <label class="syntekpro-toggle">
+                            <input type="checkbox" id="syntekpro_anim_reduced_motion" name="syntekpro_anim_reduced_motion" value="yes" <?php checked(get_option('syntekpro_anim_reduced_motion', 'yes'), 'yes'); ?>>
+                            <strong><?php _e('Honor prefers-reduced-motion Setting', 'syntekpro-animations'); ?></strong>
+                        </label>
+                        <p class="description">
+                            <?php _e('Automatically disable animations for users who prefer reduced motion. Recommended for accessibility.', 'syntekpro-animations'); ?>
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="color:#ec407a;font-size:1.1em;margin-top:35px;border-bottom:2px solid #ec407a;padding-bottom:8px;">🔧 <?php _e('Developer Options', 'syntekpro-animations'); ?></h3>
+            
+            <table class="form-table" role="presentation">
+                <tbody>
+                <tr>
+                    <th scope="row">
+                        <label for="syntekpro_anim_enable_developer_mode"><?php _e('Developer Mode', 'syntekpro-animations'); ?></label>
+                    </th>
+                    <td>
+                        <label class="syntekpro-toggle">
+                            <input type="checkbox" id="syntekpro_anim_enable_developer_mode" name="syntekpro_anim_enable_developer_mode" value="yes" <?php checked(get_option('syntekpro_anim_enable_developer_mode', 'no'), 'yes'); ?>>
+                            <strong><?php _e('Enable Developer Mode', 'syntekpro-animations'); ?></strong>
+                        </label>
+                        <p class="description">
+                            <?php _e('Access advanced features, API hooks, and custom animation controls.', 'syntekpro-animations'); ?>
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
+                        <label for="syntekpro_anim_debug_mode"><?php _e('Debug Mode', 'syntekpro-animations'); ?></label>
+                    </th>
+                    <td>
+                        <label class="syntekpro-toggle">
+                            <input type="checkbox" id="syntekpro_anim_debug_mode" name="syntekpro_anim_debug_mode" value="yes" <?php checked(get_option('syntekpro_anim_debug_mode', 'no'), 'yes'); ?>>
+                            <strong><?php _e('Show Console Logs & Markers', 'syntekpro-animations'); ?></strong>
+                        </label>
+                        <p class="description">
+                            <?php _e('Display ScrollTrigger markers and console logs for debugging animations.', 'syntekpro-animations'); ?>
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
                         </p>
                     </td>
                 </tr>

@@ -7,29 +7,33 @@
     --sp-light: #fce4ec;
     --sp-text: #333;
     --sp-border: #e0e0e0;
+    --sp-bg-light-green: #f0f9f4;
 }
 
 .syntekpro-settings-wrapper {
     max-width: 100%;
+    background: var(--sp-bg-light-green);
+    padding: 20px;
+    border-radius: 8px;
 }
 
 /* Settings Sections */
 .syntekpro-settings-section {
     background: #fff;
     border: 1px solid var(--sp-border);
-    border-radius: 8px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .syntekpro-settings-section h2 {
     margin-top: 0;
     margin-bottom: 20px;
     color: var(--sp-primary);
-    font-size: 1.4em;
+    font-size: 1.2em;
     border-bottom: 3px solid var(--sp-primary);
-    padding-bottom: 12px;
+    padding-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -39,11 +43,65 @@
     color: var(--sp-tertiary);
     margin-top: 20px;
     margin-bottom: 12px;
-    font-size: 1.1em;
+    font-size: 1em;
 }
 
 .syntekpro-settings-section h3:first-child {
     margin-top: 0;
+}
+
+/* Form Table Enhancements */
+.form-table th {
+    padding: 15px 10px 15px 0;
+    width: 25%;
+    font-weight: 600;
+}
+
+.form-table td {
+    padding: 15px 10px;
+}
+
+.form-table td .description {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Toggle Styling */
+.syntekpro-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.syntekpro-toggle input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--sp-primary);
+}
+
+/* Settings Input Fields */
+input[type="number"].small-input,
+select.small-select {
+    padding: 6px 10px;
+    border: 1px solid var(--sp-border);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input[type="number"]:focus,
+select:focus {
+    border-color: var(--sp-primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.1);
+}
+
+/* Submit Button Enhancement */
+.submit input[type="submit"].large {
+    padding: 12px 30px !important;
+    font-size: 15px !important;
+    height: auto !important;
 }
 
 /* Plugin Grid Layout */
