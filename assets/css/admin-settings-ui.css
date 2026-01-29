@@ -1,0 +1,805 @@
+/* Syntekpro Animations Admin Settings Styles */
+
+:root {
+    --sp-primary: #e53935;
+    --sp-secondary: #2e7d32;
+    --sp-tertiary: #1565c0;
+    --sp-light: #fce4ec;
+    --sp-text: #333;
+    --sp-border: #e0e0e0;
+}
+
+.syntekpro-settings-wrapper {
+    max-width: 100%;
+}
+
+/* Settings Sections */
+.syntekpro-settings-section {
+    background: #fff;
+    border: 1px solid var(--sp-border);
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.syntekpro-settings-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--sp-primary);
+    font-size: 1.4em;
+    border-bottom: 3px solid var(--sp-primary);
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.syntekpro-settings-section h3 {
+    color: var(--sp-tertiary);
+    margin-top: 20px;
+    margin-bottom: 12px;
+    font-size: 1.1em;
+}
+
+.syntekpro-settings-section h3:first-child {
+    margin-top: 0;
+}
+
+/* Plugin Grid Layout */
+.syntekpro-plugins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin: 15px 0 25px 0;
+}
+
+.syntekpro-plugin-card {
+    border: 1px solid var(--sp-border);
+    border-radius: 6px;
+    padding: 15px;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.syntekpro-plugin-card:hover {
+    border-color: var(--sp-primary);
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(229, 57, 53, 0.15);
+}
+
+.syntekpro-plugin-card label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--sp-text);
+    margin: 0;
+}
+
+.syntekpro-plugin-card input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin: 0;
+    accent-color: var(--sp-primary);
+}
+
+.syntekpro-plugin-card .plugin-description {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 8px;
+    margin-left: 30px;
+}
+
+.syntekpro-plugin-card.pro-feature .pro-badge {
+    display: inline-block;
+    background: var(--sp-primary);
+    color: white;
+    font-size: 0.7em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* Animation Preview Styles */
+.syntekpro-preset-card {
+    position: relative;
+    border: 1px solid var(--sp-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+    transition: all 0.3s ease;
+}
+
+.syntekpro-preset-card:hover {
+    border-color: var(--sp-primary);
+    box-shadow: 0 4px 12px rgba(229, 57, 53, 0.15);
+    transform: translateY(-2px);
+}
+
+.preview-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--sp-primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.preview-btn:hover {
+    background: #c62828;
+    transform: scale(1.05);
+}
+
+.preview-area {
+    margin-top: 15px;
+    padding: 20px;
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+}
+
+.preview-box {
+    background: white;
+    padding: 20px 40px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    color: var(--sp-primary);
+    font-size: 16px;
+}
+
+/* Animation Builder */
+.animation-builder {
+    background: linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%);
+    border: 2px solid var(--sp-tertiary);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px 0;
+}
+
+.animation-builder h3 {
+    margin-top: 0;
+    color: var(--sp-tertiary);
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.builder-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.builder-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.builder-control label {
+    font-weight: 600;
+    color: var(--sp-text);
+    font-size: 14px;
+}
+
+.builder-control input,
+.builder-control select {
+    padding: 10px;
+    border: 2px solid var(--sp-border);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.builder-control input:focus,
+.builder-control select:focus {
+    border-color: var(--sp-tertiary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+}
+
+#builder-preview-box {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--sp-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.builder-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.builder-actions button {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#play-builder-animation {
+    background: var(--sp-primary);
+    color: white;
+}
+
+#play-builder-animation:hover {
+    background: #c62828;
+    transform: scale(1.05);
+}
+
+/* Code Output */
+.code-output {
+    background: #2d2d2d;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.code-output code {
+    color: #a5d6ff;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    display: block;
+}
+
+.copy-shortcode {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--sp-secondary);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.copy-shortcode:hover {
+    background: #1b5e20;
+}
+
+/* Timeline Builder */
+.timeline-builder {
+    background: linear-gradient(135deg, #fff3cd 0%, #fffbea 100%);
+    border: 2px solid #ffc107;
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px 0;
+}
+
+.timeline-builder h3 {
+    margin-top: 0;
+    color: #f57c00;
+    font-size: 1.5em;
+}
+
+#timeline-steps {
+    margin: 20px 0;
+}
+
+.timeline-step {
+    background: white;
+    border: 2px solid var(--sp-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.timeline-step:hover {
+    border-color: #ffc107;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+}
+
+.timeline-handle {
+    cursor: move;
+    font-size: 24px;
+    color: #999;
+    display: flex;
+    align-items: center;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-content h4 {
+    margin-top: 0;
+    color: var(--sp-primary);
+}
+
+.step-content label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.step-content input,
+.step-content select {
+    margin-left: 10px;
+    padding: 6px 10px;
+    border: 1px solid var(--sp-border);
+    border-radius: 4px;
+}
+
+.remove-timeline-step {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.remove-timeline-step:hover {
+    background: #c62828;
+}
+
+#timeline-preview-box {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--sp-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Live Preview Panel */
+.syntekpro-live-preview {
+    position: fixed;
+    right: -400px;
+    top: 100px;
+    width: 350px;
+    background: white;
+    border: 2px solid var(--sp-primary);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    z-index: 99999;
+    transition: right 0.3s ease;
+}
+
+.syntekpro-live-preview.active {
+    right: 20px;
+}
+
+.preview-header {
+    background: var(--sp-primary);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.preview-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: white;
+}
+
+.close-preview {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.preview-content {
+    padding: 30px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+}
+
+.preview-element {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: var(--sp-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-controls {
+    padding: 15px 20px;
+    border-top: 1px solid var(--sp-border);
+    display: flex;
+    justify-content: center;
+}
+
+.replay-btn {
+    background: var(--sp-secondary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.replay-btn:hover {
+    background: #1b5e20;
+    transform: scale(1.05);
+}
+
+/* Feature Grid */
+.syntekpro-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.feature-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+    border: 2px solid var(--sp-border);
+    border-radius: 10px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    border-color: var(--sp-primary);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(229, 57, 53, 0.15);
+}
+
+.feature-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    color: var(--sp-primary);
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+.feature-card p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Interactive Dashboard */
+.syntekpro-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin: 25px 0;
+}
+
+.dashboard-widget {
+    background: white;
+    border: 2px solid var(--sp-border);
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.dashboard-widget:hover {
+    border-color: var(--sp-tertiary);
+    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.15);
+}
+
+.dashboard-widget h3 {
+    margin-top: 0;
+    color: var(--sp-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3em;
+}
+
+.widget-stat {
+    font-size: 36px;
+    font-weight: bold;
+    color: var(--sp-primary);
+    margin: 15px 0;
+}
+
+.widget-label {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .syntekpro-plugins-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .builder-controls {
+        grid-template-columns: 1fr;
+    }
+    
+    .syntekpro-dashboard {
+        grid-template-columns: 1fr;
+    }
+    
+    .syntekpro-live-preview {
+        width: 90%;
+        right: -100%;
+    }
+    
+    .syntekpro-live-preview.active {
+        right: 5%;
+    }
+}
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
+/* Info Box */
+.syntekpro-info-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border-left: 4px solid var(--sp-tertiary);
+    padding: 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+    color: var(--sp-tertiary);
+}
+
+.syntekpro-info-box strong {
+    color: var(--sp-tertiary);
+}
+
+/* License Status */
+.syntekpro-license-status {
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.syntekpro-license-status.active {
+    background: #e8f5e9;
+    border-left: 4px solid var(--sp-secondary);
+    color: var(--sp-secondary);
+}
+
+.syntekpro-license-status.inactive {
+    background: #ffebee;
+    border-left: 4px solid var(--sp-primary);
+    color: var(--sp-primary);
+}
+
+.syntekpro-license-status strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Form Controls */
+.syntekpro-settings-section .form-table th {
+    width: 250px;
+    color: var(--sp-text);
+    font-weight: 600;
+    padding: 15px;
+}
+
+.syntekpro-settings-section .form-table td {
+    padding: 15px;
+}
+
+.syntekpro-settings-section .form-table label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.syntekpro-settings-section input[type="text"],
+.syntekpro-settings-section input[type="password"],
+.syntekpro-settings-section input[type="number"],
+.syntekpro-settings-section textarea {
+    border-color: var(--sp-border);
+    border-radius: 4px;
+}
+
+.syntekpro-settings-section input[type="text"]:focus,
+.syntekpro-settings-section input[type="password"]:focus,
+.syntekpro-settings-section input[type="number"]:focus,
+.syntekpro-settings-section textarea:focus {
+    border-color: var(--sp-primary);
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
+}
+
+/* Buttons */
+.syntekpro-settings-section .button {
+    background: var(--sp-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 24px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.syntekpro-settings-section .button:hover {
+    background: #d32f2f;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+}
+
+.syntekpro-settings-section .button-secondary {
+    background: #f0f0f0;
+    color: var(--sp-text);
+    border: 1px solid var(--sp-border);
+}
+
+.syntekpro-settings-section .button-secondary:hover {
+    background: #e0e0e0;
+}
+
+/* Tabs */
+.nav-tab-wrapper {
+    border-bottom: 2px solid var(--sp-primary);
+    margin-bottom: 20px;
+}
+
+.nav-tab {
+    color: var(--sp-text);
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin: 0;
+}
+
+.nav-tab:hover {
+    color: var(--sp-tertiary);
+    background: rgba(21, 101, 192, 0.05);
+}
+
+.nav-tab.nav-tab-active {
+    color: var(--sp-primary);
+    border-bottom-color: var(--sp-primary);
+    background: none;
+}
+
+/* Description text */
+.description {
+    color: #666;
+    font-style: italic;
+    margin-top: 5px !important;
+    display: block;
+}
+
+/* Icon helper */
+.icon-check {
+    color: var(--sp-secondary);
+    font-weight: bold;
+}
+
+.icon-pro {
+    color: var(--sp-primary);
+    font-weight: bold;
+}
+
+/* Preset List Table */
+.wp-list-table {
+    border-collapse: collapse;
+}
+
+.wp-list-table thead {
+    background: linear-gradient(135deg, #f5f5f5 0%, #efefef 100%);
+}
+
+.wp-list-table th {
+    color: var(--sp-primary);
+    font-weight: 700;
+    padding: 12px;
+    text-align: left;
+}
+
+.wp-list-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.wp-list-table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+/* Documentation Styles */
+.syntekpro-docs-section {
+    background: #fff;
+    border: 1px solid var(--sp-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.syntekpro-docs-section h3 {
+    color: var(--sp-primary);
+    margin-top: 0;
+}
+
+.syntekpro-docs-section code {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--sp-tertiary);
+    font-family: 'Courier New', monospace;
+}
+
+.syntekpro-docs-section pre {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    overflow-x: auto;
+    color: var(--sp-tertiary);
+}
+
+.syntekpro-docs-section a {
+    color: var(--sp-tertiary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.syntekpro-docs-section a:hover {
+    text-decoration: underline;
+}

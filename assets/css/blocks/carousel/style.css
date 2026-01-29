@@ -1,0 +1,30 @@
+/* Carousel Block Frontend Styles */
+
+.wp-block-syntekpro-animations-carousel {
+    position: relative;
+    overflow: hidden;
+}
+
+.wp-block-syntekpro-animations-carousel .swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.wp-block-syntekpro-animations-carousel .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wp-block-syntekpro-animations-carousel .swiper-button-prev,
+.wp-block-syntekpro-animations-carousel .swiper-button-next {
+    color: #1565c0;
+}
+
+.wp-block-syntekpro-animations-carousel .swiper-pagination-bullet {
+    background-color: #1565c0;
+}
+
+.wp-block-syntekpro-animations-carousel .swiper-pagination-bullet-active {
+    background-color: #e53935;
+}

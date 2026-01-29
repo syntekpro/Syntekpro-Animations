@@ -1,0 +1,17 @@
+/* Carousel Block Editor Styles */
+
+.wp-block-syntekpro-animations-carousel {
+    position: relative;
+}
+
+.wp-block-syntekpro-animations-carousel .block-editor-inner-blocks {
+    min-height: 300px;
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+}
+
+.wp-block-syntekpro-animations-carousel.is-selected .block-editor-inner-blocks {
+    border-color: #1565c0;
+    background-color: rgba(21, 101, 192, 0.05);
+}

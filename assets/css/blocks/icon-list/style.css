@@ -1,0 +1,52 @@
+/* Icon List Block Styles */
+
+.wp-block-syntekpro-animations-icon-list {
+    width: 100%;
+}
+
+.syntekpro-icon-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.syntekpro-icon-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.syntekpro-icon-list-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.syntekpro-icon-list-text {
+    flex: 1;
+}
+
+/* Horizontal layout */
+.syntekpro-icon-list.horizontal {
+    display: flex;
+    gap: 24px;
+}
+
+.syntekpro-icon-list.horizontal .syntekpro-icon-list-item {
+    flex-direction: column;
+    text-align: center;
+}
+
+/* Grid layout */
+.syntekpro-icon-list.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.syntekpro-icon-list.grid .syntekpro-icon-list-item {
+    flex-direction: column;
+    text-align: center;
+}

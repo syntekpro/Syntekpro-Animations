@@ -1,0 +1,17 @@
+/* Element Block Editor Styles */
+
+.wp-block-syntekpro-animations-element {
+    position: relative;
+    min-height: 100px;
+    border: 2px dashed #ccc;
+    padding: 10px;
+}
+
+.wp-block-syntekpro-animations-element.is-selected {
+    border-color: #1565c0;
+    background-color: rgba(21, 101, 192, 0.05);
+}
+
+.wp-block-syntekpro-animations-element .block-editor-inner-blocks {
+    min-height: 80px;
+}

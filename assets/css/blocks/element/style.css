@@ -1,0 +1,14 @@
+/* Element Block Frontend Styles */
+
+.wp-block-syntekpro-animations-element {
+    will-change: transform, opacity;
+}
+
+/* Support for animation triggers */
+.sp-animate-element {
+    display: block;
+}
+
+.sp-animate-element.is-loading {
+    opacity: 0;
+}

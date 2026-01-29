@@ -1,0 +1,168 @@
+/**
+ * Syntekpro Animations - Frontend Styles
+ * Version: 1.0.0
+ */
+
+/* Animation Elements */
+.sp-animate {
+    will-change: transform, opacity;
+    display: block;
+}
+
+/* Text Animation Elements */
+.sp-text-animate {
+    display: inline-block;
+}
+
+.sp-text-animate .char,
+.sp-text-animate .word,
+.sp-text-animate .line {
+    display: inline-block;
+    will-change: transform, opacity;
+}
+
+/* SVG Animation Elements */
+.sp-svg-animate svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.sp-svg-animate path,
+.sp-svg-animate line,
+.sp-svg-animate circle,
+.sp-svg-animate rect,
+.sp-svg-animate polygon {
+    will-change: stroke-dashoffset, stroke-dasharray;
+}
+
+/* Timeline Container */
+.sp-timeline {
+    position: relative;
+}
+
+/* Smooth Scroll Wrapper (Pro) */
+#smooth-wrapper {
+    overflow: hidden;
+}
+
+#smooth-content {
+    overflow: visible;
+    width: 100%;
+}
+
+/* Pro Feature Notices (admin only) */
+.sp-pro-notice {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.sp-pro-notice strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #856404;
+}
+
+.sp-pro-notice p {
+    margin: 5px 0 0 0;
+    color: #856404;
+}
+
+.sp-pro-notice a {
+    color: #0073aa;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sp-pro-notice a:hover {
+    text-decoration: underline;
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) */
+.sp-animate[data-trigger="scroll"] {
+    visibility: hidden;
+}
+
+.sp-animate[data-trigger="scroll"].animated,
+.sp-animate[data-trigger="load"] {
+    visibility: visible;
+}
+
+/* Performance Optimizations */
+.sp-animate,
+.sp-text-animate,
+.sp-svg-animate {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000px;
+    -webkit-perspective: 1000px;
+}
+
+/* 3D Transform Styles */
+.sp-animate[data-animation*="flip"],
+.sp-animate[data-animation*="rotate3D"] {
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+}
+
+/* Accessibility - Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .sp-animate,
+    .sp-text-animate,
+    .sp-svg-animate {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .sp-animate {
+        /* Slightly faster animations on mobile */
+        --animation-speed: 0.8;
+    }
+}
+
+/* Debug Mode (when developer mode is enabled) */
+body.syntekpro-debug-mode .sp-animate {
+    outline: 2px dashed rgba(0, 123, 255, 0.3);
+    outline-offset: 2px;
+}
+
+body.syntekpro-debug-mode .sp-animate::before {
+    content: attr(data-animation);
+    position: absolute;
+    top: -20px;
+    left: 0;
+    font-size: 11px;
+    background: rgba(0, 123, 255, 0.8);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    z-index: 9999;
+}
+
+/* Loading State */
+.sp-animate.loading {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* Completed Animation State */
+.sp-animate.completed {
+    /* Animation has finished */
+}
+
+/* Hover Effects (Optional Enhancement) */
+.sp-animate.hover-enabled {
+    transition: transform 0.3s ease;
+}
+
+.sp-animate.hover-enabled:hover {
+    transform: scale(1.05);
+}

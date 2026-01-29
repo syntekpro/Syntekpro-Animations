@@ -1,0 +1,14 @@
+/* Popup Block Editor Styles */
+
+.wp-block-syntekpro-animations-popup {
+    position: relative;
+}
+
+.wp-block-syntekpro-animations-popup .block-editor-inner-blocks {
+    min-height: 200px;
+}
+
+.wp-block-syntekpro-animations-popup.is-selected {
+    outline: 2px solid #1565c0;
+    outline-offset: 2px;
+}

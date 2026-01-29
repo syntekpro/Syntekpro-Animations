@@ -1,0 +1,50 @@
+/* Navigation Block Styles */
+
+.wp-block-syntekpro-animations-navigation {
+    width: 100%;
+}
+
+.wp-block-syntekpro-animations-navigation nav {
+    display: flex;
+    align-items: center;
+}
+
+.wp-block-syntekpro-animations-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.wp-block-syntekpro-animations-navigation a {
+    text-decoration: none;
+    padding: 10px 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.wp-block-syntekpro-animations-navigation a:hover {
+    border-bottom-color: #1565c0;
+}
+
+/* Sticky Navigation */
+.wp-block-syntekpro-animations-navigation.sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Menu */
+@media (max-width: 768px) {
+    .wp-block-syntekpro-animations-navigation ul {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .wp-block-syntekpro-animations-navigation li {
+        border-bottom: 1px solid #eee;
+    }
+}

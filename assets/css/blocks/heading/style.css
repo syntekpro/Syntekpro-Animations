@@ -1,0 +1,19 @@
+/* Heading Block Frontend Styles */
+
+.wp-block-syntekpro-animations-heading {
+    will-change: transform, opacity;
+    display: block;
+    margin: 0;
+}
+
+.wp-block-syntekpro-animations-heading span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Support for gradient text */
+.wp-block-syntekpro-animations-heading {
+    background-clip: text;
+}
