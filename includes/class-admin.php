@@ -664,12 +664,10 @@ class Syntekpro_Animations_Admin {
     /**
      * Presets page
      */
-    /**
-     * Presets page
-     */
     public function presets_page() {
         $presets = Syntekpro_Animation_Presets::get_by_category();
         $categories = Syntekpro_Animation_Presets::get_categories();
+        $selected_category = isset($_GET['category']) ? sanitize_text_field($_GET['category']) : '';
         ?>
         <div class="wrap syntekpro-settings-wrapper">
             <!-- Banner with Logo -->
@@ -678,49 +676,300 @@ class Syntekpro_Animations_Admin {
                     <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="Syntekpro Logo" />
                     <div class="syntekpro-brand-content">
                         <div class="brand-title"><?php _e('Animation Presets', 'syntekpro-animations'); ?></div>
-                        <div class="brand-desc"><?php _e('Ready-to-use animation effects for your content', 'syntekpro-animations'); ?></div>
+                        <div class="brand-desc"><?php _e('Browse 50+ ready-to-use animation effects', 'syntekpro-animations'); ?></div>
                     </div>
                 </div>
             </div>
 
             <div class="syntekpro-settings-section">
-                <h2><?php _e('Browse Presets by Category', 'syntekpro-animations'); ?></h2>
-                <p style="color: #666; margin-bottom: 20px;"><?php _e('Click on any preset to copy its shortcode or use it in the block editor.', 'syntekpro-animations'); ?></p>
-                
-                <?php foreach ($categories as $cat_key => $cat_name) : 
-                    $cat_presets = Syntekpro_Animation_Presets::get_by_category($cat_key);
-                    if (empty($cat_presets)) continue;
-                ?>
-                    <h3 style="margin-top: 30px; padding-bottom: 10px; border-bottom: 2px solid #e53935; color: #e53935;">
-                        📚 <?php echo esc_html($cat_name); ?>
-                    </h3>
-                    <table class="wp-list-table widefat fixed striped">
-                        <thead>
-                            <tr>
-                                <th style="width: 25%; color: #e53935;"><strong><?php _e('Animation Name', 'syntekpro-animations'); ?></strong></th>
-                                <th style="width: 55%; color: #1565c0;"><strong><?php _e('Shortcode', 'syntekpro-animations'); ?></strong></th>
-                                <th style="width: 20%; color: #2e7d32;"><strong><?php _e('Availability', 'syntekpro-animations'); ?></strong></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($cat_presets as $key => $preset) : ?>
-                                <tr>
-                                    <td><strong style="color: #333;"><?php echo esc_html($preset['name']); ?></strong></td>
-                                    <td><code style="background: #f5f5f5; padding: 8px; border-radius: 4px; color: #1565c0;">[sp_animate type="<?php echo esc_attr($key); ?>"]Content[/sp_animate]</code></td>
-                                    <td>
-                                        <?php if ($preset['free']) : ?>
-                                            <span style="color: #2e7d32; font-weight: bold;">✓ Free</span>
-                                        <?php else : ?>
-                                            <span style="color: #e53935; font-weight: bold;">🔒 Pro</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
+                <!-- Filter Controls -->
+                <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px; padding: 20px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #1565c0;">
+                    <div style="flex: 1;">
+                        <label for="preset-category-filter" style="font-weight: 600; display: block; margin-bottom: 8px; color: #333;">
+                            🎨 <?php _e('Filter by Category', 'syntekpro-animations'); ?>
+                        </label>
+                        <select id="preset-category-filter" style="width: 100%; max-width: 300px; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 14px; cursor: pointer;">
+                            <option value=""><?php _e('✓ All Categories', 'syntekpro-animations'); ?></option>
+                            <?php foreach ($categories as $cat_key => $cat_name) : 
+                                $cat_presets = Syntekpro_Animation_Presets::get_by_category($cat_key);
+                                if (empty($cat_presets)) continue;
+                                $count = count($cat_presets);
+                            ?>
+                                <option value="<?php echo esc_attr($cat_key); ?>" <?php selected($selected_category, $cat_key); ?>>
+                                    <?php echo esc_html($cat_name); ?> (<?php echo $count; ?>)
+                                </option>
                             <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="button" id="copy-all-btn" class="button button-secondary" style="margin-top: 24px; padding: 8px 16px;">
+                            📋 <?php _e('Copy All', 'syntekpro-animations'); ?>
+                        </button>
+                    </div>
+                </div>
+
+                <p style="color: #666; margin-bottom: 20px; font-style: italic;">
+                    💡 <?php _e('Click any shortcode to copy it. Use in pages, posts, or the block editor.', 'syntekpro-animations'); ?>
+                </p>
+                
+                <!-- Presets Grid -->
+                <div id="presets-container">
+                    <?php 
+                    $total_count = 0;
+                    foreach ($categories as $cat_key => $cat_name) : 
+                        $cat_presets = Syntekpro_Animation_Presets::get_by_category($cat_key);
+                        if (empty($cat_presets)) continue;
+                        
+                        // Filter if category selected
+                        if ($selected_category && $selected_category !== $cat_key) continue;
+                        
+                        $total_count += count($cat_presets);
+                    ?>
+                        <div class="syntekpro-presets-category" data-category="<?php echo esc_attr($cat_key); ?>">
+                            <h3 style="margin: 30px 0 20px 0; padding-bottom: 12px; border-bottom: 3px solid #e53935; color: #e53935; font-size: 1.1em;">
+                                📚 <?php echo esc_html($cat_name); ?> <span style="color: #999; font-size: 0.9em; font-weight: normal;">(<?php echo count($cat_presets); ?>)</span>
+                            </h3>
+                            
+                            <div class="syntekpro-presets-grid">
+                                <?php foreach ($cat_presets as $key => $preset) : ?>
+                                    <div class="syntekpro-preset-card <?php echo $preset['free'] ? '' : 'pro-preset'; ?>" data-shortcode="[sp_animate type=&quot;<?php echo esc_attr($key); ?>&quot;]Content[/sp_animate]">
+                                        <div class="preset-header">
+                                            <div class="preset-title">
+                                                <strong><?php echo esc_html($preset['name']); ?></strong>
+                                                <?php if (!$preset['free']) : ?>
+                                                    <span class="preset-badge pro">🔒 Pro</span>
+                                                <?php else : ?>
+                                                    <span class="preset-badge free">✓ Free</span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <div class="preset-code">
+                                            <code>[sp_animate type="<?php echo esc_attr($key); ?>"]</code>
+                                        </div>
+                                        <button type="button" class="copy-preset-btn button button-small" data-preset="<?php echo esc_attr($key); ?>" title="Copy to clipboard">
+                                            📋 Copy
+                                        </button>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php if ($total_count === 0) : ?>
+                    <div style="padding: 40px 20px; text-align: center; background: #f9f9f9; border-radius: 8px;">
+                        <p style="font-size: 16px; color: #666;">
+                            <?php _e('No animations found in this category.', 'syntekpro-animations'); ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
+
+        <style>
+            #preset-category-filter {
+                min-width: 250px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                transition: border-color 0.3s ease;
+            }
+
+            #preset-category-filter:focus {
+                border-color: #1565c0 !important;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+            }
+
+            .syntekpro-presets-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+
+            .syntekpro-preset-card {
+                background: #fff;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 16px;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                position: relative;
+            }
+
+            .syntekpro-preset-card:hover {
+                border-color: #e53935;
+                box-shadow: 0 4px 12px rgba(229, 57, 53, 0.15);
+                transform: translateY(-2px);
+            }
+
+            .syntekpro-preset-card.pro-preset {
+                background: linear-gradient(135deg, #fff9f0 0%, #fff5e6 100%);
+                border-color: #ffe0b2;
+            }
+
+            .syntekpro-preset-card.pro-preset:hover {
+                border-color: #ff9800;
+                box-shadow: 0 4px 12px rgba(255, 152, 0, 0.15);
+            }
+
+            .preset-header {
+                margin-bottom: 12px;
+            }
+
+            .preset-title {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
+                color: #333;
+            }
+
+            .preset-title strong {
+                flex: 1;
+                word-break: break-word;
+            }
+
+            .preset-badge {
+                padding: 3px 8px;
+                border-radius: 4px;
+                font-size: 11px;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+
+            .preset-badge.free {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+
+            .preset-badge.pro {
+                background: #fce4ec;
+                color: #c2185b;
+            }
+
+            .preset-code {
+                background: #f5f5f5;
+                border: 1px solid #e0e0e0;
+                border-radius: 6px;
+                padding: 10px;
+                margin-bottom: 12px;
+                overflow-x: auto;
+            }
+
+            .preset-code code {
+                font-size: 12px;
+                color: #1565c0;
+                font-weight: 500;
+                word-break: break-all;
+            }
+
+            .copy-preset-btn {
+                width: 100%;
+                background: #e53935;
+                color: white;
+                border: none !important;
+                border-radius: 6px;
+                padding: 8px 12px !important;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .copy-preset-btn:hover {
+                background: #d32f2f;
+                transform: scale(1.02);
+            }
+
+            .copy-preset-btn:active {
+                background: #c62828;
+                transform: scale(0.98);
+            }
+
+            .copy-preset-btn.copied {
+                background: #2e7d32;
+            }
+
+            .copy-preset-btn.copied::after {
+                content: " ✓ Copied";
+            }
+        </style>
+
+        <script>
+            (function() {
+                // Category filter
+                const categoryFilter = document.getElementById('preset-category-filter');
+                const presetsContainer = document.getElementById('presets-container');
+                
+                if (categoryFilter) {
+                    categoryFilter.addEventListener('change', function(e) {
+                        const selectedCat = this.value;
+                        const url = new URL(window.location);
+                        
+                        if (selectedCat) {
+                            url.searchParams.set('category', selectedCat);
+                        } else {
+                            url.searchParams.delete('category');
+                        }
+                        
+                        window.location.href = url.toString();
+                    });
+                }
+
+                // Copy preset buttons
+                document.querySelectorAll('.copy-preset-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const card = this.closest('.syntekpro-preset-card');
+                        const shortcode = card.getAttribute('data-shortcode');
+                        const preset = this.getAttribute('data-preset');
+                        
+                        // Create a temporary textarea for copying
+                        const tempTextarea = document.createElement('textarea');
+                        tempTextarea.value = '[sp_animate type="' + preset + '"]Your content[/sp_animate]';
+                        document.body.appendChild(tempTextarea);
+                        tempTextarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempTextarea);
+                        
+                        // Show feedback
+                        const originalText = this.textContent;
+                        this.classList.add('copied');
+                        this.textContent = '✓ Copied!';
+                        
+                        setTimeout(() => {
+                            this.classList.remove('copied');
+                            this.textContent = originalText;
+                        }, 2000);
+                    });
+                });
+
+                // Copy all button
+                const copyAllBtn = document.getElementById('copy-all-btn');
+                if (copyAllBtn) {
+                    copyAllBtn.addEventListener('click', function() {
+                        const allPresets = [];
+                        document.querySelectorAll('.syntekpro-preset-card').forEach(card => {
+                            const preset = card.querySelector('.copy-preset-btn').getAttribute('data-preset');
+                            allPresets.push('[sp_animate type="' + preset + '"]Your content[/sp_animate]');
+                        });
+                        
+                        const allCode = allPresets.join('\\n\\n');
+                        const tempTextarea = document.createElement('textarea');
+                        tempTextarea.value = allCode;
+                        document.body.appendChild(tempTextarea);
+                        tempTextarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempTextarea);
+                        
+                        const originalText = this.textContent;
+                        this.textContent = '✓ Copied All!';
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                        }, 2000);
+                    });
+                }
+            })();
+        </script>
         <?php
     }
     
