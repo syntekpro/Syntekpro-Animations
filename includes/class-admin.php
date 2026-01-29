@@ -731,24 +731,52 @@ class Syntekpro_Animations_Admin {
                             </h3>
                             
                             <div class="syntekpro-presets-grid">
-                                <?php foreach ($cat_presets as $key => $preset) : ?>
-                                    <div class="syntekpro-preset-card <?php echo $preset['free'] ? '' : 'pro-preset'; ?>" data-shortcode="[sp_animate type=&quot;<?php echo esc_attr($key); ?>&quot;]Content[/sp_animate]">
-                                        <div class="preset-header">
-                                            <div class="preset-title">
-                                                <strong><?php echo esc_html($preset['name']); ?></strong>
-                                                <?php if (!$preset['free']) : ?>
-                                                    <span class="preset-badge pro">🔒 Pro</span>
-                                                <?php else : ?>
-                                                    <span class="preset-badge free">✓ Free</span>
-                                                <?php endif; ?>
+                                <?php foreach ($cat_presets as $key => $preset) : 
+                                    $gradient_colors = [
+                                        'fade' => 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        'slide' => 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                                        'zoom' => 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                                        'scale' => 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                                        'rotate' => 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                                        'reveal' => 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+                                        'wave' => 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                                        'swing' => 'linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)',
+                                        'attention' => 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+                                        'bounce' => 'linear-gradient(135deg, #9be15d 0%, #00e3ae 100%)',
+                                        'elastic' => 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+                                        '3d' => 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)',
+                                        'glitch' => 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        'peel' => 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)',
+                                        'fold' => 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                                        'text' => 'linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)',
+                                        'blur' => 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+                                    ];
+                                    $gradient = $gradient_colors[$cat_key] ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                                ?>
+                                    <div class="syntekpro-preset-card <?php echo $preset['free'] ? '' : 'pro-preset'; ?>" data-shortcode="[sp_animate type=&quot;<?php echo esc_attr($key); ?>&quot;]Content[/sp_animate]" data-preset-key="<?php echo esc_attr($key); ?>" data-preset-category="<?php echo esc_attr($cat_key); ?>">
+                                        <div class="preset-preview-box" style="background: <?php echo esc_attr($gradient); ?>;">
+                                            <div class="preset-preview-element" data-animation-trigger>
+                                                ▶
                                             </div>
                                         </div>
-                                        <div class="preset-code">
-                                            <code>[sp_animate type="<?php echo esc_attr($key); ?>"]</code>
+                                        <div class="preset-info">
+                                            <div class="preset-header">
+                                                <div class="preset-title">
+                                                    <strong><?php echo esc_html($preset['name']); ?></strong>
+                                                    <?php if (!$preset['free']) : ?>
+                                                        <span class="preset-badge pro">🔒 Pro</span>
+                                                    <?php else : ?>
+                                                        <span class="preset-badge free">✓ Free</span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                            <div class="preset-code">
+                                                <code>[sp_animate type="<?php echo esc_attr($key); ?>"]</code>
+                                            </div>
+                                            <button type="button" class="copy-preset-btn button button-small" data-preset="<?php echo esc_attr($key); ?>" title="Copy to clipboard">
+                                                📋 Copy
+                                            </button>
                                         </div>
-                                        <button type="button" class="copy-preset-btn button button-small" data-preset="<?php echo esc_attr($key); ?>" title="Copy to clipboard">
-                                            📋 Copy
-                                        </button>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -781,35 +809,90 @@ class Syntekpro_Animations_Admin {
 
             .syntekpro-presets-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 15px;
-                margin-bottom: 20px;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
             }
 
             .syntekpro-preset-card {
-                background: #fff;
+                background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
                 border: 2px solid #e0e0e0;
-                border-radius: 8px;
-                padding: 16px;
-                transition: all 0.3s ease;
+                border-radius: 12px;
+                padding: 0;
+                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
                 cursor: pointer;
                 position: relative;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .syntekpro-preset-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                transition: left 0.5s;
+            }
+
+            .syntekpro-preset-card:hover::before {
+                left: 100%;
             }
 
             .syntekpro-preset-card:hover {
                 border-color: #e53935;
-                box-shadow: 0 4px 12px rgba(229, 57, 53, 0.15);
-                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(229, 57, 53, 0.25);
+                transform: translateY(-6px);
             }
 
             .syntekpro-preset-card.pro-preset {
-                background: linear-gradient(135deg, #fff9f0 0%, #fff5e6 100%);
-                border-color: #ffe0b2;
+                background: linear-gradient(135deg, #fff8f0 0%, #fff4e6 100%);
+                border-color: #ffb74d;
             }
 
             .syntekpro-preset-card.pro-preset:hover {
                 border-color: #ff9800;
-                box-shadow: 0 4px 12px rgba(255, 152, 0, 0.15);
+                box-shadow: 0 8px 24px rgba(255, 152, 0, 0.25);
+            }
+
+            .preset-preview-box {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                height: 140px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+                position: relative;
+                overflow: hidden;
+                font-weight: 600;
+                color: white;
+                font-size: 16px;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+            .preset-preview-element {
+                width: 80px;
+                height: 60px;
+                background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                color: #667eea;
+                font-size: 20px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+
+            .preset-info {
+                padding: 16px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
             }
 
             .preset-header {
@@ -820,82 +903,281 @@ class Syntekpro_Animations_Admin {
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                font-size: 14px;
+                font-size: 15px;
                 color: #333;
+                margin-bottom: 8px;
             }
 
             .preset-title strong {
                 flex: 1;
                 word-break: break-word;
+                font-weight: 700;
             }
 
             .preset-badge {
-                padding: 3px 8px;
-                border-radius: 4px;
+                padding: 4px 10px;
+                border-radius: 6px;
                 font-size: 11px;
-                font-weight: 600;
+                font-weight: 700;
                 white-space: nowrap;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
             }
 
             .preset-badge.free {
-                background: #e8f5e9;
-                color: #2e7d32;
+                background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+                color: #1b5e20;
+                box-shadow: 0 2px 4px rgba(27, 94, 32, 0.2);
             }
 
             .preset-badge.pro {
-                background: #fce4ec;
-                color: #c2185b;
+                background: linear-gradient(135deg, #ffccbc 0%, #ffab91 100%);
+                color: #d84315;
+                box-shadow: 0 2px 4px rgba(216, 67, 21, 0.2);
             }
 
             .preset-code {
-                background: #f5f5f5;
+                background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
                 border: 1px solid #e0e0e0;
                 border-radius: 6px;
                 padding: 10px;
                 margin-bottom: 12px;
                 overflow-x: auto;
+                flex-grow: 1;
             }
 
             .preset-code code {
                 font-size: 12px;
                 color: #1565c0;
-                font-weight: 500;
+                font-weight: 600;
                 word-break: break-all;
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             }
 
             .copy-preset-btn {
                 width: 100%;
-                background: #e53935;
+                background: linear-gradient(135deg, #e53935 0%, #d32f2f 100%);
                 color: white;
                 border: none !important;
-                border-radius: 6px;
-                padding: 8px 12px !important;
-                font-weight: 600;
+                border-radius: 8px;
+                padding: 10px 12px !important;
+                font-weight: 700;
                 cursor: pointer;
                 transition: all 0.3s ease;
+                font-size: 13px;
+                letter-spacing: 0.5px;
             }
 
             .copy-preset-btn:hover {
-                background: #d32f2f;
+                background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
                 transform: scale(1.02);
+                box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
             }
 
             .copy-preset-btn:active {
-                background: #c62828;
                 transform: scale(0.98);
             }
 
             .copy-preset-btn.copied {
-                background: #2e7d32;
+                background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
             }
 
-            .copy-preset-btn.copied::after {
-                content: " ✓ Copied";
+            .syntekpro-presets-category {
+                animation: fadeInUp 0.6s ease-out;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .syntekpro-presets-category h3 {
+                background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+                color: white;
+                padding: 14px 16px;
+                margin: 30px 0 20px 0 !important;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                box-shadow: 0 4px 12px rgba(229, 57, 53, 0.2);
+            }
+
+            .category-count {
+                background: rgba(255,255,255,0.2);
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: 600;
+                backdrop-filter: blur(10px);
+            }
+
+            #copy-all-btn {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                color: white !important;
+                border: none !important;
+                padding: 10px 20px !important;
+                font-weight: 700 !important;
+                border-radius: 8px !important;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+                transition: all 0.3s ease !important;
+                cursor: pointer !important;
+            }
+
+            #copy-all-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
+            }
+
+            .preset-filter-container {
+                background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+                border: 2px solid #9fa8da;
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 12px rgba(63, 81, 181, 0.1);
+            }
+
+            .preset-filter-label {
+                font-weight: 700;
+                color: #1565c0;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .preset-intro-text {
+                background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+                border-left: 5px solid #2e7d32;
+                padding: 12px 16px;
+                border-radius: 6px;
+                color: #1b5e20;
+                font-weight: 500;
+                margin-bottom: 24px;
+                font-size: 13px;
             }
         </style>
 
         <script>
             (function() {
+                // Animation presets configuration (must match class-animation-presets.php)
+                const animationPresets = {
+                    fadeIn: { from: { opacity: 0 }, to: { opacity: 1 } },
+                    fadeOut: { from: { opacity: 1 }, to: { opacity: 0 } },
+                    slideLeft: { from: { x: -100, opacity: 0 }, to: { x: 0, opacity: 1 } },
+                    slideRight: { from: { x: 100, opacity: 0 }, to: { x: 0, opacity: 1 } },
+                    slideUp: { from: { y: 100, opacity: 0 }, to: { y: 0, opacity: 1 } },
+                    slideDown: { from: { y: -100, opacity: 0 }, to: { y: 0, opacity: 1 } },
+                    zoomIn: { from: { scale: 0.5, opacity: 0 }, to: { scale: 1, opacity: 1 } },
+                    zoomOut: { from: { scale: 1.5, opacity: 0 }, to: { scale: 1, opacity: 1 } },
+                    scaleUp: { from: { scale: 0.8, opacity: 0 }, to: { scale: 1, opacity: 1 } },
+                    scaleDown: { from: { scale: 1.2 }, to: { scale: 1 } },
+                    rotateIn: { from: { rotate: -180, opacity: 0 }, to: { rotate: 0, opacity: 1 } },
+                    rotateRight: { from: { rotate: -360 }, to: { rotate: 0 } },
+                    revealLeft: { from: { xPercent: -100 }, to: { xPercent: 0 } },
+                    revealRight: { from: { xPercent: 100 }, to: { xPercent: 0 } },
+                    revealUp: { from: { yPercent: 100 }, to: { yPercent: 0 } },
+                    waveHorizontal: { from: { x: -50, opacity: 0 }, to: { x: 50, opacity: 1 } },
+                    waveVertical: { from: { y: -50, opacity: 0 }, to: { y: 50, opacity: 1 } },
+                    swingIn: { from: { rotate: -45, opacity: 0 }, to: { rotate: 0, opacity: 1 } },
+                    swingOut: { from: { rotate: 45, opacity: 0 }, to: { rotate: 0, opacity: 1 } },
+                    heartBeat: { from: { scale: 1 }, to: { scale: 1.2 } },
+                    pulse: { from: { opacity: 1 }, to: { opacity: 0.7 } },
+                    tada: { from: { rotate: -10, scale: 0.9 }, to: { rotate: 10, scale: 1 } },
+                    bounce: { from: { y: 0, opacity: 0 }, to: { y: 20, opacity: 1 } },
+                    bounceDown: { from: { y: -50, opacity: 0 }, to: { y: 0, opacity: 1 } },
+                    jello: { from: { skewX: -12.5, skewY: -12.5, opacity: 0 }, to: { skewX: 0, skewY: 0, opacity: 1 } },
+                    elasticIn: { from: { scale: 0, opacity: 0 }, to: { scale: 1, opacity: 1 } },
+                    elasticOut: { from: { scale: 1.5, opacity: 0 }, to: { scale: 1, opacity: 1 } },
+                    flip: { from: { rotateY: -360, opacity: 0 }, to: { rotateY: 0, opacity: 1 } },
+                    flip3d: { from: { rotateX: -360, opacity: 0 }, to: { rotateX: 0, opacity: 1 } },
+                    glitch: { from: { x: -10, opacity: 0 }, to: { x: 0, opacity: 1 } },
+                    glitchText: { from: { x: -8, opacity: 0 }, to: { x: 0, opacity: 1 } },
+                    peel: { from: { rotateY: 90, opacity: 0 }, to: { rotateY: 0, opacity: 1 } },
+                    fold: { from: { scaleY: 0, opacity: 0 }, to: { scaleY: 1, opacity: 1 } },
+                    typewriter: { from: { width: 0, opacity: 0 }, to: { width: '100%', opacity: 1 } },
+                    textReveal: { from: { yPercent: 100, opacity: 0 }, to: { yPercent: 0, opacity: 1 } },
+                    blur: { from: { filter: 'blur(10px)', opacity: 0 }, to: { filter: 'blur(0px)', opacity: 1 } },
+                };
+
+                // Initialize animations for preview elements
+                function initPreviewAnimations() {
+                    if (typeof gsap === 'undefined') {
+                        console.warn('GSAP not loaded yet');
+                        setTimeout(initPreviewAnimations, 100);
+                        return;
+                    }
+
+                    document.querySelectorAll('[data-animation-trigger]').forEach(element => {
+                        const card = element.closest('.syntekpro-preset-card');
+                        const presetKey = card.getAttribute('data-preset-key');
+                        const preset = animationPresets[presetKey];
+
+                        if (!preset) return;
+
+                        // Create a timeline for continuous looping preview
+                        const timeline = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+
+                        // Animate the preview element
+                        timeline.fromTo(
+                            element,
+                            {
+                                opacity: preset.from.opacity ?? 1,
+                                x: preset.from.x ?? 0,
+                                y: preset.from.y ?? 0,
+                                scale: preset.from.scale ?? 1,
+                                rotate: preset.from.rotate ?? 0,
+                                scaleX: preset.from.scaleX ?? 1,
+                                scaleY: preset.from.scaleY ?? 1,
+                                skewX: preset.from.skewX ?? 0,
+                                skewY: preset.from.skewY ?? 0,
+                                rotateX: preset.from.rotateX ?? 0,
+                                rotateY: preset.from.rotateY ?? 0,
+                                xPercent: preset.from.xPercent ?? 0,
+                                yPercent: preset.from.yPercent ?? 0,
+                                filter: preset.from.filter ?? 'blur(0px)',
+                                width: preset.from.width ?? '80px',
+                            },
+                            {
+                                opacity: preset.to.opacity ?? 1,
+                                x: preset.to.x ?? 0,
+                                y: preset.to.y ?? 0,
+                                scale: preset.to.scale ?? 1,
+                                rotate: preset.to.rotate ?? 0,
+                                scaleX: preset.to.scaleX ?? 1,
+                                scaleY: preset.to.scaleY ?? 1,
+                                skewX: preset.to.skewX ?? 0,
+                                skewY: preset.to.skewY ?? 0,
+                                rotateX: preset.to.rotateX ?? 0,
+                                rotateY: preset.to.rotateY ?? 0,
+                                xPercent: preset.to.xPercent ?? 0,
+                                yPercent: preset.to.yPercent ?? 0,
+                                filter: preset.to.filter ?? 'blur(0px)',
+                                width: preset.to.width ?? '80px',
+                                duration: 0.8,
+                                ease: 'power2.inOut'
+                            }
+                        );
+                    });
+                }
+
+                // Wait for DOM ready and GSAP loaded
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initPreviewAnimations);
+                } else {
+                    initPreviewAnimations();
+                }
+
                 // Category filter
                 const categoryFilter = document.getElementById('preset-category-filter');
                 const presetsContainer = document.getElementById('presets-container');
