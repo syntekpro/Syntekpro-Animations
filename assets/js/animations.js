@@ -100,8 +100,11 @@
                 const ease = element.getAttribute('data-ease') || 'power2.out';
                 const stagger = parseFloat(element.getAttribute('data-stagger')) || 0;
                 const repeat = parseInt(element.getAttribute('data-repeat')) || 0;
+                const startPosition = element.getAttribute('data-start') || 'top 80%';
+                const onceOnly = element.getAttribute('data-once') !== 'false';
+                const markers = element.getAttribute('data-markers') === 'true';
                 
-                console.log('Animation config:', { animationType, duration, delay, trigger, ease });
+                console.log('Animation config:', { animationType, duration, delay, trigger, ease, startPosition });
                 
                 // Get animation preset
                 const animation = getAnimationPreset(animationType);
@@ -113,14 +116,13 @@
                 
                 // Set initial state based on trigger type
                 // For LOAD trigger: hide element initially, then animate on load
-                // For SCROLL trigger: keep element visible, animate on scroll
+                // For SCROLL trigger: hide initially but ScrollTrigger will reveal on scroll
                 if (trigger === 'load') {
                     // Hide element initially for load animations
                     gsap.set(element, animation.from);
                     console.log('Load trigger: element hidden initially, will animate on load');
                 } else if (trigger === 'scroll') {
-                    // For scroll animations, set to FROM state so we know where animation starts
-                    // Then ScrollTrigger will animate it to TO state on scroll
+                    // For scroll animations, set to FROM state
                     gsap.set(element, animation.from);
                     console.log('Scroll trigger: element set to initial state, will animate on scroll');
                 }
@@ -137,19 +139,22 @@
                 // Determine how to trigger the animation
                 if (trigger === 'scroll') {
                     if (typeof ScrollTrigger !== 'undefined') {
-                        // Use ScrollTrigger plugin
+                        // Use ScrollTrigger plugin with proper configuration
                         animConfig.scrollTrigger = {
                             trigger: element,
-                            start: start,
-                            toggleActions: 'play none none none',
-                            once: true,
-                            markers: false
+                            start: startPosition,
+                            toggleActions: onceOnly ? 'play none none none' : 'play none none reset',
+                            once: onceOnly,
+                            markers: markers,
+                            onEnter: function() {
+                                console.log('ScrollTrigger entered:', element.id);
+                            }
                         };
-                        console.log('Using ScrollTrigger for scroll animation');
+                        console.log('Using ScrollTrigger for scroll animation', animConfig.scrollTrigger);
                         
                         // Animate with ScrollTrigger
                         gsap.to(element, animConfig);
-                        console.log('Scroll animation created with ScrollTrigger');
+                        console.log('Scroll animation created with ScrollTrigger for element:', element.id);
                     } else {
                         // ScrollTrigger not available - use Intersection Observer as fallback
                         console.warn('ScrollTrigger not available, using Intersection Observer fallback');

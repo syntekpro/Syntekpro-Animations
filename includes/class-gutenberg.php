@@ -103,7 +103,11 @@ class Syntekpro_Animations_Gutenberg {
                 'trigger' => array('type' => 'string', 'default' => 'scroll'),
                 'useScrollTrigger' => array('type' => 'boolean', 'default' => true),
                 'stagger' => array('type' => 'number', 'default' => 0),
-                'repeatCount' => array('type' => 'number', 'default' => 0)
+                'repeatCount' => array('type' => 'number', 'default' => 0),
+                'startPosition' => array('type' => 'string', 'default' => 'top 80%'),
+                'scrub' => array('type' => 'boolean', 'default' => false),
+                'markers' => array('type' => 'boolean', 'default' => false),
+                'onceOnly' => array('type' => 'boolean', 'default' => true)
             ),
             'supports' => array(
                 'align' => true,
@@ -192,6 +196,9 @@ class Syntekpro_Animations_Gutenberg {
         $use_scroll_trigger = isset($attributes['useScrollTrigger']) ? $attributes['useScrollTrigger'] : true;
         $stagger = isset($attributes['stagger']) ? floatval($attributes['stagger']) : 0;
         $repeat = isset($attributes['repeatCount']) ? intval($attributes['repeatCount']) : 0;
+        $start_position = isset($attributes['startPosition']) ? sanitize_text_field($attributes['startPosition']) : 'top 80%';
+        $markers = isset($attributes['markers']) ? ($attributes['markers'] ? 'true' : 'false') : 'false';
+        $once_only = isset($attributes['onceOnly']) ? ($attributes['onceOnly'] ? 'true' : 'false') : 'true';
 
         // Process inner blocks content if it exists
         $inner_content = '';
@@ -206,7 +213,7 @@ class Syntekpro_Animations_Gutenberg {
         // Build the animation wrapper div with data attributes
         $unique_id = 'sp-anim-' . uniqid();
         $output = sprintf(
-            '<div id="%s" class="sp-animate" data-animation="%s" data-duration="%f" data-delay="%f" data-trigger="%s" data-ease="%s" data-stagger="%f" data-repeat="%d">%s</div>',
+            '<div id="%s" class="sp-animate" data-animation="%s" data-duration="%f" data-delay="%f" data-trigger="%s" data-ease="%s" data-stagger="%f" data-repeat="%d" data-start="%s" data-markers="%s" data-once="%s">%s</div>',
             esc_attr($unique_id),
             esc_attr($type),
             $duration,
@@ -215,6 +222,9 @@ class Syntekpro_Animations_Gutenberg {
             esc_attr($ease),
             $stagger,
             $repeat,
+            esc_attr($start_position),
+            esc_attr($markers),
+            esc_attr($once_only),
             $inner_content
         );
 
