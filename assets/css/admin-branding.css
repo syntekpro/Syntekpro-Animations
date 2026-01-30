@@ -10,40 +10,49 @@
 
 .syntekpro-admin-banner {
     background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
-    border-radius: 8px;
-    padding: 12px 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border-left: 5px solid #ec407a;
-    text-align: center;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    border-left: 4px solid #ec407a;
+    text-align: left;
 }
 
 .syntekpro-admin-branding {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .syntekpro-admin-branding img {
-    width: 180px;
-    height: 180px;
-    border-radius: 16px;
+    width: 74px;
+    height: 74px;
+    border-radius: 12px;
     background: transparent;
     border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     object-fit: contain;
-    padding: 0;
+    padding: 4px;
     flex-shrink: 0;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+    cursor: pointer;
+}
+
+.syntekpro-admin-branding:hover img,
+.syntekpro-admin-branding img:hover {
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
 }
 
 .syntekpro-brand-content {
-    text-align: center;
+    text-align: left;
 }
 
 .syntekpro-admin-branding .brand-title {
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 700;
     color: var(--sp-text-red);
     margin: 0;
@@ -51,17 +60,17 @@
 }
 
 .syntekpro-admin-branding .brand-desc {
-    font-size: 0.85em;
+    font-size: 0.9em;
     color: var(--sp-text-green);
-    margin: 2px 0 0 0;
-    opacity: 0.95;
+    margin: 1px 0 0 0;
+    opacity: 0.9;
     font-weight: 600;
 }
 
 .syntekpro-admin-branding .brand-version {
-    font-size: 0.75em;
+    font-size: 0.78em;
     color: var(--sp-text-blue);
     font-style: italic;
-    margin-top: 2px;
+    margin-top: 1px;
     font-weight: 500;
 }

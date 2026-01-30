@@ -1,0 +1,280 @@
+/* Debug overlay styles for Syntekpro Animations analytics layer */
+:root {
+    --stp-debug-bg: rgba(17, 17, 17, 0.9);
+    --stp-debug-text: #f2f2f2;
+    --stp-debug-accent: #3ad3ff;
+    --stp-debug-muted: #999;
+    --stp-debug-success: #58e29f;
+    --stp-debug-danger: #ff7b7b;
+    --stp-debug-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.syntekpro-debug-overlay {
+    position: fixed;
+    inset: 16px 16px auto auto;
+    z-index: 9999;
+    width: 320px;
+    max-height: calc(100vh - 32px);
+    background: var(--stp-debug-bg);
+    color: var(--stp-debug-text);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: var(--stp-debug-shadow);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.syntekpro-debug-overlay.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.syntekpro-debug-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.syntekpro-debug-title {
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.syntekpro-debug-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--stp-debug-accent);
+    box-shadow: 0 0 0 6px rgba(58, 211, 255, 0.15);
+}
+
+.syntekpro-debug-close {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--stp-debug-text);
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+}
+
+.syntekpro-debug-close:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.syntekpro-debug-section {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.syntekpro-debug-section-title {
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--stp-debug-muted);
+    font-weight: 600;
+}
+
+.syntekpro-debug-kv {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 8px;
+    font-size: 13px;
+}
+
+.syntekpro-debug-kv-label {
+    color: var(--stp-debug-muted);
+}
+
+.syntekpro-debug-kv-value {
+    color: var(--stp-debug-text);
+    font-weight: 500;
+    text-align: right;
+}
+
+.syntekpro-debug-badge-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.syntekpro-debug-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.syntekpro-debug-badge.is-success {
+    color: var(--stp-debug-success);
+    border-color: rgba(88, 226, 159, 0.3);
+    background: rgba(88, 226, 159, 0.08);
+}
+
+.syntekpro-debug-badge.is-danger {
+    color: var(--stp-debug-danger);
+    border-color: rgba(255, 123, 123, 0.25);
+    background: rgba(255, 123, 123, 0.08);
+}
+
+.syntekpro-debug-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.syntekpro-debug-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.syntekpro-debug-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--stp-debug-muted);
+    font-size: 12px;
+}
+
+.syntekpro-debug-item-name {
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.syntekpro-debug-pill {
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.syntekpro-debug-pill.is-engine-css {
+    color: var(--stp-debug-success);
+    border-color: rgba(88, 226, 159, 0.3);
+}
+
+.syntekpro-debug-pill.is-engine-gsap {
+    color: var(--stp-debug-accent);
+    border-color: rgba(58, 211, 255, 0.35);
+}
+
+.syntekpro-debug-pill.is-trigger {
+    color: var(--stp-debug-text);
+}
+
+.syntekpro-debug-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--stp-debug-muted);
+}
+
+.syntekpro-debug-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--stp-debug-text);
+    cursor: pointer;
+    transition: border-color 140ms ease, background 140ms ease;
+}
+
+.syntekpro-debug-toggle:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Marker/outline layer when overlay is active */
+body.syntekpro-debug-overlay-active .sp-animate,
+body.syntekpro-debug-markers-only .sp-animate {
+    outline: 1px dashed rgba(58, 211, 255, 0.7);
+    outline-offset: 3px;
+}
+
+body.syntekpro-debug-overlay-active .sp-animate::after,
+body.syntekpro-debug-markers-only .sp-animate::after {
+    content: attr(data-animation) ' • ' attr(data-trigger);
+    position: absolute;
+    top: -18px;
+    left: 0;
+    font-size: 11px;
+    background: rgba(17, 17, 17, 0.9);
+    color: #f2f2f2;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.syntekpro-debug-marker-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+}
+
+.syntekpro-debug-marker {
+    position: absolute;
+    border: 1px dashed rgba(58, 211, 255, 0.7);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    background: rgba(58, 211, 255, 0.08);
+}
+
+.syntekpro-debug-marker-label {
+    position: absolute;
+    top: -18px;
+    left: 0;
+    background: rgba(17, 17, 17, 0.92);
+    color: #f2f2f2;
+    padding: 2px 8px;
+    font-size: 11px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+    .syntekpro-debug-overlay {
+        inset: auto 12px 12px 12px;
+        width: auto;
+        max-width: 100%;
+    }
+}

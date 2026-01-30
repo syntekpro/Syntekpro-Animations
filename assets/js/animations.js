@@ -4,6 +4,15 @@
 
 (function() {
     'use strict';
+
+    var silenceLogs = (typeof syntekproAnim !== 'undefined' && syntekproAnim.silenceConsole === true);
+    if (silenceLogs && typeof console !== 'undefined') {
+        var noop = function() {};
+        console.log = noop;
+        console.info = noop;
+        console.debug = noop;
+        console.warn = noop;
+    }
     
     // Log immediately on script load
     console.log('animations.js loaded');
@@ -17,11 +26,9 @@
         console.log('GSAP available:', typeof gsap !== 'undefined');
         console.log('ScrollTrigger available:', typeof ScrollTrigger !== 'undefined');
         
-        // Check if GSAP is loaded
-        if (typeof gsap === 'undefined') {
-            console.error('GSAP is not loaded! Check network tab to see if gsap.min.js loaded.');
-            console.error('Script dependencies may not be set up correctly.');
-            return;
+        const gsapAvailable = typeof gsap !== 'undefined';
+        if (!gsapAvailable) {
+            console.warn('GSAP is not loaded. CSS light-mode animations will still run if enabled.');
         }
         
         // Register ScrollTrigger if available
@@ -76,6 +83,133 @@
         }
     });
     
+    // Map of CSS-capable presets to their CSS class
+    const cssPresetMap = {
+        fadeIn: 'sp-css-fadeIn',
+        fadeInUp: 'sp-css-fadeInUp',
+        fadeInDown: 'sp-css-fadeInDown',
+        fadeInLeft: 'sp-css-fadeInLeft',
+        fadeInRight: 'sp-css-fadeInRight',
+        slideLeft: 'sp-css-slideLeft',
+        slideRight: 'sp-css-slideRight',
+        slideUp: 'sp-css-slideUp',
+        slideDown: 'sp-css-slideDown',
+        zoomIn: 'sp-css-zoomIn',
+        zoomInUp: 'sp-css-zoomInUp',
+        zoomInDown: 'sp-css-zoomInDown',
+        zoomInLeft: 'sp-css-zoomInLeft',
+        zoomInRight: 'sp-css-zoomInRight',
+        scaleUp: 'sp-css-scaleUp',
+        scaleDown: 'sp-css-scaleDown',
+        scaleX: 'sp-css-scaleX',
+        scaleY: 'sp-css-scaleY',
+        rotateIn: 'sp-css-rotateIn',
+        pulse: 'sp-css-pulse',
+        revealLeft: 'sp-css-revealLeft',
+        revealRight: 'sp-css-revealRight',
+        revealUp: 'sp-css-revealUp',
+        revealDown: 'sp-css-revealDown'
+    };
+
+    function isCssPreset(type) {
+        return !!cssPresetMap[type];
+    }
+
+    function mapEaseToCss(ease) {
+        if (!ease) return 'ease';
+        if (ease.indexOf('power1') === 0) return 'cubic-bezier(0.11, 0.6, 0.31, 0.99)';
+        if (ease.indexOf('power2') === 0) return 'cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        if (ease.indexOf('power3') === 0) return 'cubic-bezier(0.22, 0.61, 0.36, 1)';
+        if (ease.indexOf('power4') === 0) return 'cubic-bezier(0.1, 0.7, 0.1, 1)';
+        if (ease.indexOf('back') === 0) return 'cubic-bezier(0.36, 0, 0.66, -0.56)';
+        if (ease.indexOf('elastic') === 0) return 'cubic-bezier(0.5, -0.5, 0.5, 1.5)';
+        if (ease.indexOf('bounce') === 0) return 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+        return 'ease';
+    }
+
+    function applyCssAnimation(element, opts) {
+        const { animationType, duration, delay, ease, trigger, startPosition, onceOnly } = opts;
+        const cssClass = cssPresetMap[animationType] || cssPresetMap.fadeIn;
+        const cssEase = mapEaseToCss(ease);
+
+        element.classList.add('sp-css-anim', cssClass);
+        element.style.setProperty('--sp-duration', duration + 's');
+        element.style.setProperty('--sp-delay', delay + 's');
+        element.style.setProperty('--sp-ease', cssEase);
+
+        const play = () => {
+            element.style.visibility = 'visible';
+            element.classList.add('animated', 'sp-css-play');
+        };
+
+        const reset = () => {
+            element.classList.remove('sp-css-play');
+        };
+
+        if (trigger === 'load') {
+            play();
+            return;
+        }
+
+        if (trigger === 'scroll') {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        play();
+                        if (onceOnly) {
+                            observer.unobserve(element);
+                        }
+                    } else if (!onceOnly) {
+                        reset();
+                    }
+                });
+            }, { threshold: 0.2 });
+            observer.observe(element);
+            return;
+        }
+
+        if (trigger === 'hover' || trigger === 'pointer') {
+            element.addEventListener('mouseenter', function() {
+                play();
+            });
+            element.addEventListener('mouseleave', function() {
+                if (!onceOnly) {
+                    reset();
+                }
+            });
+
+            if (trigger === 'pointer') {
+                const followStrength = 12;
+                element.addEventListener('mousemove', function(ev) {
+                    const rect = element.getBoundingClientRect();
+                    const relX = (ev.clientX - rect.left) / rect.width - 0.5;
+                    const relY = (ev.clientY - rect.top) / rect.height - 0.5;
+                    element.style.transform = 'translate(' + (relX * followStrength) + 'px, ' + (relY * followStrength) + 'px)';
+                });
+                element.addEventListener('mouseleave', function() {
+                    element.style.transform = 'translate(0, 0)';
+                });
+            }
+            return;
+        }
+
+        if (trigger === 'click') {
+            element.addEventListener('click', function() {
+                if (element.classList.contains('sp-css-play')) {
+                    if (!onceOnly) {
+                        reset();
+                    }
+                } else {
+                    play();
+                }
+            });
+            return;
+        }
+
+        // Fallback
+        play();
+    }
+
     /**
      * Initialize all animations
      */
@@ -88,6 +222,9 @@
             return;
         }
         
+        const globalEngine = (typeof syntekproAnim !== 'undefined' && syntekproAnim.engine) ? syntekproAnim.engine : 'auto';
+        const debugItems = [];
+
         animatedElements.forEach(function(element) {
             try {
                 console.log('Processing animation element:', element.id);
@@ -104,7 +241,35 @@
                 const onceOnly = element.getAttribute('data-once') !== 'false';
                 const markers = element.getAttribute('data-markers') === 'true';
                 
-                console.log('Animation config:', { animationType, duration, delay, trigger, ease, startPosition });
+                const engineAttr = element.getAttribute('data-engine') || 'auto';
+                const effectiveEngine = engineAttr !== 'auto' ? engineAttr : globalEngine;
+                const cssCapable = isCssPreset(animationType);
+                const useCss = (effectiveEngine === 'css' && cssCapable) || (effectiveEngine === 'auto' && cssCapable);
+                const resolvedEngine = useCss ? 'css' : (typeof gsap !== 'undefined' ? 'gsap' : 'none');
+
+                console.log('Animation config:', { animationType, duration, delay, trigger, ease, startPosition, engine: effectiveEngine, useCss });
+
+                                // Tag runtime data for the debug overlay
+                                element.dataset.spEngineRequested = effectiveEngine;
+                                element.dataset.spEngineResolved = resolvedEngine;
+                                element.dataset.spTrigger = trigger;
+                                element.dataset.spAnimation = animationType;
+                                element.dataset.spMarkers = markers ? 'true' : 'false';
+                                element.dataset.spOnce = onceOnly ? 'true' : 'false';
+
+                                debugItems.push({
+                                    id: element.id || null,
+                                    tag: element.tagName,
+                                    animation: animationType,
+                                    trigger: trigger,
+                                    engineRequested: effectiveEngine,
+                                    engineResolved: resolvedEngine,
+                                    cssCapable: cssCapable,
+                                    markers: markers,
+                                    onceOnly: onceOnly,
+                                    delay: delay,
+                                    duration: duration
+                                });
                 
                 // Get animation preset
                 const animation = getAnimationPreset(animationType);
@@ -114,54 +279,62 @@
                     return;
                 }
                 
-                // Set initial state based on trigger type
-                // For LOAD trigger: hide element initially, then animate on load
-                // For SCROLL trigger: hide initially but ScrollTrigger will reveal on scroll
-                if (trigger === 'load') {
-                    // Hide element initially for load animations
-                    gsap.set(element, animation.from);
-                    console.log('Load trigger: element hidden initially, will animate on load');
-                } else if (trigger === 'scroll') {
-                    // For scroll animations, set to FROM state
-                    gsap.set(element, animation.from);
-                    console.log('Scroll trigger: element set to initial state, will animate on scroll');
+                // CSS-only path for supported presets
+                if (useCss) {
+                    applyCssAnimation(element, { animationType, duration, delay, ease, trigger, startPosition, onceOnly });
+                    return;
                 }
-                
-                // Create animation config
-                const animConfig = Object.assign({}, animation.to, {
+
+                if (typeof gsap === 'undefined') {
+                    console.warn('GSAP unavailable and CSS path not supported for', animationType);
+                    return;
+                }
+
+                // Base config
+                const baseConfig = Object.assign({}, animation.to, {
                     duration: duration,
                     delay: delay,
                     ease: animation.to.ease || ease,
                     repeat: repeat,
                     stagger: stagger
                 });
-                
+
+                // Set initial state
+                gsap.set(element, animation.from);
+
                 // Determine how to trigger the animation
                 if (trigger === 'scroll') {
                     if (typeof ScrollTrigger !== 'undefined') {
-                        // Use ScrollTrigger plugin with proper configuration
-                        animConfig.scrollTrigger = {
-                            trigger: element,
-                            start: startPosition,
-                            toggleActions: onceOnly ? 'play none none none' : 'play none none reset',
-                            once: onceOnly,
-                            markers: markers,
-                            onEnter: function() {
-                                console.log('ScrollTrigger entered:', element.id);
+                        const animConfig = Object.assign({}, baseConfig, {
+                            scrollTrigger: {
+                                trigger: element,
+                                start: startPosition,
+                                toggleActions: onceOnly ? 'play none none none' : 'play none none reset',
+                                once: onceOnly,
+                                markers: markers,
+                                onEnter: function() {
+                                    element.style.visibility = 'visible';
+                                    element.classList.add('animated');
+                                    console.log('ScrollTrigger entered:', element.id);
+                                },
+                                onEnterBack: function() {
+                                    element.style.visibility = 'visible';
+                                    element.classList.add('animated');
+                                    console.log('ScrollTrigger re-entered:', element.id);
+                                }
                             }
-                        };
-                        console.log('Using ScrollTrigger for scroll animation', animConfig.scrollTrigger);
-                        
-                        // Animate with ScrollTrigger
+                        });
+
                         gsap.to(element, animConfig);
                         console.log('Scroll animation created with ScrollTrigger for element:', element.id);
                     } else {
-                        // ScrollTrigger not available - use Intersection Observer as fallback
                         console.warn('ScrollTrigger not available, using Intersection Observer fallback');
                         const observer = new IntersectionObserver(function(entries) {
                             entries.forEach(function(entry) {
                                 if (entry.isIntersecting) {
-                                    gsap.to(element, animConfig);
+                                    element.style.visibility = 'visible';
+                                    element.classList.add('animated');
+                                    gsap.to(element, baseConfig);
                                     observer.unobserve(element);
                                     console.log('Intersection Observer triggered animation');
                                 }
@@ -169,15 +342,85 @@
                         });
                         observer.observe(element);
                     }
+                } else if (trigger === 'hover') {
+                    element.style.visibility = 'visible';
+                    const hoverTimeline = gsap.timeline({ paused: true });
+                    hoverTimeline.fromTo(element, animation.from, Object.assign({}, baseConfig));
+
+                    element.addEventListener('mouseenter', function() {
+                        element.classList.add('animated');
+                        hoverTimeline.play(0);
+                    });
+
+                    element.addEventListener('mouseleave', function() {
+                        if (!onceOnly) {
+                            hoverTimeline.reverse();
+                        }
+                    });
+                } else if (trigger === 'click') {
+                    element.style.visibility = 'visible';
+                    const clickTimeline = gsap.timeline({ paused: true });
+                    clickTimeline.fromTo(element, animation.from, Object.assign({}, baseConfig));
+
+                    element.addEventListener('click', function() {
+                        element.classList.add('animated');
+                        if (clickTimeline.reversed() || clickTimeline.paused()) {
+                            clickTimeline.play(0);
+                        } else {
+                            clickTimeline.reverse();
+                        }
+                    });
+                } else if (trigger === 'pointer') {
+                    // Mouse-follow parallax + play once on first move
+                    element.style.visibility = 'visible';
+                    let hasPlayed = false;
+                    const pointerTimeline = gsap.timeline({ paused: true });
+                    pointerTimeline.fromTo(element, animation.from, Object.assign({}, baseConfig));
+
+                    const followStrength = 18;
+                    element.addEventListener('mousemove', function(ev) {
+                        const rect = element.getBoundingClientRect();
+                        const relX = (ev.clientX - rect.left) / rect.width - 0.5;
+                        const relY = (ev.clientY - rect.top) / rect.height - 0.5;
+                        gsap.to(element, { x: relX * followStrength, y: relY * followStrength, duration: 0.25, ease: 'power2.out' });
+
+                        if (!hasPlayed) {
+                            element.classList.add('animated');
+                            pointerTimeline.play(0);
+                            hasPlayed = true;
+                        }
+                    });
+
+                    element.addEventListener('mouseleave', function() {
+                        gsap.to(element, { x: 0, y: 0, duration: 0.35, ease: 'power2.out' });
+                        if (!onceOnly && hasPlayed) {
+                            pointerTimeline.reverse();
+                            hasPlayed = false;
+                        }
+                    });
                 } else {
                     // Load trigger - animate immediately
-                    gsap.to(element, animConfig);
+                    element.style.visibility = 'visible';
+                    element.classList.add('animated');
+                    gsap.to(element, baseConfig);
                     console.log('Load animation started immediately');
                 }
             } catch (e) {
                 console.error('Error processing animation element:', element.id, e);
             }
         });
+
+        try {
+            window.dispatchEvent(new CustomEvent('syntekpro:animations-ready', {
+                detail: {
+                    items: debugItems,
+                    globalEngine: globalEngine,
+                    hasGsap: typeof gsap !== 'undefined'
+                }
+            }));
+        } catch (dispatchError) {
+            console.warn('Unable to dispatch syntekpro:animations-ready event', dispatchError);
+        }
     }
     
     /**

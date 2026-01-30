@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0",
+  "presets": [
+    {
+      "name": "Card Stagger Up",
+      "type": "fadeInUp",
+      "trigger": "scroll",
+      "duration": 0.9,
+      "delay": 0,
+      "stagger": 0.12,
+      "ease": "power2.out",
+      "engine": "css",
+      "category": "card"
+    },
+    {
+      "name": "Icon Pop",
+      "type": "zoomIn",
+      "trigger": "hover",
+      "duration": 0.45,
+      "delay": 0,
+      "ease": "power1.out",
+      "onceOnly": false,
+      "engine": "css",
+      "category": "icon"
+    },
+    {
+      "name": "CTA Reveal Left",
+      "type": "revealLeft",
+      "trigger": "scroll",
+      "duration": 1,
+      "delay": 0.1,
+      "ease": "power3.out",
+      "engine": "css",
+      "category": "cta"
+    }
+  ]
+}

@@ -4,78 +4,47 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [2.1.1] - 2026-01-30
+
+### Added
+- New **Help** admin page with curated user, developer, and designer documentation blocks plus quick links to on-site resources.
+- New **System Status** page showing environment report (WordPress/PHP/server), plugin version badge, and update notes.
+
+### Changed
+- Version metadata aligned across plugin files to 2.1.1.
+
 ## [1.2.0] - 2026-01-30
 
 ### 🎉 Major Update - Full-Fledged Animation Engine
 
 This release transforms Syntekpro Animations into a complete, professional-grade animation solution for WordPress.
 
-### ✨ Added
-
-#### Animation Library Expansion
-- **30+ New Animation Presets:**
   - Zoom animations (zoomIn, zoomInUp, zoomInDown, zoomInLeft, zoomInRight)
   - Reveal animations (revealLeft, revealRight, revealUp, revealDown)
   - Wave animations (waveIn, ripple)
   - Swing animations (swingIn, pendulum)
-  - Attention seekers (pulse, shake, wobble, heartbeat)
-  - 3D Perspective effects (perspective3D, flipInX, flipInY, cardFlip) - Pro
-  - Glitch effects (glitchIn, digitalReveal) - Pro
-  - Advanced easing (smoothBounce, elasticScale, backSlide) - Pro
-  - Text effects (typewriter, textWave, textRotate) - Pro
   - Fold animations (unfoldHorizontal, unfoldVertical) - Pro
   - Peel animations (peelLeft, peelRight) - Pro
-
-#### Interactive Admin Interface
-- **🎨 Animation Builder** - Visual animation creator with live preview
-  - Real-time preview of animations
-  - Drag-and-drop controls
-  - Custom duration, delay, and easing
   - Instant code generation
   - Copy-to-clipboard functionality
-
-- **⏱️ Timeline Creator** - Multi-step animation sequencer
-  - Add unlimited animation steps
-  - Drag to reorder sequences
-  - Visual timeline preview
   - Export timeline configurations
   - Sortable interface
 
 - **📊 Enhanced Admin Dashboard**
-  - Live animation previews on preset cards
-  - Interactive controls and sliders
-  - Visual feedback system
-  - Improved categorization
-
-#### Advanced Animation Features
-- **Timeline Animations** - `[sp_timeline]` shortcode
   - Create complex animation sequences
-  - Auto-play or scroll-triggered
   - Scrub support for scroll-linked animations
   - Custom trigger elements
 
-- **Sequence Animations** - `[sp_sequence]` shortcode
-  - Stagger animations on child elements
   - Automatic element detection
   - Configurable delay patterns
-  - From-start or from-end options
 
 - **Hover Effects** - `[sp_hover_effect]` shortcode
   - Interactive hover animations
   - Scale, lift, rotate, and glow effects
-  - Smooth transitions
-  - Customizable parameters
-
-- **Scroll Scenes** - `[sp_scroll_scene]` shortcode
   - Advanced ScrollTrigger integration
   - Pin elements during scroll
   - Scrub animations
   - Debug markers option
-
-#### Help & Documentation System
-- **Floating Help Widget** - Contextual assistance
-  - Always-accessible help button
-  - Quick tips and shortcuts
   - Popular animations reference
   - Direct support links
 
@@ -189,7 +158,7 @@ Enhanced Pro offering:
 
 ## Upgrade Notes
 
-### From 1.0.0 to 1.2.0
+### From 1.0.0 to 2.1.1
 
 **What's Changed:**
 - Plugin branding updated throughout

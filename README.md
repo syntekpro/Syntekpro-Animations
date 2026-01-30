@@ -1,6 +1,6 @@
 # SyntekPro Animations
 
-**Version:** 1.2.0  
+**Version:** 2.1.1  
 **Requires:** WordPress 5.8+, PHP 7.4+
 
 Professional animation engine for WordPress with 50+ animation presets, visual builders, and advanced animation features.

@@ -1,6 +1,6 @@
 # 📖 SYNTEKPRO ANIMATIONS - COMPLETE GUIDE
 
-**Version 1.2.0** | Professional Animation Engine for WordPress
+**Version 2.1.1** | Professional Animation Engine for WordPress
 
 ---
 
@@ -875,7 +875,7 @@ syntekpro-animations/
 
 ---
 
-**Version:** 1.2.0  
+**Version:** 2.1.1  
 **Last Updated:** January 30, 2026  
 **© 2026 Syntekpro. All rights reserved.**
 

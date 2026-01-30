@@ -73,7 +73,7 @@ class Syntekpro_Animations_Gutenberg {
         wp_register_script(
             'syntekpro-animations-frontend',
             SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/js/animations.js',
-            array('syntekpro-gsap', 'syntekpro-scrolltrigger'),  // Depends on both GSAP and ScrollTrigger
+            array(),
             SYNTEKPRO_ANIM_VERSION,
             true
         );
@@ -107,7 +107,9 @@ class Syntekpro_Animations_Gutenberg {
                 'startPosition' => array('type' => 'string', 'default' => 'top 80%'),
                 'scrub' => array('type' => 'boolean', 'default' => false),
                 'markers' => array('type' => 'boolean', 'default' => false),
-                'onceOnly' => array('type' => 'boolean', 'default' => true)
+                'onceOnly' => array('type' => 'boolean', 'default' => true),
+                // Engine: auto (smart choose CSS/GSAP), css (light), gsap (force GSAP)
+                'engine' => array('type' => 'string', 'default' => 'auto')
             ),
             'supports' => array(
                 'align' => true,
@@ -199,6 +201,9 @@ class Syntekpro_Animations_Gutenberg {
         $start_position = isset($attributes['startPosition']) ? sanitize_text_field($attributes['startPosition']) : 'top 80%';
         $markers = isset($attributes['markers']) ? ($attributes['markers'] ? 'true' : 'false') : 'false';
         $once_only = isset($attributes['onceOnly']) ? ($attributes['onceOnly'] ? 'true' : 'false') : 'true';
+        $engine = isset($attributes['engine']) ? sanitize_text_field($attributes['engine']) : 'auto';
+        $global_engine = get_option('syntekpro_anim_engine', 'auto');
+        $effective_engine = ($engine && $engine !== 'auto') ? $engine : $global_engine;
 
         // Process inner blocks content if it exists
         $inner_content = '';
@@ -213,7 +218,7 @@ class Syntekpro_Animations_Gutenberg {
         // Build the animation wrapper div with data attributes
         $unique_id = 'sp-anim-' . uniqid();
         $output = sprintf(
-            '<div id="%s" class="sp-animate" data-animation="%s" data-duration="%f" data-delay="%f" data-trigger="%s" data-ease="%s" data-stagger="%f" data-repeat="%d" data-start="%s" data-markers="%s" data-once="%s">%s</div>',
+            '<div id="%s" class="sp-animate" data-animation="%s" data-duration="%f" data-delay="%f" data-trigger="%s" data-ease="%s" data-stagger="%f" data-repeat="%d" data-start="%s" data-markers="%s" data-once="%s" data-engine="%s">%s</div>',
             esc_attr($unique_id),
             esc_attr($type),
             $duration,
@@ -225,6 +230,7 @@ class Syntekpro_Animations_Gutenberg {
             esc_attr($start_position),
             esc_attr($markers),
             esc_attr($once_only),
+            esc_attr($effective_engine),
             $inner_content
         );
 

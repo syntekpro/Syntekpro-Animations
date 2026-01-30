@@ -9,6 +9,73 @@
     display: block;
 }
 
+/* CSS light-mode animations */
+.sp-css-anim {
+    visibility: hidden;
+    opacity: 0;
+    --sp-duration: 1s;
+    --sp-delay: 0s;
+    --sp-ease: ease;
+}
+
+.sp-css-anim.sp-css-play {
+    animation-duration: var(--sp-duration);
+    animation-delay: var(--sp-delay);
+    animation-timing-function: var(--sp-ease);
+    animation-fill-mode: both;
+    visibility: visible;
+}
+
+.sp-css-fadeIn.sp-css-play { animation-name: sp-fadeIn; }
+.sp-css-fadeInUp.sp-css-play { animation-name: sp-fadeInUp; }
+.sp-css-fadeInDown.sp-css-play { animation-name: sp-fadeInDown; }
+.sp-css-fadeInLeft.sp-css-play { animation-name: sp-fadeInLeft; }
+.sp-css-fadeInRight.sp-css-play { animation-name: sp-fadeInRight; }
+.sp-css-slideLeft.sp-css-play { animation-name: sp-slideLeft; }
+.sp-css-slideRight.sp-css-play { animation-name: sp-slideRight; }
+.sp-css-slideUp.sp-css-play { animation-name: sp-slideUp; }
+.sp-css-slideDown.sp-css-play { animation-name: sp-slideDown; }
+.sp-css-zoomIn.sp-css-play { animation-name: sp-zoomIn; }
+.sp-css-zoomInUp.sp-css-play { animation-name: sp-zoomInUp; }
+.sp-css-zoomInDown.sp-css-play { animation-name: sp-zoomInDown; }
+.sp-css-zoomInLeft.sp-css-play { animation-name: sp-zoomInLeft; }
+.sp-css-zoomInRight.sp-css-play { animation-name: sp-zoomInRight; }
+.sp-css-scaleUp.sp-css-play { animation-name: sp-scaleUp; }
+.sp-css-scaleDown.sp-css-play { animation-name: sp-scaleDown; }
+.sp-css-scaleX.sp-css-play { animation-name: sp-scaleX; }
+.sp-css-scaleY.sp-css-play { animation-name: sp-scaleY; }
+.sp-css-rotateIn.sp-css-play { animation-name: sp-rotateIn; }
+.sp-css-pulse.sp-css-play { animation-name: sp-pulse; }
+.sp-css-revealLeft.sp-css-play { animation-name: sp-revealLeft; }
+.sp-css-revealRight.sp-css-play { animation-name: sp-revealRight; }
+.sp-css-revealUp.sp-css-play { animation-name: sp-revealUp; }
+.sp-css-revealDown.sp-css-play { animation-name: sp-revealDown; }
+
+@keyframes sp-fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sp-fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes sp-fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes sp-fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes sp-fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes sp-slideLeft { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes sp-slideRight { from { transform: translateX(-40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes sp-slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes sp-slideDown { from { transform: translateY(-40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes sp-zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes sp-zoomInUp { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+@keyframes sp-zoomInDown { from { transform: scale(0.9) translateY(-20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+@keyframes sp-zoomInLeft { from { transform: scale(0.9) translateX(-20px); opacity: 0; } to { transform: scale(1) translateX(0); opacity: 1; } }
+@keyframes sp-zoomInRight { from { transform: scale(0.9) translateX(20px); opacity: 0; } to { transform: scale(1) translateX(0); opacity: 1; } }
+@keyframes sp-scaleUp { from { transform: scale(0.94); opacity: 0.1; } to { transform: scale(1); opacity: 1; } }
+@keyframes sp-scaleDown { from { transform: scale(1.08); opacity: 0.2; } to { transform: scale(1); opacity: 1; } }
+@keyframes sp-scaleX { from { transform: scaleX(0.8); opacity: 0.2; } to { transform: scaleX(1); opacity: 1; } }
+@keyframes sp-scaleY { from { transform: scaleY(0.8); opacity: 0.2; } to { transform: scaleY(1); opacity: 1; } }
+@keyframes sp-rotateIn { from { transform: rotate(-8deg); opacity: 0; } to { transform: rotate(0deg); opacity: 1; } }
+@keyframes sp-pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+@keyframes sp-revealLeft { from { clip-path: inset(0 0 0 100%); opacity: 0; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes sp-revealRight { from { clip-path: inset(0 100% 0 0); opacity: 0; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes sp-revealUp { from { clip-path: inset(100% 0 0 0); opacity: 0; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes sp-revealDown { from { clip-path: inset(0 0 100% 0); opacity: 0; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+
 /* Text Animation Elements */
 .sp-text-animate {
     display: inline-block;
@@ -124,6 +191,27 @@
     .sp-animate {
         /* Slightly faster animations on mobile */
         --animation-speed: 0.8;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .syntekpro-animate-preview {
+        background: linear-gradient(135deg, #2e2a32 0%, #3a2e42 100%);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .syntekpro-animate-preview .syntekpro-animate-inner-blocks,
+    .syntekpro-animate-preview .sp-animate {
+        color: #f3f4f6;
+    }
+
+    .sp-animate[data-trigger="scroll"] {
+        visibility: hidden;
+    }
+
+    body.syntekpro-debug-mode .sp-animate {
+        outline-color: rgba(255, 182, 193, 0.7);
     }
 }
 

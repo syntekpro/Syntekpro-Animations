@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "presets": [
+    {
+      "name": "Hero Fade Up",
+      "type": "fadeInUp",
+      "trigger": "scroll",
+      "startPosition": "top 85%",
+      "duration": 1.2,
+      "delay": 0,
+      "ease": "power2.out",
+      "engine": "auto",
+      "category": "hero"
+    },
+    {
+      "name": "Card Hover Lift",
+      "type": "scaleUp",
+      "trigger": "hover",
+      "duration": 0.5,
+      "ease": "power2.out",
+      "onceOnly": false,
+      "engine": "auto",
+      "category": "card"
+    },
+    {
+      "name": "CTA Pulse",
+      "type": "pulse",
+      "trigger": "hover",
+      "duration": 0.8,
+      "ease": "power1.out",
+      "onceOnly": false,
+      "engine": "auto",
+      "category": "cta"
+    }
+  ]
+}
