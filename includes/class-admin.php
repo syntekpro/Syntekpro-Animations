@@ -18,27 +18,6 @@ class Syntekpro_Animations_Admin {
     }
 
     /**
-     * Get the admin logo URL, preferring updated assets if present.
-     */
-    public static function get_logo_url() {
-        $candidates = array(
-            'syntekpro-logo.svg',
-            'syntekpro-logo.png'
-        );
-
-        foreach ($candidates as $candidate) {
-            $path = SYNTEKPRO_ANIM_PLUGIN_DIR . 'assets/img/' . $candidate;
-            if (file_exists($path)) {
-                return apply_filters('syntekpro_animations_admin_logo', SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/' . $candidate);
-            }
-        }
-
-        $fallback = SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png';
-
-        return apply_filters('syntekpro_animations_admin_logo', $fallback);
-    }
-
-    /**
      * Enqueue admin branding CSS
      */
     public function enqueue_admin_branding_css($hook) {
@@ -65,7 +44,7 @@ class Syntekpro_Animations_Admin {
         <div class="wrap syntekpro-settings-wrapper">
             <div class="syntekpro-admin-banner">
                 <div class="syntekpro-admin-branding">
-                    <img src="<?php echo esc_url(self::get_logo_url()); ?>" alt="<?php echo esc_attr__('Syntekpro Logo', 'syntekpro-animations'); ?>" />
+                    <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="<?php echo esc_attr__('Syntekpro Logo', 'syntekpro-animations'); ?>" />
                     <div class="syntekpro-brand-content">
                         <div class="brand-title"><?php _e('Syntekpro Animations', 'syntekpro-animations'); ?></div>
                         <div class="brand-desc"><?php _e('Pick your next step: presets, builder, timeline, or docs.', 'syntekpro-animations'); ?></div>
@@ -332,7 +311,7 @@ class Syntekpro_Animations_Admin {
             <!-- Banner with Logo -->
             <div class="syntekpro-admin-banner">
                 <div class="syntekpro-admin-branding">
-                    <img src="<?php echo esc_url(self::get_logo_url()); ?>" alt="Syntekpro Logo" />
+                    <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="Syntekpro Logo" />
                     <div class="syntekpro-brand-content">
                         <div class="brand-title"><?php _e('Syntekpro Animations', 'syntekpro-animations'); ?></div>
                         <div class="brand-desc"><?php _e('Professional GSAP-powered animations for WordPress', 'syntekpro-animations'); ?></div>
@@ -867,7 +846,7 @@ class Syntekpro_Animations_Admin {
                 <!-- Banner with Logo -->
                 <div class="syntekpro-admin-banner">
                     <div class="syntekpro-admin-branding">
-                        <img src="<?php echo esc_url(self::get_logo_url()); ?>" alt="Syntekpro Logo" />
+                        <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="Syntekpro Logo" />
                         <div class="syntekpro-brand-content">
                             <div class="brand-title"><?php _e('Animation Presets', 'syntekpro-animations'); ?></div>
                             <div class="brand-desc"><?php _e('Browse 50+ ready-to-use animation effects', 'syntekpro-animations'); ?></div>
@@ -1569,7 +1548,7 @@ class Syntekpro_Animations_Admin {
         <div class="wrap syntekpro-settings-wrapper">
             <div class="syntekpro-admin-banner">
                 <div class="syntekpro-admin-branding">
-                    <img src="<?php echo esc_url(self::get_logo_url()); ?>" alt="<?php echo esc_attr__('Syntekpro Logo', 'syntekpro-animations'); ?>" />
+                    <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="<?php echo esc_attr__('Syntekpro Logo', 'syntekpro-animations'); ?>" />
                     <div class="syntekpro-brand-content">
                         <div class="brand-title"><?php _e('Help Center', 'syntekpro-animations'); ?></div>
                         <div class="brand-desc"><?php _e('Everything you need to ship, extend, and design animations confidently.', 'syntekpro-animations'); ?></div>
@@ -1628,7 +1607,7 @@ class Syntekpro_Animations_Admin {
             <!-- Banner with Logo -->
             <div class="syntekpro-admin-banner">
                 <div class="syntekpro-admin-branding">
-                    <img src="<?php echo esc_url(self::get_logo_url()); ?>" alt="Syntekpro Logo" />
+                    <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="Syntekpro Logo" />
                     <div class="syntekpro-brand-content">
                         <div class="brand-title"><?php _e('Documentation', 'syntekpro-animations'); ?></div>
                         <div class="brand-desc"><?php _e('Learn how to use Syntekpro Animations in your WordPress site', 'syntekpro-animations'); ?></div>
@@ -1797,7 +1776,7 @@ gsap.to('.scroll-element', {
             <!-- Banner -->
             <div class="syntekpro-admin-banner">
                 <div class="syntekpro-admin-branding">
-                    <img src="<?php echo esc_url(self::get_logo_url()); ?>" alt="Syntekpro Logo" />
+                    <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="Syntekpro Logo" />
                     <div class="syntekpro-brand-content">
                         <div class="brand-title"><?php _e('Animation Builder', 'syntekpro-animations'); ?></div>
                         <div class="brand-desc"><?php _e('Create custom animations with live preview', 'syntekpro-animations'); ?></div>
@@ -1921,7 +1900,7 @@ gsap.to('.scroll-element', {
         <div class="wrap syntekpro-settings-wrapper">
             <div class="syntekpro-admin-banner">
                 <div class="syntekpro-admin-branding">
-                    <img src="<?php echo esc_url(self::get_logo_url()); ?>" alt="<?php echo esc_attr__('Syntekpro Logo', 'syntekpro-animations'); ?>" />
+                    <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="<?php echo esc_attr__('Syntekpro Logo', 'syntekpro-animations'); ?>" />
                     <div class="syntekpro-brand-content">
                         <div class="brand-title"><?php _e('System Status', 'syntekpro-animations'); ?></div>
                         <div class="brand-desc"><?php _e('Quick health report and version details for support and debugging.', 'syntekpro-animations'); ?></div>
@@ -1995,7 +1974,7 @@ gsap.to('.scroll-element', {
             <!-- Banner -->
             <div class="syntekpro-admin-banner">
                 <div class="syntekpro-admin-branding">
-                    <img src="<?php echo esc_url(self::get_logo_url()); ?>" alt="Syntekpro Logo" />
+                    <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="Syntekpro Logo" />
                     <div class="syntekpro-brand-content">
                         <div class="brand-title"><?php _e('Timeline Creator', 'syntekpro-animations'); ?></div>
                         <div class="brand-desc"><?php _e('Create complex animation sequences', 'syntekpro-animations'); ?></div>

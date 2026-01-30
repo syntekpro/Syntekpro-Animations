@@ -357,6 +357,20 @@
                             hoverTimeline.reverse();
                         }
                     });
+                } else if (trigger === 'pointer') {
+                    element.style.visibility = 'visible';
+                    const maxShift = 12;
+                    const reset = () => gsap.to(element, { x: 0, y: 0, duration: 0.3, ease: 'power2.out' });
+
+                    element.addEventListener('mousemove', function(ev) {
+                        const rect = element.getBoundingClientRect();
+                        const relX = (ev.clientX - rect.left) / rect.width - 0.5;
+                        const relY = (ev.clientY - rect.top) / rect.height - 0.5;
+                        gsap.to(element, { x: relX * maxShift, y: relY * maxShift, duration: 0.2, overwrite: true, ease: 'power2.out' });
+                    });
+
+                    element.addEventListener('mouseleave', reset);
+                    reset();
                 } else if (trigger === 'click') {
                     element.style.visibility = 'visible';
                     const clickTimeline = gsap.timeline({ paused: true });

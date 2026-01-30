@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     <!-- Banner with Logo -->
     <div class="syntekpro-admin-banner">
         <div class="syntekpro-admin-branding">
-            <img src="<?php echo esc_url(Syntekpro_Animations_Admin::get_logo_url()); ?>" alt="Syntekpro Logo" />
+            <img src="<?php echo esc_url(SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animations%20Transparent%20Logo%20with%20Favicon.png'); ?>" alt="Syntekpro Logo" />
             <div class="syntekpro-brand-content">
                 <div class="brand-title">Syntekpro Animations</div>
                 <div class="brand-desc">Professional GSAP-powered animations for WordPress</div>
