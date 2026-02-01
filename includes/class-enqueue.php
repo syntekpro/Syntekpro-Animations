@@ -142,21 +142,19 @@ class Syntekpro_Animations_Enqueue {
      */
     private function load_free_plugins() {
         $free_plugins = array(
-            'Flip' => 'Flip.min.js',
-            'Observer' => 'Observer.min.js',
-            'ScrollToPlugin' => 'ScrollToPlugin.min.js',
-            'TextPlugin' => 'TextPlugin.min.js',
-            'Draggable' => 'Draggable.min.js',
-            'MotionPathPlugin' => 'MotionPathPlugin.min.js',
-            'EasePack' => 'EasePack.min.js',
-            'CustomEase' => 'CustomEase.min.js'
+            'flip' => 'Flip.min.js',
+            'observer' => 'Observer.min.js',
+            'scrolltoplugin' => 'ScrollToPlugin.min.js',
+            'textplugin' => 'TextPlugin.min.js',
+            'motionpathplugin' => 'MotionPathPlugin.min.js',
+            'easepack' => 'EasePack.min.js',
+            'customease' => 'CustomEase.min.js'
         );
         
-        foreach ($free_plugins as $name => $file) {
-            $option_key = 'load_' . strtolower($name);
-            if (get_option('syntekpro_anim_' . $option_key) === 'yes') {
+        foreach ($free_plugins as $option_key => $file) {
+            if (get_option('syntekpro_anim_load_' . $option_key) === 'yes') {
                 wp_enqueue_script(
-                    'syntekpro-' . strtolower($name),
+                    'syntekpro-' . $option_key,
                     SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/gsap/minified/' . $file,
                     array('syntekpro-gsap'),
                     SYNTEKPRO_ANIM_VERSION,
@@ -171,25 +169,21 @@ class Syntekpro_Animations_Enqueue {
      */
     private function load_pro_plugins() {
         $pro_plugins = array(
-            'SplitText' => 'SplitText.min.js',
-            'MorphSVGPlugin' => 'MorphSVGPlugin.min.js',
-            'DrawSVGPlugin' => 'DrawSVGPlugin.min.js',
-            'ScrollSmoother' => 'ScrollSmoother.min.js',
-            'GSDevTools' => 'GSDevTools.min.js',
-            'InertiaPlugin' => 'InertiaPlugin.min.js',
-            'ScrambleTextPlugin' => 'ScrambleTextPlugin.min.js',
-            'CustomBounce' => 'CustomBounce.min.js',
-            'CustomWiggle' => 'CustomWiggle.min.js',
-            'MotionPathHelper' => 'MotionPathHelper.min.js',
-            'Physics2DPlugin' => 'Physics2DPlugin.min.js',
-            'PhysicsPropsPlugin' => 'PhysicsPropsPlugin.min.js'
+            'splittext' => 'SplitText.min.js',
+            'morphsvgplugin' => 'MorphSVGPlugin.min.js',
+            'drawsvgplugin' => 'DrawSVGPlugin.min.js',
+            'scrollsmoother' => 'ScrollSmoother.min.js',
+            'gsdevtools' => 'GSDevTools.min.js',
+            'inertiaplugin' => 'InertiaPlugin.min.js',
+            'scrambletextplugin' => 'ScrambleTextPlugin.min.js',
+            'custombounce' => 'CustomBounce.min.js',
+            'customwiggle' => 'CustomWiggle.min.js'
         );
         
-        foreach ($pro_plugins as $name => $file) {
-            $option_key = 'load_' . strtolower($name);
-            if (get_option('syntekpro_anim_' . $option_key) === 'yes') {
+        foreach ($pro_plugins as $option_key => $file) {
+            if (get_option('syntekpro_anim_load_' . $option_key) === 'yes') {
                 wp_enqueue_script(
-                    'syntekpro-' . strtolower($name),
+                    'syntekpro-' . $option_key,
                     SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/gsap/minified/' . $file,
                     array('syntekpro-gsap'),
                     SYNTEKPRO_ANIM_VERSION,
