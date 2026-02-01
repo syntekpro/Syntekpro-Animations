@@ -439,6 +439,36 @@ class Syntekpro_Animation_Presets {
                 'effect' => 'chars',
                 'from' => array('rotation' => -90, 'opacity' => 0),
                 'to' => array('rotation' => 0, 'opacity' => 1, 'stagger' => 0.03)
+            ),
+
+            // LAYOUT / HERO / GRID PRESETS (PRO)
+            'heroLift' => array(
+                'name' => 'Hero Lift',
+                'category' => 'layout',
+                'free' => false,
+                'from' => array('opacity' => 0, 'y' => 40, 'scale' => 0.98),
+                'to' => array('opacity' => 1, 'y' => 0, 'scale' => 1, 'ease' => 'power2.out', 'duration' => 1.05)
+            ),
+            'cardStagger' => array(
+                'name' => 'Card Stagger',
+                'category' => 'layout',
+                'free' => false,
+                'from' => array('opacity' => 0, 'y' => 30),
+                'to' => array('opacity' => 1, 'y' => 0, 'stagger' => 0.12, 'ease' => 'power2.out')
+            ),
+            'ctaPop' => array(
+                'name' => 'CTA Pop',
+                'category' => 'layout',
+                'free' => false,
+                'from' => array('opacity' => 0, 'scale' => 0.92, 'y' => 12),
+                'to' => array('opacity' => 1, 'scale' => 1, 'y' => 0, 'ease' => 'back.out(1.4)', 'duration' => 0.9)
+            ),
+            'sectionDrift' => array(
+                'name' => 'Section Drift',
+                'category' => 'layout',
+                'free' => false,
+                'from' => array('opacity' => 0, 'y' => 60, 'filter' => 'blur(6px)'),
+                'to' => array('opacity' => 1, 'y' => 0, 'filter' => 'blur(0px)', 'duration' => 1.1)
             )
         ));
     }
@@ -491,7 +521,8 @@ class Syntekpro_Animation_Presets {
             'peel' => 'Peel Animations (PRO)',
             'fold' => 'Fold Animations (PRO)',
             'advanced' => 'Advanced Easing (PRO)',
-            'text' => 'Text Effects (PRO)'
+            'text' => 'Text Effects (PRO)',
+            'layout' => 'Layout & Sections (PRO)'
         );
     }
 }

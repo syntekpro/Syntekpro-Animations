@@ -180,45 +180,18 @@ select:focus {
     transform: translateY(-2px);
 }
 
-.preview-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--sp-primary);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 13px;
-    transition: all 0.3s ease;
+.preview-btn,
+.syntekpro-preset-card .preview-btn {
+    display: none !important;
 }
 
-.preview-btn:hover {
-    background: #c62828;
-    transform: scale(1.05);
+.preview-area,
+.syntekpro-preset-card .preview-area {
+    display: none !important;
 }
 
-.preview-area {
-    margin-top: 15px;
-    padding: 20px;
-    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
-    border-radius: 6px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100px;
-}
-
-.preview-box {
-    background: white;
-    padding: 20px 40px;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    font-weight: 600;
-    color: var(--sp-primary);
-    font-size: 16px;
+.syntekpro-preset-card .preview-box:not(.preset-preview-box) {
+    display: none !important;
 }
 
 /* Animation Builder */

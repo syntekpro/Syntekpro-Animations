@@ -4,7 +4,7 @@ Tags: animations, scroll effects, visual effects, page builder, animated blocks,
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 2.1.1
+Stable tag: 2.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -184,6 +184,11 @@ Yes! We regularly test and update for the latest WordPress versions.
 8. License activation page
 
 == Changelog ==
+
+= 2.2.2 - 2026-02-01 =
+* Added 10 new Syntekpro block patterns (hero split, stats, logo strip, steps, checklist, comparison, newsletter band, gallery tiles, testimonial highlight, CTA minimal).
+* Pattern Data page simplified to friendly form controls with no raw JSON panels shown.
+* Added a Patterns quick link on the dashboard and kept the admin menu icon hover neutral grey.
 
 = 1.0.0 - 2025-01-27 =
 * Initial release

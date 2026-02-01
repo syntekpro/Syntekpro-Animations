@@ -286,7 +286,9 @@
                 }
 
                 if (typeof gsap === 'undefined') {
-                    console.warn('GSAP unavailable and CSS path not supported for', animationType);
+                    console.warn('GSAP unavailable; falling back to visibility for', animationType, 'trigger', trigger);
+                    element.style.visibility = 'visible';
+                    element.classList.add('animated');
                     return;
                 }
 
@@ -359,44 +361,16 @@
                     });
                 } else if (trigger === 'pointer') {
                     element.style.visibility = 'visible';
-                    const maxShift = 12;
-                    const reset = () => gsap.to(element, { x: 0, y: 0, duration: 0.3, ease: 'power2.out' });
-
-                    element.addEventListener('mousemove', function(ev) {
-                        const rect = element.getBoundingClientRect();
-                        const relX = (ev.clientX - rect.left) / rect.width - 0.5;
-                        const relY = (ev.clientY - rect.top) / rect.height - 0.5;
-                        gsap.to(element, { x: relX * maxShift, y: relY * maxShift, duration: 0.2, overwrite: true, ease: 'power2.out' });
-                    });
-
-                    element.addEventListener('mouseleave', reset);
-                    reset();
-                } else if (trigger === 'click') {
-                    element.style.visibility = 'visible';
-                    const clickTimeline = gsap.timeline({ paused: true });
-                    clickTimeline.fromTo(element, animation.from, Object.assign({}, baseConfig));
-
-                    element.addEventListener('click', function() {
-                        element.classList.add('animated');
-                        if (clickTimeline.reversed() || clickTimeline.paused()) {
-                            clickTimeline.play(0);
-                        } else {
-                            clickTimeline.reverse();
-                        }
-                    });
-                } else if (trigger === 'pointer') {
-                    // Mouse-follow parallax + play once on first move
-                    element.style.visibility = 'visible';
-                    let hasPlayed = false;
                     const pointerTimeline = gsap.timeline({ paused: true });
                     pointerTimeline.fromTo(element, animation.from, Object.assign({}, baseConfig));
 
-                    const followStrength = 18;
+                    let hasPlayed = false;
+                    const followStrength = 16;
                     element.addEventListener('mousemove', function(ev) {
                         const rect = element.getBoundingClientRect();
                         const relX = (ev.clientX - rect.left) / rect.width - 0.5;
                         const relY = (ev.clientY - rect.top) / rect.height - 0.5;
-                        gsap.to(element, { x: relX * followStrength, y: relY * followStrength, duration: 0.25, ease: 'power2.out' });
+                        gsap.to(element, { x: relX * followStrength, y: relY * followStrength, duration: 0.2, overwrite: true, ease: 'power2.out' });
 
                         if (!hasPlayed) {
                             element.classList.add('animated');
@@ -406,10 +380,26 @@
                     });
 
                     element.addEventListener('mouseleave', function() {
-                        gsap.to(element, { x: 0, y: 0, duration: 0.35, ease: 'power2.out' });
+                        gsap.to(element, { x: 0, y: 0, duration: 0.25, ease: 'power2.out' });
                         if (!onceOnly && hasPlayed) {
                             pointerTimeline.reverse();
                             hasPlayed = false;
+                        }
+                    });
+                } else if (trigger === 'click') {
+                    element.style.visibility = 'visible';
+                    const clickTimeline = gsap.timeline({ paused: true });
+                    clickTimeline.fromTo(element, animation.from, Object.assign({}, baseConfig));
+
+                    element.addEventListener('click', function() {
+                        element.classList.add('animated');
+                        if (onceOnly && clickTimeline.progress() === 1) {
+                            return;
+                        }
+                        if (clickTimeline.reversed() || clickTimeline.paused()) {
+                            clickTimeline.play(0);
+                        } else if (!onceOnly) {
+                            clickTimeline.reverse();
                         }
                     });
                 } else {

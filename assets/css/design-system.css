@@ -1,0 +1,139 @@
+:root {
+    /* Color tokens */
+    --sp-color-bg: #f8fafc;
+    --sp-color-surface: #ffffff;
+    --sp-color-surface-strong: #0f172a;
+    --sp-color-surface-subtle: #f1f5f9;
+    --sp-color-border: #e2e8f0;
+    --sp-color-border-strong: #cbd5e1;
+    --sp-color-accent: #2563eb;
+    --sp-color-accent-strong: #1d4ed8;
+    --sp-color-accent-contrast: #ffffff;
+    --sp-color-text: #0f172a;
+    --sp-color-text-muted: #475569;
+    --sp-color-text-soft: #64748b;
+    --sp-color-success: #16a34a;
+    --sp-color-warning: #f59e0b;
+    --sp-color-danger: #dc2626;
+
+    /* Typography */
+    --sp-font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --sp-font-size-xs: 12px;
+    --sp-font-size-sm: 13px;
+    --sp-font-size-md: 14px;
+    --sp-font-size-lg: 16px;
+    --sp-font-size-xl: 20px;
+    --sp-line-height: 1.5;
+
+    /* Spacing scale */
+    --sp-space-2: 4px;
+    --sp-space-3: 6px;
+    --sp-space-4: 8px;
+    --sp-space-5: 10px;
+    --sp-space-6: 12px;
+    --sp-space-8: 16px;
+    --sp-space-10: 20px;
+    --sp-space-12: 24px;
+
+    /* Radius */
+    --sp-radius-sm: 4px;
+    --sp-radius-md: 8px;
+    --sp-radius-lg: 12px;
+    --sp-radius-xl: 14px;
+
+    /* Shadow */
+    --sp-shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --sp-shadow-inner: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+    /* Motion */
+    --sp-motion-duration-fast: 160ms;
+    --sp-motion-duration-base: 240ms;
+    --sp-motion-duration-slow: 360ms;
+    --sp-motion-ease: cubic-bezier(0.4, 0.2, 0.2, 1);
+    --sp-motion-stagger: 0.08s;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --sp-color-bg: #0b1220;
+        --sp-color-surface: #0f172a;
+        --sp-color-surface-strong: #0b1220;
+        --sp-color-surface-subtle: #111827;
+        --sp-color-border: #1f2937;
+        --sp-color-border-strong: #273244;
+        --sp-color-text: #e5e7eb;
+        --sp-color-text-muted: #cbd5e1;
+        --sp-color-text-soft: #94a3b8;
+        --sp-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --sp-motion-duration-fast: 0ms;
+        --sp-motion-duration-base: 0ms;
+        --sp-motion-duration-slow: 0ms;
+        --sp-motion-stagger: 0s;
+    }
+}
+
+/* Utility surfaces */
+.sp-surface {
+    background: var(--sp-color-surface);
+    border: 1px solid var(--sp-color-border);
+    border-radius: var(--sp-radius-md);
+    box-shadow: var(--sp-shadow-soft);
+}
+
+.sp-card {
+    background: var(--sp-color-surface);
+    border: 1px solid var(--sp-color-border);
+    border-radius: var(--sp-radius-lg);
+    padding: var(--sp-space-10);
+    box-shadow: var(--sp-shadow-soft);
+}
+
+.sp-text-muted { color: var(--sp-color-text-muted); }
+.sp-text-soft { color: var(--sp-color-text-soft); }
+
+.sp-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-space-3);
+    padding: var(--sp-space-3) var(--sp-space-6);
+    font-weight: 600;
+    font-size: var(--sp-font-size-md);
+    line-height: 1.2;
+    color: var(--sp-color-accent-contrast);
+    background: var(--sp-color-accent);
+    border: 1px solid var(--sp-color-accent-strong);
+    border-radius: var(--sp-radius-md);
+    box-shadow: var(--sp-shadow-soft);
+    transition: transform var(--sp-motion-duration-fast) var(--sp-motion-ease), box-shadow var(--sp-motion-duration-fast) var(--sp-motion-ease);
+}
+
+.sp-button:hover,
+.sp-button:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+    outline: none;
+}
+
+.sp-button.is-ghost {
+    background: transparent;
+    color: var(--sp-color-text);
+    border-color: var(--sp-color-border);
+    box-shadow: none;
+}
+
+.sp-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--sp-radius-sm);
+    font-size: var(--sp-font-size-xs);
+    font-weight: 600;
+    background: var(--sp-color-surface-subtle);
+    color: var(--sp-color-text-muted);
+}

@@ -8,6 +8,7 @@
     // Animation Preview Manager
     const AnimationPreview = {
         init: function() {
+            this.removeAllPreviewAreas(); // Clean first
             this.setupPreviewBoxes();
             this.setupAnimationBuilder();
             this.setupLivePreview();
@@ -15,30 +16,32 @@
             this.setupCodeGenerator();
         },
 
+        removeAllPreviewAreas: function() {
+            // Aggressively remove ALL preview areas immediately
+            $('.syntekpro-preset-card .preview-area').remove();
+            $('.syntekpro-preset-card .preview-btn').remove();
+            $('.syntekpro-preset-card .preview-box').not('.preset-preview-box').remove();
+        },
+
         setupPreviewBoxes: function() {
-            // Add preview functionality to preset cards
+            // Use the built-in preview tile on each preset card
             $('.syntekpro-preset-card').each(function() {
                 const $card = $(this);
-                const animationType = $card.data('animation');
-                
-                // Add preview button
-                $card.append('<button class="preview-btn" data-animation="' + animationType + '">▶ Preview</button>');
-                
-                // Add preview area
-                if (!$card.find('.preview-area').length) {
-                    $card.append('<div class="preview-area"><div class="preview-box">Preview</div></div>');
+                const animationType = $card.data('preset-key') || $card.data('animation');
+                const $previewBox = $card.find('.preset-preview-element');
+
+                // Remove any legacy injected preview UI (extra button/area) to avoid duplicate tiles
+                $card.find('.preview-area, .preview-btn').remove();
+                $card.find('.preview-box').not('.preset-preview-box').remove();
+
+                if (!$previewBox.length) {
+                    return;
                 }
-            });
 
-            // Handle preview button clicks
-            $(document).on('click', '.preview-btn', function(e) {
-                e.preventDefault();
-                const $btn = $(this);
-                const $card = $btn.closest('.syntekpro-preset-card');
-                const $previewBox = $card.find('.preview-box');
-                const animationType = $btn.data('animation');
-
-                AnimationPreview.playAnimation($previewBox, animationType);
+                $previewBox.off('click.preview').on('click.preview', function(e) {
+                    e.stopPropagation();
+                    AnimationPreview.playAnimation($previewBox, animationType);
+                });
             });
         },
 
@@ -296,6 +299,17 @@
     $(document).ready(function() {
         if (typeof gsap !== 'undefined') {
             AnimationPreview.init();
+            
+            // Set up a mutation observer to continuously remove preview-areas if they appear
+            const observer = new MutationObserver(function() {
+                $('.syntekpro-preset-card .preview-area, .syntekpro-preset-card .preview-btn').remove();
+                $('.syntekpro-preset-card .preview-box').not('.preset-preview-box').remove();
+            });
+            
+            const container = document.querySelector('#presets-container');
+            if (container) {
+                observer.observe(container, { childList: true, subtree: true });
+            }
         }
     });
 

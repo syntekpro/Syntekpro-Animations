@@ -1,38 +1,49 @@
 /* Syntekpro Animations Block Editor Styles */
+@import url('./design-system.css');
+
+/* Compact pattern previews in inserter */
+.block-editor-block-patterns-list__list-item .wp-block-group,
+.block-editor-block-patterns-list__list-item .wp-block-cover {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.block-editor-block-patterns-list__list-item .wp-block-cover.alignfull {
+    min-height: 340px;
+}
 
 .syntekpro-animate-preview {
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    padding: 12px;
+    background-color: var(--sp-color-surface-subtle);
+    border: 1px solid var(--sp-color-border);
+    border-radius: var(--sp-radius-md);
+    padding: var(--sp-space-8);
     margin-top: 10px;
-    font-size: 12px;
+    font-size: var(--sp-font-size-sm);
 }
 
 .syntekpro-animate-preview strong {
-    color: #2271b1;
+    color: var(--sp-color-accent);
 }
 
 .syntekpro-animate-inner-blocks {
-    background-color: #ffffff;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    padding: 12px;
+    background-color: var(--sp-color-surface);
+    border: 1px solid var(--sp-color-border);
+    border-radius: var(--sp-radius-md);
+    padding: var(--sp-space-8);
     margin-top: 10px;
     min-height: 50px;
 }
 
 .wp-block-syntekpro-animate {
-    border: 2px dashed #2271b1;
-    padding: 20px;
-    background-color: #f0f5ff;
-    border-radius: 4px;
+    border: 2px dashed var(--sp-color-accent);
+    padding: var(--sp-space-10);
+    background-color: #f0f7ff;
+    border-radius: var(--sp-radius-md);
     margin: 10px 0;
 }
 
 .wp-block-syntekpro-animate.is-selected {
-    box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.1);
-    border-color: #0073aa;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    border-color: var(--sp-color-accent);
 }
 
 /* Inspector panel improvements */

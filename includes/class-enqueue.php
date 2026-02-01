@@ -104,9 +104,16 @@ class Syntekpro_Animations_Enqueue {
         
         // Frontend styles
         wp_enqueue_style(
+            'syntekpro-design-system',
+            SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/css/design-system.css',
+            array(),
+            SYNTEKPRO_ANIM_VERSION
+        );
+
+        wp_enqueue_style(
             'syntekpro-animations-style',
             SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/css/style.css',
-            array(),
+            array('syntekpro-design-system'),
             SYNTEKPRO_ANIM_VERSION
         );
     }
@@ -121,6 +128,9 @@ class Syntekpro_Animations_Enqueue {
         // Reuse same handles; registration happens in enqueue_frontend_assets on wp_enqueue_scripts
         if (!wp_script_is('syntekpro-animations-frontend', 'enqueued')) {
             wp_enqueue_script('syntekpro-animations-frontend');
+        }
+        if (!wp_style_is('syntekpro-design-system', 'enqueued')) {
+            wp_enqueue_style('syntekpro-design-system');
         }
         if (!wp_style_is('syntekpro-animations-style', 'enqueued')) {
             wp_enqueue_style('syntekpro-animations-style');
@@ -208,9 +218,16 @@ class Syntekpro_Animations_Enqueue {
         );
         
         wp_enqueue_style(
+            'syntekpro-design-system',
+            SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/css/design-system.css',
+            array(),
+            SYNTEKPRO_ANIM_VERSION
+        );
+
+        wp_enqueue_style(
             'syntekpro-admin-style',
             SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/css/admin-style.css',
-            array(),
+            array('syntekpro-design-system'),
             SYNTEKPRO_ANIM_VERSION
         );
         

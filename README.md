@@ -1,6 +1,6 @@
 # SyntekPro Animations
 
-**Version:** 2.1.1  
+**Version:** 2.2.2  
 **Requires:** WordPress 5.8+, PHP 7.4+
 
 Professional animation engine for WordPress with 50+ animation presets, visual builders, and advanced animation features.
@@ -91,6 +91,7 @@ Go to **WP Admin → SyntekPro Animations → Settings**
 | Page | Purpose |
 |------|---------|
 | **Settings** | Enable/configure features |
+| **Patterns** | Drop ready-made sections with built-in motion |
 | **Presets** | Browse all 50+ animations |
 | **Builder** | Visual animation creator with live preview |
 | **Timeline** | Multi-step sequence builder |

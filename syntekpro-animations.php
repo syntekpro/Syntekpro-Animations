@@ -3,7 +3,7 @@
  * Plugin Name: Syntekpro Animations
  * Plugin URI: https://syntekpro.com/animations
  * Description: Professional high-performance animation engine for WordPress. Create stunning scroll-triggered animations, timeline sequences, and visual effects with our advanced animation framework. Free version includes 30+ animations, Pro unlocks timeline builder, text effects, SVG morphing, and premium features.
- * Version: 2.1.1
+ * Version: 2.2.2
  * Author: Syntekpro
  * Author URI: https://syntekpro.com
  * License: GPL v2 or later
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SYNTEKPRO_ANIM_VERSION', '2.1.1');
+define('SYNTEKPRO_ANIM_VERSION', '2.2.2');
 define('SYNTEKPRO_ANIM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SYNTEKPRO_ANIM_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('SYNTEKPRO_ANIM_PLUGIN_FILE', __FILE__);
@@ -105,9 +105,8 @@ class Syntekpro_Animations {
      * Check if Pro version is active
      */
     public function is_pro_active() {
-        $license = get_option('syntekpro_anim_license_key');
-        $status = get_option('syntekpro_anim_license_status');
-        return !empty($license) && $status === 'valid';
+        // Temporary: ship all features as free; licensing is on hold.
+        return true;
     }
     
     /**

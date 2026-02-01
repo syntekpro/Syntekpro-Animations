@@ -4,7 +4,49 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [2.2.2] - 2026-02-01
+
+### Added
+- Ten new block patterns (hero split, stats row, logo strip, steps, checklist, comparison table, newsletter band, gallery tiles, testimonial highlight, CTA minimal).
+- Patterns card/link added to the dashboard for faster access.
+
+### Changed
+- Pattern Data page simplified to form-first controls without raw JSON blocks; textareas use friendly styling.
+- Admin menu icon hover now stays neutral grey instead of blue.
+
+### Fixed
+- Pattern browser previews cover the new patterns with consistent variants and accents.
+
+### Notes
+- Version metadata aligned across plugin files to 2.2.2.
+
+## [2.3.0] - 2026-01-31
+
+### Added
+- Design system token sheet (colors, typography, spacing, radius, shadows, motion) shared across frontend, editor, and admin.
+- Block editor now consumes the design system for consistent block previews.
+- Pricing, FAQ, and testimonial dynamic patterns now render with design-system tokens for colors and surfaces.
+
+### Changed
+- Frontend, block-rendered pages, and admin screens enqueue the shared design-system stylesheet ahead of existing styles.
+- Admin styles (nav, cards, license badges, upgrade box) rethemed to the shared tokens.
+
+### Notes
+- Patterns will gradually be refit to the token set; existing layouts keep their current appearance until updated.
+
 ## [2.1.1] - 2026-01-30
+
+## [2.1.2] - 2026-01-31
+
+### Added
+- Dynamic pricing, FAQ, and testimonial pattern blocks that render directly from shared Pattern Data options.
+- Block pattern registrations now insert the dynamic blocks so new uses always reflect saved data.
+
+### Changed
+- Shared pattern data helpers consolidated in Gutenberg integration for reuse and defaults.
+
+### Notes
+- Existing pages that used the old static patterns should be re-inserted with the new dynamic patterns to auto-reflect data edits.
 
 ### Added
 - New **Help** admin page with curated user, developer, and designer documentation blocks plus quick links to on-site resources.
