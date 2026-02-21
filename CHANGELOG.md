@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [2.2.3] - 2026-02-22
+
+### Added
+- Added an uninstall handler that removes all Syntekpro options (general settings, plugin toggles, and license data) plus the syntekpro-animations upload directory.
+
+### Changed
+- Admin footers now show only the plugin name, version, and contextual hints so the previous "Powered by SyntekPro" badge drops from every settings screen.
+
+### Notes
+- All version metadata was bumped to 2.2.3 for the WordPress.org listing.
+
 ## [2.2.2] - 2026-02-01
 
 ### Added

@@ -129,7 +129,6 @@ class Syntekpro_Animations_Admin {
     }
 
     private function render_page_footer($extra = '') {
-        $logo_url = SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/SYNTEK%20PRO%20LOGO%20Transparent%20HD%201563x402.png';
         ?>
         <div class="syntekpro-page-footer" style="margin-top:28px;padding:14px 16px;text-align:center;background:#ffd9e6;border-radius:12px;color:#0f172a;font-size:13px;font-weight:600;">
             <strong><?php _e('Syntekpro Animations', 'syntekpro-animations'); ?></strong>
@@ -137,12 +136,6 @@ class Syntekpro_Animations_Admin {
             <?php if (!empty($extra)) : ?>
                 <span style="margin-left:10px;color:#475569;font-weight:400;"><?php echo esc_html($extra); ?></span>
             <?php endif; ?>
-            <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;gap:6px;">
-                <span><?php _e('Powered by', 'syntekpro-animations'); ?></span>
-                <a href="https://syntekpro.com" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:4px;text-decoration:none;color:#0f172a;font-weight:700;transition:opacity 0.2s ease;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
-                    <img src="<?php echo esc_url($logo_url); ?>" alt="Syntek Pro" style="height:20px;width:auto;" />
-                </a>
-            </div>
         </div>
         <?php
     }
