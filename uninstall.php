@@ -54,16 +54,17 @@ foreach ($option_names as $option_name) {
 if (!empty($upload_dir = wp_upload_dir()) && !empty($upload_dir['basedir'])) {
     $custom_dir = trailingslashit($upload_dir['basedir']) . 'syntekpro-animations';
     if (is_dir($custom_dir)) {
-    $iterator = new RecursiveDirectoryIterator($custom_dir, RecursiveDirectoryIterator::SKIP_DOTS);
-    $files = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
+        $iterator = new RecursiveDirectoryIterator($custom_dir, RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
 
-    foreach ($files as $fileinfo) {
-        if ($fileinfo->isDir()) {
-            rmdir($fileinfo->getRealPath());
-        } else {
-            unlink($fileinfo->getRealPath());
+        foreach ($files as $fileinfo) {
+            if ($fileinfo->isDir()) {
+                rmdir($fileinfo->getRealPath());
+            } else {
+                unlink($fileinfo->getRealPath());
+            }
         }
-    }
 
-    rmdir($custom_dir);
+        rmdir($custom_dir);
+    }
 }
