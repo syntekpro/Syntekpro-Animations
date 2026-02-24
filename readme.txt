@@ -188,6 +188,7 @@ Yes! We regularly test and update for the latest WordPress versions.
 = 2.2.3 - 2026-02-22 =
 * Simplified every admin footer so the page now only displays the name, version, and any context note (the old "Powered by" badge is no longer forced).
 * Added an uninstall handler that removes plugin options and the dedicated uploads directory so a clean uninstall is possible.
+* Declared compatibility with the WordPress Consent API using a backward-safe `wp_set_consent_type()` registration that only runs when available.
 * Bumped the version metadata in preparation for the WordPress.org listing.
 
 = 2.2.2 - 2026-02-01 =

@@ -5,6 +5,8 @@
 
 Professional animation engine for WordPress with 50+ animation presets, visual builders, and advanced animation features.
 
+Includes backward-safe compatibility with the WordPress Consent API.
+
 ---
 
 ## 📖 DOCUMENTATION

@@ -82,6 +82,9 @@ class Syntekpro_Animations {
         
         // Load text domain
         add_action('plugins_loaded', array($this, 'load_textdomain'));
+
+        // Declare compatibility with the WordPress Consent API
+        add_action('plugins_loaded', array($this, 'declare_consent_api_compatibility'), 5);
         
         // Initialize block system
         add_action('plugins_loaded', array($this, 'init_block_system'));
@@ -153,6 +156,21 @@ class Syntekpro_Animations {
             false,
             dirname(plugin_basename(__FILE__)) . '/languages'
         );
+    }
+
+    /**
+     * Declare WordPress Consent API compatibility in a backward-safe way
+     */
+    public function declare_consent_api_compatibility() {
+        if (!function_exists('wp_set_consent_type')) {
+            return;
+        }
+
+        if (function_exists('wp_get_consent_type') && !empty(wp_get_consent_type())) {
+            return;
+        }
+
+        wp_set_consent_type('optin');
     }
     
     /**

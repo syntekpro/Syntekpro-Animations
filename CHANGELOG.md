@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Added an uninstall handler that removes all Syntekpro options (general settings, plugin toggles, and license data) plus the syntekpro-animations upload directory.
+- Declared compatibility with the WordPress Consent API via a guarded `wp_set_consent_type()` call on `plugins_loaded` (safe fallback when Consent API functions are unavailable).
 
 ### Changed
 - Admin footers now show only the plugin name, version, and contextual hints so the previous "Powered by SyntekPro" badge drops from every settings screen.
