@@ -39,9 +39,6 @@ $option_names = array(
     'syntekpro_anim_load_scrambletextplugin',
     'syntekpro_anim_load_custombounce',
     'syntekpro_anim_load_customwiggle',
-    'syntekpro_anim_license_key',
-    'syntekpro_anim_license_status',
-    'syntekpro_anim_license_expires',
 );
 
 foreach ($option_names as $option_name) {

@@ -10,11 +10,6 @@ if (!defined('ABSPATH')) {
 class Syntekpro_Animations_Pro {
     
     public function __construct() {
-        // Only initialize if Pro is active
-        if (!syntekpro_animations()->is_pro_active()) {
-            return;
-        }
-        
         add_action('wp_enqueue_scripts', array($this, 'enqueue_pro_scripts'));
         add_filter('syntekpro_animation_presets', array($this, 'add_pro_presets'));
         
@@ -56,14 +51,14 @@ class Syntekpro_Animations_Pro {
             'bounceInLeft' => array(
                 'name' => 'Bounce In Left',
                 'category' => 'bounce',
-                'free' => false,
+                'free' => true,
                 'from' => array('x' => -100, 'opacity' => 0),
                 'to' => array('x' => 0, 'opacity' => 1, 'ease' => 'back.out(1.7)')
             ),
             'bounceInRight' => array(
                 'name' => 'Bounce In Right',
                 'category' => 'bounce',
-                'free' => false,
+                'free' => true,
                 'from' => array('x' => 100, 'opacity' => 0),
                 'to' => array('x' => 0, 'opacity' => 1, 'ease' => 'back.out(1.7)')
             ),
@@ -72,7 +67,7 @@ class Syntekpro_Animations_Pro {
             'wiggle' => array(
                 'name' => 'Wiggle',
                 'category' => 'wiggle',
-                'free' => false,
+                'free' => true,
                 'from' => array(),
                 'to' => array('x' => 10, 'ease' => 'wiggle')
             ),
@@ -81,14 +76,14 @@ class Syntekpro_Animations_Pro {
             'flip3D' => array(
                 'name' => 'Flip 3D',
                 'category' => '3d',
-                'free' => false,
+                'free' => true,
                 'from' => array('rotationY' => -180, 'opacity' => 0, 'transformPerspective' => 1000),
                 'to' => array('rotationY' => 0, 'opacity' => 1)
             ),
             'rotate3D' => array(
                 'name' => 'Rotate 3D',
                 'category' => '3d',
-                'free' => false,
+                'free' => true,
                 'from' => array('rotationX' => -90, 'rotationY' => -90, 'opacity' => 0),
                 'to' => array('rotationX' => 0, 'rotationY' => 0, 'opacity' => 1)
             ),
@@ -97,7 +92,7 @@ class Syntekpro_Animations_Pro {
             'glitch' => array(
                 'name' => 'Glitch',
                 'category' => 'glitch',
-                'free' => false,
+                'free' => true,
                 'from' => array('x' => 0),
                 'to' => array('x' => '+=20', 'yoyo' => true, 'repeat' => 3)
             ),
@@ -106,7 +101,7 @@ class Syntekpro_Animations_Pro {
             'liquidFill' => array(
                 'name' => 'Liquid Fill',
                 'category' => 'liquid',
-                'free' => false,
+                'free' => true,
                 'from' => array('scaleY' => 0, 'transformOrigin' => 'bottom'),
                 'to' => array('scaleY' => 1, 'ease' => 'elastic.out(1, 0.3)')
             )
@@ -134,10 +129,7 @@ class Syntekpro_Animations_Pro {
      */
     public static function get_pro_info() {
         return array(
-            'active' => syntekpro_animations()->is_pro_active(),
-            'license_key' => get_option('syntekpro_anim_license_key', ''),
-            'license_status' => get_option('syntekpro_anim_license_status', ''),
-            'license_expires' => get_option('syntekpro_anim_license_expires', ''),
+            'active' => true,
             'features' => array(
                 'splitText' => true,
                 'morphSVG' => true,

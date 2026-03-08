@@ -4,7 +4,7 @@ Tags: animations, scroll effects, visual effects, page builder, animated blocks,
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 2.2.3
+Stable tag: 2.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,8 +16,8 @@ Professional animation engine for WordPress. Create stunning scroll-triggered an
 
 ### ✨ Features
 
-**Free Version:**
-* 15+ pre-built animation presets
+**Included Features:**
+* 50+ pre-built animation presets
 * Scroll-triggered animations with ScrollTrigger
 * Simple shortcode-based system
 * Visual settings panel
@@ -25,8 +25,6 @@ Professional animation engine for WordPress. Create stunning scroll-triggered an
 * Developer-friendly hooks and filters
 * Performance optimized
 * Mobile responsive
-
-**Pro Version:**
 * 🎯 **SplitText** - Animate text character by character, word by word
 * 🎨 **MorphSVG** - Seamlessly morph between SVG shapes
 * ✏️ **DrawSVG** - Progressively draw SVG strokes
@@ -57,7 +55,7 @@ Your content here
 **Scale Up Animation:**
 `[sp_animate type="scaleUp" ease="back.out(1.7)"]Content[/sp_animate]`
 
-**Text Animation (Pro):**
+**Text Animation:**
 `[sp_text_animate type="chars" effect="fadeIn" stagger="0.05"]
 Animated Text
 [/sp_text_animate]`
@@ -76,7 +74,7 @@ Animated Text
 **Rotate Animations:**
 * rotateIn, rotate360, flipX, flipY
 
-**Pro Animations:**
+**Advanced Animations:**
 * bounceIn, elasticIn, blurIn, wiggle, glitch, and more!
 
 ### 💻 Developer Features
@@ -154,11 +152,7 @@ No. Our animation engine is highly optimized for performance, and we've engineer
 
 = Can I use this on client sites? =
 
-Yes! The free version can be used on unlimited sites. The Pro version requires a license per site.
-
-= What's the difference between Free and Pro? =
-
-The free version includes 30+ animations and core features. Pro unlocks premium features like Timeline Builder, Text Effects, SVG Morphing, Draw Effects, Advanced Easing, and 50+ additional animations.
+Yes. Syntekpro Animations can be used on client sites with the complete feature set available in this release.
 
 = Do animations work on mobile? =
 
@@ -178,12 +172,19 @@ Yes! We regularly test and update for the latest WordPress versions.
 2. Animation presets library with visual examples
 3. Simple shortcode usage in the editor
 4. Smooth scroll-triggered animations on the frontend
-5. Pro text animation with SplitText
+5. Text animation with SplitText
 6. SVG drawing animation example
 7. Developer mode with custom code options
-8. License activation page
+8. Timeline builder and export tools
 
 == Changelog ==
+
+= 2.2.4 - 2026-03-09 =
+* Released Syntekpro Animations as an all-features-included edition.
+* Removed in-plugin license activation flow and license management UI.
+* Enabled advanced plugin loading, text/SVG/timeline shortcodes, and advanced presets by default.
+* Updated admin messaging to remove upgrade prompts.
+* Bumped plugin version metadata to 2.2.4.
 
 = 2.2.3 - 2026-02-22 =
 * Simplified every admin footer so the page now only displays the name, version, and any context note (the old "Powered by" badge is no longer forced).
@@ -208,12 +209,12 @@ Yes! We regularly test and update for the latest WordPress versions.
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-Initial release of Syntekpro Animations. Install and start creating amazing animations!
+= 2.2.4 =
+This release ships the full feature set with simplified settings and no in-plugin license flow.
 
 == Privacy Policy ==
 
-Syntekpro Animations does not collect any personal data. License validation (Pro version) only sends your license key and site URL to our servers for verification.
+Syntekpro Animations does not collect any personal data.
 
 == Credits ==
 
@@ -226,22 +227,6 @@ This plugin uses the following open-source libraries:
 
 For support questions, feature requests, or bug reports:
 
-* Free Version: [WordPress Support Forum](https://wordpress.org/support/plugin/syntekpro-animations/)
-* Pro Version: [Premium Support](https://syntekpro.com/support)
+* WordPress Support Forum: [https://wordpress.org/support/plugin/syntekpro-animations/](https://wordpress.org/support/plugin/syntekpro-animations/)
+* Support: [https://syntekpro.com/support](https://syntekpro.com/support)
 * Documentation: [https://syntekpro.com/animations-docs](https://syntekpro.com/animations-docs)
-
-== Pro Version ==
-
-Upgrade to Syntekpro Animations Pro for:
-
-* SplitText animations
-* MorphSVG shape morphing
-* DrawSVG stroke animations
-* ScrollSmoother smooth scrolling
-* Advanced bounce and elastic effects
-* Timeline builder
-* GSDevTools visual editor
-* Priority support
-* Lifetime updates
-
-[Get Syntekpro Animations Pro →](https://syntekpro.com/animations-pro)

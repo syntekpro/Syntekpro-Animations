@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [2.2.4] - 2026-03-09
+
+### Added
+- Enabled all advanced feature paths by default, including timeline, text/SVG shortcodes, advanced GSAP plugin toggles, and advanced preset packs.
+
+### Changed
+- Removed in-plugin license workflow from settings/admin UI and replaced upgrade messaging with neutral product messaging.
+- Updated preset metadata so advanced presets are treated as included.
+- Updated readme content to describe the all-features-included edition.
+
+### Removed
+- Removed license key validation flow and license tab from the admin settings experience.
+
+### Notes
+- Version metadata was bumped to 2.2.4 across the plugin and readme files.
+
 ## [2.2.3] - 2026-02-22
 
 ### Added

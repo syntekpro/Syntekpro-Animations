@@ -149,14 +149,14 @@ class Syntekpro_Animation_Presets {
             'bounceIn' => array(
                 'name' => 'Bounce In',
                 'category' => 'bounce',
-                'free' => false,
+                'free' => true,
                 'from' => array('scale' => 0, 'opacity' => 0),
                 'to' => array('scale' => 1, 'opacity' => 1, 'ease' => 'back.out(1.7)')
             ),
             'bounceInUp' => array(
                 'name' => 'Bounce In Up',
                 'category' => 'bounce',
-                'free' => false,
+                'free' => true,
                 'from' => array('y' => 100, 'opacity' => 0),
                 'to' => array('y' => 0, 'opacity' => 1, 'ease' => 'back.out(1.7)')
             ),
@@ -165,7 +165,7 @@ class Syntekpro_Animation_Presets {
             'elasticIn' => array(
                 'name' => 'Elastic In',
                 'category' => 'elastic',
-                'free' => false,
+                'free' => true,
                 'from' => array('scale' => 0),
                 'to' => array('scale' => 1, 'ease' => 'elastic.out(1, 0.3)')
             ),
@@ -174,7 +174,7 @@ class Syntekpro_Animation_Presets {
             'blurIn' => array(
                 'name' => 'Blur In',
                 'category' => 'blur',
-                'free' => false,
+                'free' => true,
                 'from' => array('opacity' => 0, 'filter' => 'blur(10px)'),
                 'to' => array('opacity' => 1, 'filter' => 'blur(0px)')
             ),
@@ -250,28 +250,28 @@ class Syntekpro_Animation_Presets {
             'perspective3D' => array(
                 'name' => '3D Perspective',
                 'category' => 'perspective',
-                'free' => false,
+                'free' => true,
                 'from' => array('rotationX' => -90, 'transformOrigin' => '50% 50% -200', 'opacity' => 0),
                 'to' => array('rotationX' => 0, 'opacity' => 1)
             ),
             'flipInX' => array(
                 'name' => 'Flip In X',
                 'category' => 'perspective',
-                'free' => false,
+                'free' => true,
                 'from' => array('rotationX' => -90, 'opacity' => 0),
                 'to' => array('rotationX' => 0, 'opacity' => 1, 'ease' => 'back.out(1.7)')
             ),
             'flipInY' => array(
                 'name' => 'Flip In Y',
                 'category' => 'perspective',
-                'free' => false,
+                'free' => true,
                 'from' => array('rotationY' => -90, 'opacity' => 0),
                 'to' => array('rotationY' => 0, 'opacity' => 1, 'ease' => 'back.out(1.7)')
             ),
             'cardFlip' => array(
                 'name' => 'Card Flip',
                 'category' => 'perspective',
-                'free' => false,
+                'free' => true,
                 'from' => array('rotationY' => 180, 'opacity' => 0),
                 'to' => array('rotationY' => 0, 'opacity' => 1)
             ),
@@ -280,7 +280,7 @@ class Syntekpro_Animation_Presets {
             'glitchIn' => array(
                 'name' => 'Glitch In',
                 'category' => 'glitch',
-                'free' => false,
+                'free' => true,
                 'from' => array('x' => -20, 'opacity' => 0),
                 'to' => array('x' => 0, 'opacity' => 1, 'ease' => 'rough({clamp:true, points:20})'),
                 'scramble' => true
@@ -288,7 +288,7 @@ class Syntekpro_Animation_Presets {
             'digitalReveal' => array(
                 'name' => 'Digital Reveal',
                 'category' => 'glitch',
-                'free' => false,
+                'free' => true,
                 'from' => array('scale' => 0.95, 'opacity' => 0),
                 'to' => array('scale' => 1, 'opacity' => 1, 'ease' => 'steps(5)'),
                 'glitch' => true
@@ -315,14 +315,14 @@ class Syntekpro_Animation_Presets {
             'peelLeft' => array(
                 'name' => 'Peel Left',
                 'category' => 'peel',
-                'free' => false,
+                'free' => true,
                 'from' => array('rotationY' => 180, 'x' => -100, 'transformOrigin' => 'left center'),
                 'to' => array('rotationY' => 0, 'x' => 0)
             ),
             'peelRight' => array(
                 'name' => 'Peel Right',
                 'category' => 'peel',
-                'free' => false,
+                'free' => true,
                 'from' => array('rotationY' => -180, 'x' => 100, 'transformOrigin' => 'right center'),
                 'to' => array('rotationY' => 0, 'x' => 0)
             ),
@@ -347,14 +347,14 @@ class Syntekpro_Animation_Presets {
             'unfoldHorizontal' => array(
                 'name' => 'Unfold Horizontal',
                 'category' => 'fold',
-                'free' => false,
+                'free' => true,
                 'from' => array('scaleX' => 0, 'transformOrigin' => 'center center'),
                 'to' => array('scaleX' => 1, 'ease' => 'back.out(1.7)')
             ),
             'unfoldVertical' => array(
                 'name' => 'Unfold Vertical',
                 'category' => 'fold',
-                'free' => false,
+                'free' => true,
                 'from' => array('scaleY' => 0, 'transformOrigin' => 'center center'),
                 'to' => array('scaleY' => 1, 'ease' => 'back.out(1.7)')
             ),
@@ -393,21 +393,21 @@ class Syntekpro_Animation_Presets {
             'smoothBounce' => array(
                 'name' => 'Smooth Bounce',
                 'category' => 'advanced',
-                'free' => false,
+                'free' => true,
                 'from' => array('y' => -100, 'opacity' => 0),
                 'to' => array('y' => 0, 'opacity' => 1, 'ease' => 'bounce.out')
             ),
             'elasticScale' => array(
                 'name' => 'Elastic Scale',
                 'category' => 'advanced',
-                'free' => false,
+                'free' => true,
                 'from' => array('scale' => 0),
                 'to' => array('scale' => 1, 'ease' => 'elastic.out(1.5, 0.5)')
             ),
             'backSlide' => array(
                 'name' => 'Back Slide',
                 'category' => 'advanced',
-                'free' => false,
+                'free' => true,
                 'from' => array('x' => -100, 'opacity' => 0),
                 'to' => array('x' => 0, 'opacity' => 1, 'ease' => 'back.out(2)')
             ),
@@ -416,7 +416,7 @@ class Syntekpro_Animation_Presets {
             'typewriter' => array(
                 'name' => 'Typewriter',
                 'category' => 'text',
-                'free' => false,
+                'free' => true,
                 'textEffect' => true,
                 'effect' => 'chars',
                 'from' => array('opacity' => 0),
@@ -425,7 +425,7 @@ class Syntekpro_Animation_Presets {
             'textWave' => array(
                 'name' => 'Text Wave',
                 'category' => 'text',
-                'free' => false,
+                'free' => true,
                 'textEffect' => true,
                 'effect' => 'chars',
                 'from' => array('y' => 20, 'opacity' => 0),
@@ -434,7 +434,7 @@ class Syntekpro_Animation_Presets {
             'textRotate' => array(
                 'name' => 'Text Rotate',
                 'category' => 'text',
-                'free' => false,
+                'free' => true,
                 'textEffect' => true,
                 'effect' => 'chars',
                 'from' => array('rotation' => -90, 'opacity' => 0),
@@ -445,28 +445,28 @@ class Syntekpro_Animation_Presets {
             'heroLift' => array(
                 'name' => 'Hero Lift',
                 'category' => 'layout',
-                'free' => false,
+                'free' => true,
                 'from' => array('opacity' => 0, 'y' => 40, 'scale' => 0.98),
                 'to' => array('opacity' => 1, 'y' => 0, 'scale' => 1, 'ease' => 'power2.out', 'duration' => 1.05)
             ),
             'cardStagger' => array(
                 'name' => 'Card Stagger',
                 'category' => 'layout',
-                'free' => false,
+                'free' => true,
                 'from' => array('opacity' => 0, 'y' => 30),
                 'to' => array('opacity' => 1, 'y' => 0, 'stagger' => 0.12, 'ease' => 'power2.out')
             ),
             'ctaPop' => array(
                 'name' => 'CTA Pop',
                 'category' => 'layout',
-                'free' => false,
+                'free' => true,
                 'from' => array('opacity' => 0, 'scale' => 0.92, 'y' => 12),
                 'to' => array('opacity' => 1, 'scale' => 1, 'y' => 0, 'ease' => 'back.out(1.4)', 'duration' => 0.9)
             ),
             'sectionDrift' => array(
                 'name' => 'Section Drift',
                 'category' => 'layout',
-                'free' => false,
+                'free' => true,
                 'from' => array('opacity' => 0, 'y' => 60, 'filter' => 'blur(6px)'),
                 'to' => array('opacity' => 1, 'y' => 0, 'filter' => 'blur(0px)', 'duration' => 1.1)
             )

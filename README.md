@@ -1,6 +1,6 @@
 # SyntekPro Animations
 
-**Version:** 2.2.2  
+**Version:** 2.2.4  
 **Requires:** WordPress 5.8+, PHP 7.4+
 
 Professional animation engine for WordPress with 50+ animation presets, visual builders, and advanced animation features.
@@ -52,8 +52,7 @@ Go to **WP Admin → SyntekPro Animations → Settings**
 
 ## 🎨 50+ ANIMATIONS
 
-**Free:** fadeIn, slideLeft, zoomIn, scaleUp, rotateIn, revealLeft, waveIn, pulse, shake...  
-**Pro:** 3D effects, text animations, glitch, peel, fold...
+**Included:** fadeIn, slideLeft, zoomIn, scaleUp, rotateIn, revealLeft, waveIn, pulse, shake, 3D effects, text animations, glitch, peel, fold, and more.
 
 [See complete list in COMPLETE_GUIDE.md →](COMPLETE_GUIDE.md#animation-library)
 

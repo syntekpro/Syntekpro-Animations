@@ -12,7 +12,6 @@ class Syntekpro_Animations_Admin {
     public function __construct() {
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_init', array($this, 'register_settings'));
-        add_action('admin_notices', array($this, 'admin_notices'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_branding_css'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_item'), 80);
         add_action('admin_head', array($this, 'menu_icon_sizing_css'));
@@ -341,73 +340,6 @@ class Syntekpro_Animations_Admin {
         register_setting('syntekpro_anim_pro', 'syntekpro_anim_load_custombounce');
         register_setting('syntekpro_anim_pro', 'syntekpro_anim_load_customwiggle');
         
-        // License
-        register_setting('syntekpro_anim_license', 'syntekpro_anim_license_key', array($this, 'sanitize_license'));
-    }
-    
-    /**
-     * Sanitize license key
-     */
-    public function sanitize_license($new_value) {
-        $old_value = get_option('syntekpro_anim_license_key');
-        
-        if ($new_value !== $old_value) {
-            // License key changed, validate it
-            delete_option('syntekpro_anim_license_status');
-            $this->activate_license($new_value);
-        }
-        
-        return sanitize_text_field($new_value);
-    }
-    
-    /**
-     * Activate license
-     */
-    private function activate_license($license_key) {
-        // API endpoint for license validation
-        $api_url = 'https://syntekpro.com/wp-json/syntekpro/v1/validate-license';
-        
-        $response = wp_remote_post($api_url, array(
-            'body' => array(
-                'license_key' => $license_key,
-                'product' => 'syntekpro-animations',
-                'url' => home_url()
-            ),
-            'timeout' => 15
-        ));
-        
-        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
-            update_option('syntekpro_anim_license_status', 'error');
-            return false;
-        }
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
-        if (isset($data['valid']) && $data['valid'] === true) {
-            update_option('syntekpro_anim_license_status', 'valid');
-            update_option('syntekpro_anim_license_expires', $data['expires'] ?? '');
-            return true;
-        } else {
-            update_option('syntekpro_anim_license_status', 'invalid');
-            return false;
-        }
-    }
-    /**
-     * Admin notices
-     */
-    public function admin_notices() {
-        $screen = get_current_screen();
-        if ($screen->id !== 'toplevel_page_syntekpro-animations') {
-            return;
-        }
-
-        $license_status = get_option('syntekpro_anim_license_status');
-        if ($license_status === 'valid') {
-            echo '<div class="notice notice-success"><p><strong>✓ Pro License Active</strong> - All premium features are unlocked!</p></div>';
-        } elseif ($license_status === 'invalid') {
-            echo '<div class="notice notice-error"><p><strong>Invalid License Key</strong> - Please check your license key and try again.</p></div>';
-        } elseif ($license_status === 'expired') {
-            echo '<div class="notice notice-warning"><p><strong>License Expired</strong> - Please renew your license to continue using Pro features.</p></div>';
-        }
     }
 
     /**
@@ -417,12 +349,11 @@ class Syntekpro_Animations_Admin {
         $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general';
         ?>
         <div class="wrap syntekpro-settings-wrapper">
-            <?php $this->render_page_header(__('Settings', 'syntekpro-animations'), __('Configure the animation engine, GSAP plugins, and license details.', 'syntekpro-animations'), sprintf(__('Version %s', 'syntekpro-animations'), SYNTEKPRO_ANIM_VERSION)); ?>
+            <?php $this->render_page_header(__('Settings', 'syntekpro-animations'), __('Configure the animation engine and GSAP plugin loading.', 'syntekpro-animations'), sprintf(__('Version %s', 'syntekpro-animations'), SYNTEKPRO_ANIM_VERSION)); ?>
 
             <h2 class="nav-tab-wrapper">
                 <a href="?page=syntekpro-animations-settings&tab=general" class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">⚙️ <?php _e('General Settings', 'syntekpro-animations'); ?></a>
                 <a href="?page=syntekpro-animations-settings&tab=plugins" class="nav-tab <?php echo $active_tab === 'plugins' ? 'nav-tab-active' : ''; ?>">🎨 <?php _e('GSAP Plugins', 'syntekpro-animations'); ?></a>
-                <a href="?page=syntekpro-animations-settings&tab=license" class="nav-tab <?php echo $active_tab === 'license' ? 'nav-tab-active' : ''; ?>">🔐 <?php _e('License', 'syntekpro-animations'); ?> <?php if (function_exists('syntekpro_animations') && syntekpro_animations()->is_pro_active()) echo '<span style="color:#46b450;"> ✓ Pro</span>'; ?></a>
             </h2>
 
             <div class="syntekpro-settings-section">
@@ -430,9 +361,6 @@ class Syntekpro_Animations_Admin {
                 switch ($active_tab) {
                     case 'plugins':
                         $this->render_plugins_tab();
-                        break;
-                    case 'license':
-                        $this->render_license_tab();
                         break;
                     case 'general':
                     default:
@@ -694,7 +622,6 @@ class Syntekpro_Animations_Admin {
                     'customwiggle' => __('Add custom wiggle/jiggle animations', 'syntekpro-animations')
                 );
 
-                $is_pro = function_exists('syntekpro_animations') && method_exists(syntekpro_animations(), 'is_pro_active') ? syntekpro_animations()->is_pro_active() : false;
                 ?>
                 <h2>🧩 <?php _e('GSAP Plugins', 'syntekpro-animations'); ?></h2>
 
@@ -728,99 +655,17 @@ class Syntekpro_Animations_Admin {
                                 <label style="display:flex;align-items:center;gap:8px;">
                                     <input type="checkbox" name="syntekpro_anim_load_<?php echo esc_attr($key); ?>" value="yes" <?php checked($option_value, 'yes'); ?>>
                                     <strong><?php echo esc_html($label); ?></strong>
-                                    <span class="pro-badge">PRO</span>
                                 </label>
                                 <p class="plugin-description" style="margin:6px 0 0 0;color:#475569;"><?php echo esc_html($pro_descriptions[$key]); ?></p>
                             </div>
                         <?php endforeach; ?>
                     </div>
-                    <?php submit_button(__('Save Pro Plugins', 'syntekpro-animations')); ?>
+                    <?php submit_button(__('Save Advanced Plugins', 'syntekpro-animations')); ?>
                 </form>
 
-        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:18px;margin-top:24px;text-align:center;">
-            <h3 style="margin:0 0 8px 0;color:#0f172a;">🚀 <?php _e('Upgrade to Pro', 'syntekpro-animations'); ?></h3>
-            <p style="margin:0 0 10px 0;color:#334155;"><?php _e('Production sites need a Pro license. This test site is fully unlocked for evaluation.', 'syntekpro-animations'); ?></p>
-            <a href="https://syntekpro.com/animations-pro" class="button button-primary" style="background:#0f172a;border-color:#0f172a;padding:10px 26px;" target="_blank">
-                ⭐ <?php _e('Purchase Pro License', 'syntekpro-animations'); ?>
-            </a>
-        </div>
-        <?php
-    }
-    
-    /**
-     * Render License tab
-     */
-    private function render_license_tab() {
-        $license_key = get_option('syntekpro_anim_license_key', '');
-        $license_status = get_option('syntekpro_anim_license_status', '');
-        $license_expires = get_option('syntekpro_anim_license_expires', '');
-        ?>
-        <h2><?php _e('License Management', 'syntekpro-animations'); ?></h2>
-        
-        <?php if ($license_status === 'valid') : ?>
-            <div class="syntekpro-license-status active">
-                <strong>✓ <?php _e('Pro License Active', 'syntekpro-animations'); ?></strong>
-                <p><?php _e('All premium features are unlocked!', 'syntekpro-animations'); ?></p>
-                <?php if ($license_expires) : ?>
-                    <p style="font-size:13px;margin:0;"><?php echo sprintf(__('Expires: %s', 'syntekpro-animations'), esc_html($license_expires)); ?></p>
-                <?php endif; ?>
-            </div>
-        <?php elseif ($license_status === 'invalid') : ?>
-            <div class="syntekpro-license-status inactive">
-                <strong>✗ <?php _e('Invalid License Key', 'syntekpro-animations'); ?></strong>
-                <p><?php _e('Please check your license key and try again.', 'syntekpro-animations'); ?></p>
-            </div>
-        <?php elseif ($license_status === 'expired') : ?>
-            <div class="syntekpro-license-status inactive">
-                <strong>⚠ <?php _e('License Expired', 'syntekpro-animations'); ?></strong>
-                <p><?php _e('Your license has expired. Please renew to continue using premium features.', 'syntekpro-animations'); ?></p>
-            </div>
-        <?php endif; ?>
-        
-        <form method="post" action="options.php" style="margin-top:20px;">
-            <?php settings_fields('syntekpro_anim_license'); ?>
-            <input type="hidden" name="syntekpro_anim_license_nonce" value="<?php echo wp_create_nonce('syntekpro_anim_license_action'); ?>">
-            
-            <table class="form-table">
-                <tr>
-                    <th scope="row">
-                        <label for="syntekpro_anim_license_key"><?php _e('License Key', 'syntekpro-animations'); ?></label>
-                    </th>
-                    <td>
-                        <input 
-                            type="password" 
-                            id="syntekpro_anim_license_key" 
-                            name="syntekpro_anim_license_key" 
-                            value="<?php echo esc_attr($license_key); ?>" 
-                            class="regular-text" 
-                            placeholder="<?php _e('Enter your license key', 'syntekpro-animations'); ?>">
-                        <p class="description">
-                            <?php _e('Paste your Syntekpro Animations Pro license key here.', 'syntekpro-animations'); ?>
-                            <br><a href="https://syntekpro.com/account" target="_blank"><?php _e('Find your license key →', 'syntekpro-animations'); ?></a>
-                        </p>
-                    </td>
-                </tr>
-            </table>
-            
-            <?php submit_button(__('Activate License', 'syntekpro-animations')); ?>
-        </form>
-        
-        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;margin-top:24px;">
-            <h3 style="margin-top:0;color:#0f172a;">🎉 <?php _e('Get Syntekpro Animations Pro', 'syntekpro-animations'); ?></h3>
-            <p style="color:#334155;"><?php _e('Unlock all premium GSAP plugins and features. This test site is already unlocked for evaluation.', 'syntekpro-animations'); ?></p>
-            <ul style="columns: 2; gap: 20px; margin:12px 0; color:#0f172a;">
-                <li><strong>Timeline Builder</strong> - Visual animation sequencer</li>
-                <li><strong>Text Effects</strong> - Character & word animations</li>
-                <li><strong>SVG Morph</strong> - Smooth shape morphing</li>
-                <li><strong>Draw Effects</strong> - Progressive stroke drawing</li>
-                <li><strong>Smooth Scroll</strong> - Buttery smooth scrolling</li>
-                <li><strong>Animation Editor</strong> - Visual timeline editor</li>
-                <li><strong>Physics Engine</strong> - Realistic motion effects</li>
-                <li><strong>50+ Pro Animations</strong> - Premium effects library</li>
-            </ul>
-            <a href="https://syntekpro.com/animations-pro" class="button button-primary" style="margin-top:10px;padding:10px 26px;font-size:15px;background:#0f172a;border-color:#0f172a;" target="_blank">
-                ⭐ <?php _e('Purchase Pro License', 'syntekpro-animations'); ?>
-            </a>
+        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:18px;margin-top:24px;">
+            <h3 style="margin:0 0 8px 0;color:#0f172a;">🧰 <?php _e('Advanced Plugins', 'syntekpro-animations'); ?></h3>
+            <p style="margin:0;color:#334155;"><?php _e('All bundled GSAP plugin toggles are available in this edition.', 'syntekpro-animations'); ?></p>
         </div>
         <?php
     }
@@ -1665,24 +1510,24 @@ class Syntekpro_Animations_Admin {
                 </table>
             </div>
 
-            <!-- Pro Features -->
+            <!-- Advanced Features -->
             <div class="syntekpro-docs-section" style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px;">
-                <h3 style="color:#0f172a;font-size:1.15em;margin:0;">🔒 <?php _e('Pro Features', 'syntekpro-animations'); ?></h3>
+                <h3 style="color:#0f172a;font-size:1.15em;margin:0;">✨ <?php _e('Advanced Features', 'syntekpro-animations'); ?></h3>
                 
                 <div>
-                    <h4 style="color:#0f172a;margin:0 0 6px 0;"><?php _e('Text Animation (Pro)', 'syntekpro-animations'); ?></h4>
+                    <h4 style="color:#0f172a;margin:0 0 6px 0;"><?php _e('Text Animation', 'syntekpro-animations'); ?></h4>
                     <p style="color:#334155;margin:0 0 8px 0;"><?php _e('Animate text character by character, word by word, or line by line:', 'syntekpro-animations'); ?></p>
                     <pre style="background:#f8fafc;border:1px solid #e5e7eb;padding:14px;border-radius:8px;color:#0f172a;margin:0;">[sp_text_animate type="chars" effect="fadeIn" duration="0.05" stagger="0.03"]Animated Text[/sp_text_animate]</pre>
                 </div>
 
                 <div>
-                    <h4 style="color:#0f172a;margin:0 0 6px 0;"><?php _e('SVG Animation (Pro)', 'syntekpro-animations'); ?></h4>
+                    <h4 style="color:#0f172a;margin:0 0 6px 0;"><?php _e('SVG Animation', 'syntekpro-animations'); ?></h4>
                     <p style="color:#334155;margin:0 0 8px 0;"><?php _e('Draw SVG strokes or morph shapes with professional animations:', 'syntekpro-animations'); ?></p>
                     <pre style="background:#f8fafc;border:1px solid #e5e7eb;padding:14px;border-radius:8px;color:#0f172a;margin:0;">[sp_svg_animate type="draw" duration="2"]&lt;svg&gt;...&lt;/svg&gt;[/sp_svg_animate]</pre>
                 </div>
 
                 <div>
-                    <h4 style="color:#0f172a;margin:0 0 6px 0;"><?php _e('Timeline Animation (Pro)', 'syntekpro-animations'); ?></h4>
+                    <h4 style="color:#0f172a;margin:0 0 6px 0;"><?php _e('Timeline Animation', 'syntekpro-animations'); ?></h4>
                     <p style="color:#334155;margin:0 0 8px 0;"><?php _e('Create complex animation sequences with multiple elements:', 'syntekpro-animations'); ?></p>
                     <pre style="background:#f8fafc;border:1px solid #e5e7eb;padding:14px;border-radius:8px;color:#0f172a;margin:0;">[sp_timeline]
     [sp_animate type="fadeIn"]First element[/sp_animate]
@@ -1742,13 +1587,10 @@ gsap.to('.scroll-element', {
                 </ul>
             </div>
 
-            <!-- Upgrade CTA -->
+            <!-- Feature Summary -->
             <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;margin-top:20px;text-align:center;">
-                <h3 style="color:#0f172a;margin:0 0 6px 0;">⭐ <?php _e('Unlock Pro Features', 'syntekpro-animations'); ?></h3>
-                <p style="color:#334155;font-size:14px;margin:0 0 12px 0;"><?php _e('Get access to Timeline Builder, Text Effects, SVG Morphing, Draw Effects, and 50+ premium animations. This test site is already unlocked for evaluation.', 'syntekpro-animations'); ?></p>
-                <a href="https://syntekpro.com/animations-pro" class="button button-primary" style="background:#0f172a;border-color:#0f172a;padding:8px 20px;font-size:14px;" target="_blank">
-                    🚀 <?php _e('Purchase Pro License', 'syntekpro-animations'); ?>
-                </a>
+                <h3 style="color:#0f172a;margin:0 0 6px 0;">✅ <?php _e('Everything Included', 'syntekpro-animations'); ?></h3>
+                <p style="color:#334155;font-size:14px;margin:0;"><?php _e('Timeline Builder, Text Effects, SVG tools, and the complete animation library are available in this edition.', 'syntekpro-animations'); ?></p>
             </div>
             <?php $this->render_page_footer(); ?>
         </div>
@@ -2697,15 +2539,12 @@ gsap.to('.scroll-element', {
                 </div>
             </div>
             
-            <!-- Pro Feature Notice -->
+            <!-- Feature Access Notice -->
             <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;margin-top:24px;text-align:center;">
-                <h3 style="color:#0f172a;margin-top:0;">🔒 <?php _e('Timeline Builder is a Pro Feature', 'syntekpro-animations'); ?></h3>
-                <p style="font-size:14px;color:#334155;margin:0 0 10px 0;">
-                    <?php _e('Upgrade to Pro to save and export your timeline animations. This test site is fully unlocked for evaluation.', 'syntekpro-animations'); ?>
+                <h3 style="color:#0f172a;margin-top:0;">⏱️ <?php _e('Timeline Builder', 'syntekpro-animations'); ?></h3>
+                <p style="font-size:14px;color:#334155;margin:0;">
+                    <?php _e('Save and export timeline animations directly from this page.', 'syntekpro-animations'); ?>
                 </p>
-                <a href="https://syntekpro.com/animations-pro" class="button button-primary" style="background:#0f172a;border-color:#0f172a;padding:9px 24px;font-size:15px;" target="_blank">
-                    ⭐ <?php _e('Purchase Pro License', 'syntekpro-animations'); ?>
-                </a>
             </div>
             <?php $this->render_page_footer(); ?>
         </div>

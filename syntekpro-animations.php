@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Syntekpro Animations
  * Plugin URI: https://syntekpro.com/animations
- * Description: Professional high-performance animation engine for WordPress. Create stunning scroll-triggered animations, timeline sequences, and visual effects with our advanced animation framework. Free version includes 30+ animations, Pro unlocks timeline builder, text effects, SVG morphing, and premium features.
- * Version: 2.2.3
+ * Description: Professional high-performance animation engine for WordPress. Create stunning scroll-triggered animations, timeline sequences, and advanced visual effects with a complete feature set.
+ * Version: 2.2.4
  * Author: Syntekpro
  * Author URI: https://syntekpro.com
  * License: GPL v2 or later
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SYNTEKPRO_ANIM_VERSION', '2.2.3');
+define('SYNTEKPRO_ANIM_VERSION', '2.2.4');
 define('SYNTEKPRO_ANIM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SYNTEKPRO_ANIM_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('SYNTEKPRO_ANIM_PLUGIN_FILE', __FILE__);
@@ -66,10 +66,7 @@ class Syntekpro_Animations {
         require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/blocks/class-base-block.php';
         require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/blocks/class-block-registry.php';
         
-        // Load Pro features if license is active
-        if ($this->is_pro_active()) {
-            require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/class-pro-features.php';
-        }
+        require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/class-pro-features.php';
     }
     
     /**
@@ -105,10 +102,10 @@ class Syntekpro_Animations {
     }
     
     /**
-     * Check if Pro version is active
+     * Backward-compatible capability flag.
      */
     public function is_pro_active() {
-        // Temporary: ship all features as free; licensing is on hold.
+        // Keep legacy integrations functional while all features are available.
         return true;
     }
     
@@ -184,15 +181,6 @@ class Syntekpro_Animations {
         );
         
         array_unshift($links, $settings_link);
-        
-        if (!$this->is_pro_active()) {
-            $pro_link = sprintf(
-                '<a href="%s" style="color:#39b54a;font-weight:bold;">%s</a>',
-                'https://syntekpro.com/animations-pro',
-                __('Upgrade to Pro', 'syntekpro-animations')
-            );
-            array_unshift($links, $pro_link);
-        }
         
         return $links;
     }

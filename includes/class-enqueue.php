@@ -48,10 +48,8 @@ class Syntekpro_Animations_Enqueue {
         // Free plugins
         $this->load_free_plugins();
         
-        // Pro plugins (only if license is active)
-        if (syntekpro_animations()->is_pro_active()) {
-            $this->load_pro_plugins();
-        }
+        // Advanced plugin set
+        $this->load_pro_plugins();
         
         // Ensure animations.js loads for blocks and shortcodes (CSS mode friendly)
         $script_deps = array();
@@ -75,7 +73,7 @@ class Syntekpro_Animations_Enqueue {
 
         // Pass data to JavaScript (for animations script when it loads)
         wp_localize_script('syntekpro-animations-frontend', 'syntekproAnim', array(
-            'isPro' => syntekpro_animations()->is_pro_active(),
+            'isPro' => true,
             'smoothScroll' => $options['smooth_scroll'] === 'yes',
             'developerMode' => $options['enable_developer_mode'] === 'yes',
             'engine' => $options['engine'],
@@ -165,7 +163,7 @@ class Syntekpro_Animations_Enqueue {
     }
     
     /**
-     * Load premium GSAP plugins
+     * Load advanced GSAP plugins
      */
     private function load_pro_plugins() {
         $pro_plugins = array(
