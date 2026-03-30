@@ -748,6 +748,102 @@ select:focus {
     border: 1px solid var(--sp-border);
 }
 
+/* Slider Cards & Page Styles */
+.syntekpro-slider-card {
+    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow;
+}
+
+.syntekpro-slider-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12) !important;
+}
+
+.syntekpro-slider-card a {
+    transition: all 200ms ease;
+}
+
+.syntekpro-slider-card a:hover {
+    transform: translateX(2px);
+}
+
+/* Add New Slider Button */
+.button.button-primary {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    border-color: #0284c7;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    border-radius: 8px;
+    padding: 10px 24px;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
+.button.button-primary:hover {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4);
+    transform: translateY(-2px);
+    border-color: #0284c7;
+}
+
+.button.button-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+/* Feature Badges */
+.syntekpro-feature-badge {
+    transition: all 200ms ease;
+    display: inline-flex !important;
+}
+
+.syntekpro-feature-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Slider Card Edit Button */
+.syntekpro-slider-card .button.button-small {
+    transition: all 150ms ease;
+    font-weight: 500;
+}
+
+.syntekpro-slider-card .button.button-small:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Empty State */
+.syntekpro-settings-section > div[style*="grid-column"] {
+    animation: slideIn 400ms ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Page Footer */
+.syntekpro-page-footer {
+    animation: fadeIn 500ms ease-out 300ms both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 .syntekpro-settings-section .button-secondary:hover {
     background: #e0e0e0;
 }

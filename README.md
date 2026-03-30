@@ -1,6 +1,6 @@
 # Syntekpro Animations
 
-Version: 2.4.1  
+Version: 2.4.3
 Requires: WordPress 5.8+, PHP 7.4+
 
 Professional animation and slider toolkit for WordPress with visual builders, presets, timeline controls, and flexible frontend runtime features.
@@ -52,8 +52,8 @@ To publish an update:
 
 1. Update version metadata in plugin files.
 2. Commit and push to main.
-3. Create and push a version tag (example: `v2.4.1`).
-4. Publish a GitHub Release with a plugin zip asset named like `syntekpro-animations-2.4.1.zip`.
+3. Create and push a version tag (example: `v2.4.3`).
+4. Publish a GitHub Release with a plugin zip asset named like `syntekpro-animations-2.4.3.zip`.
 
 Installed sites will detect the release during routine WordPress update checks.
 

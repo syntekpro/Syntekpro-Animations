@@ -1,0 +1,9 @@
+{
+  "name": "create-slider",
+  "version": "0.1.0",
+  "description": "Scaffold a local Syntekpro Slider development environment",
+  "type": "module",
+  "bin": {
+    "create-slider": "./index.mjs"
+  }
+}

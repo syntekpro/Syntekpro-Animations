@@ -1,6 +1,6 @@
 # 📖 SYNTEKPRO ANIMATIONS - COMPLETE GUIDE
 
-**Version 2.4.1** | Professional Animation Engine for WordPress
+**Version 2.4.3** | Professional Animation Engine for WordPress
 
 ---
 
@@ -69,7 +69,7 @@ This plugin distribution now uses GitHub Releases as its update source.
 Release flow:
 1. Bump plugin version metadata.
 2. Push code updates.
-3. Push a version tag (for example `v2.4.1`).
+3. Push a version tag (for example `v2.4.3`).
 4. Publish a GitHub Release with a plugin zip asset.
 
 Installed sites will receive native WordPress update notifications when a newer release is detected.
@@ -867,6 +867,32 @@ syntekpro-animations/
 
 ---
 
+## 🚀 ENHANCEMENT PACK (30 REQUESTS)
+
+The slider system now includes an "Enhancement Matrix" in the slider editor that maps to the latest 30 requested capabilities.
+
+### Implemented Foundations
+
+- Developer Experience: CLI scaffold starter, TypeScript API definitions, Storybook starter stories, migration runner, and local import/export REST package flow.
+- Content and Data: scheduled publishing filters, personalization filters (login/role/country), multilingual layer translation mapping, CSV/Sheets source injection, countdown/live-data runtime layers.
+- Security: optional CSP header emitter, SRI runtime asset tags, GDPR consent overlay behavior, and role-based editor access checks.
+- Ecosystem: SDK-ready hooks/endpoints, page builder integration toggles, WP-CLI slider commands, multisite-ready setting tracks.
+- Accessibility: WCAG audit endpoint, reduced-motion runtime handling, screen-reader transcript output, and focus trap utility.
+- Architecture: Web Components output wrapper (`<slider-pro>`), module-federation readiness toggle, and Playwright E2E skeleton.
+- CMS and Workflow: staging sync handoff endpoint, submit/approve workflow endpoints, audit trail snapshots, and per-slider maintenance mode support.
+
+### New Developer Assets
+
+- `assets/js/syntekpro-slider-api.d.ts`
+- `scripts/create-slider/package.json`
+- `scripts/create-slider/index.mjs`
+- `docs/storybook/README.md`
+- `docs/storybook/stories/layers.stories.js`
+- `playwright.config.js`
+- `tests/e2e/slider-runtime.spec.js`
+
+---
+
 ## ✅ QUICK CHECKLIST
 
 ### After Installation
@@ -887,8 +913,8 @@ syntekpro-animations/
 
 ---
 
-**Version:** 2.4.1  
-**Last Updated:** March 30, 2026  
+**Version:** 2.4.3
+**Last Updated:** March 31, 2026  
 **© 2026 Syntekpro. All rights reserved.**
 
 ---

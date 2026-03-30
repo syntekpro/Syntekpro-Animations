@@ -2,6 +2,8 @@
     position: relative;
     overflow: hidden;
     border-radius: 12px;
+    max-width: var(--sp-slider-width, 1200px);
+    margin: 0 auto;
     background: #0f172a;
     color: #fff;
     min-height: var(--sp-height-desktop, 460px);
@@ -30,6 +32,14 @@
     background-position: center;
     transform: translate3d(0, 0, 0) scale(1);
     will-change: transform;
+}
+
+.sp-slide-bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .sp-slide-overlay {
@@ -268,6 +278,54 @@
 
 .sp-slider-runtime.sp-transition-zoom .sp-slide.is-active {
     transform: scale(1);
+}
+
+.sp-slider-runtime.sp-transition-crossfade .sp-slide {
+    transition: opacity var(--sp-slider-speed, 600ms) ease;
+}
+
+.sp-slider-runtime.sp-transition-parallax .sp-slide-bg {
+    transition: transform var(--sp-slider-speed, 600ms) ease;
+}
+
+.sp-slider-runtime.sp-transition-cube .sp-slide {
+    transform-origin: center center;
+    transition: transform var(--sp-slider-speed, 600ms) ease, opacity var(--sp-slider-speed, 600ms) ease;
+}
+
+.sp-slider-runtime.sp-transition-cube .sp-slide:not(.is-active) {
+    transform: rotateY(18deg) scale(0.96);
+    opacity: 0;
+}
+
+.sp-slider-runtime.sp-transition-flip .sp-slide {
+    backface-visibility: hidden;
+    transition: transform var(--sp-slider-speed, 600ms) ease, opacity var(--sp-slider-speed, 600ms) ease;
+}
+
+.sp-slider-runtime.sp-transition-flip .sp-slide:not(.is-active) {
+    transform: rotateX(12deg) scale(0.98);
+    opacity: 0;
+}
+
+.sp-layer.sp-hover-scale {
+    transition: transform 220ms ease;
+}
+
+.sp-layer.sp-hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.sp-layer.sp-hover-glow:hover {
+    filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.7));
+}
+
+.sp-layer.sp-hover-reveal {
+    opacity: 0.7;
+}
+
+.sp-layer.sp-hover-reveal:hover {
+    opacity: 1;
 }
 
 @media (max-width: 991px) {

@@ -183,6 +183,27 @@ class Syntekpro_Slider_Core {
 
         $settings = array_merge($defaults, $settings);
 
+        // 2.4.3: expose richer feature toggles/config for advanced runtime/editor behaviors.
+        $advanced_defaults = array(
+            'sliderWidth' => 1200,
+            'easing' => 'ease',
+            'pauseOnFocus' => true,
+            'fluidMode' => 'auto-scale',
+            'swipeSensitivity' => 35,
+            'swipeDirection' => 'horizontal',
+            'dynamicSource' => 'manual',
+            'dynamicPostType' => 'post',
+            'dynamicLimit' => 5,
+            'analyticsEnabled' => true,
+            'ga4Enabled' => false,
+            'ga4EventPrefix' => 'syntekpro_slider',
+            'customTransitionCss' => '',
+        );
+        $settings = array_merge($advanced_defaults, $settings);
+        $settings = apply_filters('syntekpro_slider_settings', $settings, $slider_id, $slider_post);
+
+        $slides = apply_filters('syntekpro_slider_slides', $slides, $slider_id, $settings);
+
         if (empty($slides)) {
             $slides = array(
                 array(
@@ -243,8 +264,22 @@ class Syntekpro_Slider_Core {
             'data-lazy' => !empty($settings['lazyLoad']) ? 'true' : 'false',
             'data-transition' => sanitize_text_field($settings['transition']),
             'data-speed' => (string) absint($settings['transitionSpeed']),
+            'data-easing' => sanitize_text_field($settings['easing']),
             'data-align' => sanitize_text_field($settings['contentAlign']),
-            'style' => '--sp-height-desktop:' . absint($settings['heightDesktop']) . 'px;--sp-height-tablet:' . absint($settings['heightTablet']) . 'px;--sp-height-mobile:' . absint($settings['heightMobile']) . 'px;--sp-overlay-alpha:' . max(0, min(100, absint($settings['overlayStrength']))) / 100 . ';',
+            'data-pause-on-focus' => !empty($settings['pauseOnFocus']) ? 'true' : 'false',
+            'data-fluid-mode' => sanitize_text_field($settings['fluidMode']),
+            'data-swipe-sensitivity' => (string) absint($settings['swipeSensitivity']),
+            'data-swipe-direction' => sanitize_text_field($settings['swipeDirection']),
+            'data-analytics' => !empty($settings['analyticsEnabled']) ? 'true' : 'false',
+            'data-ga4' => !empty($settings['ga4Enabled']) ? 'true' : 'false',
+            'data-ga4-prefix' => sanitize_text_field($settings['ga4EventPrefix']),
+            'data-slider-id' => (string) $slider_id,
+            'data-reduced-motion' => !empty($settings['reducedMotionMode']) ? 'true' : 'false',
+            'data-focus-trap' => !empty($settings['focusTrapManagement']) ? 'true' : 'false',
+            'data-gdpr-consent' => !empty($settings['gdprConsentLayer']) ? 'true' : 'false',
+            'data-live-refresh' => (string) absint(isset($settings['liveDataRefresh']) ? $settings['liveDataRefresh'] : 30),
+            'data-config' => wp_json_encode($settings),
+            'style' => '--sp-height-desktop:' . absint($settings['heightDesktop']) . 'px;--sp-height-tablet:' . absint($settings['heightTablet']) . 'px;--sp-height-mobile:' . absint($settings['heightMobile']) . 'px;--sp-overlay-alpha:' . max(0, min(100, absint($settings['overlayStrength']))) / 100 . ';--sp-slider-width:' . absint($settings['sliderWidth']) . 'px;',
             'tabindex' => '0',
         );
 
@@ -256,7 +291,11 @@ class Syntekpro_Slider_Core {
         $html = '<div' . $attrs_html . '>';
         $html .= '<div class="sp-slider-track">';
 
+        $transcript_items = array();
         foreach ($slides as $slide) {
+            if (isset($slide['enabled']) && empty($slide['enabled'])) {
+                continue;
+            }
             $title = isset($slide['title']) ? $slide['title'] : '';
             $badge = isset($slide['badge']) ? $slide['badge'] : '';
             $caption = isset($slide['caption']) ? $slide['caption'] : '';
@@ -282,11 +321,19 @@ class Syntekpro_Slider_Core {
             $layer_duration = isset($slide['layerDuration']) ? absint($slide['layerDuration']) : 720;
             $layer_stagger = isset($slide['layerStagger']) ? absint($slide['layerStagger']) : 70;
             $layer_order = $this->normalize_layer_order(isset($slide['layerOrder']) ? $slide['layerOrder'] : '');
+            $title_motion_path = isset($slide['titleMotionPath']) ? sanitize_text_field($slide['titleMotionPath']) : '';
+            $desc_motion_path = isset($slide['descMotionPath']) ? sanitize_text_field($slide['descMotionPath']) : '';
+            $button_motion_path = isset($slide['buttonMotionPath']) ? sanitize_text_field($slide['buttonMotionPath']) : '';
+            $badge_motion_path = isset($slide['badgeMotionPath']) ? sanitize_text_field($slide['badgeMotionPath']) : '';
+            $caption_motion_path = isset($slide['captionMotionPath']) ? sanitize_text_field($slide['captionMotionPath']) : '';
             $ken_burns = !empty($slide['kenBurns']);
             $ken_burns_scale_start = isset($slide['kenBurnsScaleStart']) ? max(1, min(1.8, (float) $slide['kenBurnsScaleStart'])) : 1.06;
             $ken_burns_scale_end = isset($slide['kenBurnsScaleEnd']) ? max(1, min(2.2, (float) $slide['kenBurnsScaleEnd'])) : 1.16;
             $ken_burns_duration = isset($slide['kenBurnsDuration']) ? absint($slide['kenBurnsDuration']) : 9000;
             $ken_burns_direction = isset($slide['kenBurnsDirection']) ? sanitize_key($slide['kenBurnsDirection']) : 'left-to-right';
+            $countdown_end = isset($slide['countdownEnd']) ? sanitize_text_field((string) $slide['countdownEnd']) : '';
+            $live_endpoint = isset($slide['liveEndpoint']) ? esc_url_raw((string) $slide['liveEndpoint']) : '';
+            $live_key = isset($slide['liveKey']) ? sanitize_key((string) $slide['liveKey']) : 'value';
 
             $title_anim = $this->sanitize_layer_animation($title_anim, 'fade-up');
             $desc_anim = $this->sanitize_layer_animation($desc_anim, 'fade-up');
@@ -296,19 +343,35 @@ class Syntekpro_Slider_Core {
 
             $layer_fragments = array();
             if ($badge !== '') {
-                $layer_fragments['badge'] = '<span class="sp-slide-badge sp-layer sp-layer-in-' . esc_attr($badge_anim) . ' sp-layer-out-' . esc_attr($badge_anim_out) . '" data-layer="badge" data-delay="' . esc_attr((string) $badge_delay) . '">' . esc_html($badge) . '</span>';
+                $motion_attr = $badge_motion_path !== '' ? ' data-motion-path="' . esc_attr($badge_motion_path) . '"' : '';
+                $layer_fragments['badge'] = '<span class="sp-slide-badge sp-layer sp-layer-in-' . esc_attr($badge_anim) . ' sp-layer-out-' . esc_attr($badge_anim_out) . '" data-layer="badge" data-delay="' . esc_attr((string) $badge_delay) . '"' . $motion_attr . '>' . esc_html($badge) . '</span>';
             }
             if ($title !== '') {
-                $layer_fragments['title'] = '<h3 class="sp-layer sp-layer-in-' . esc_attr($title_anim) . ' sp-layer-out-' . esc_attr($title_anim_out) . '" data-layer="title" data-delay="' . esc_attr((string) $title_delay) . '">' . esc_html($title) . '</h3>';
+                $motion_attr = $title_motion_path !== '' ? ' data-motion-path="' . esc_attr($title_motion_path) . '"' : '';
+                $layer_fragments['title'] = '<h3 class="sp-layer sp-layer-in-' . esc_attr($title_anim) . ' sp-layer-out-' . esc_attr($title_anim_out) . '" data-layer="title" data-delay="' . esc_attr((string) $title_delay) . '"' . $motion_attr . '>' . esc_html($title) . '</h3>';
             }
             if ($desc !== '') {
-                $layer_fragments['description'] = '<p class="sp-layer sp-layer-in-' . esc_attr($desc_anim) . ' sp-layer-out-' . esc_attr($desc_anim_out) . '" data-layer="description" data-delay="' . esc_attr((string) $desc_delay) . '">' . esc_html($desc) . '</p>';
+                $motion_attr = $desc_motion_path !== '' ? ' data-motion-path="' . esc_attr($desc_motion_path) . '"' : '';
+                $layer_fragments['description'] = '<p class="sp-layer sp-layer-in-' . esc_attr($desc_anim) . ' sp-layer-out-' . esc_attr($desc_anim_out) . '" data-layer="description" data-delay="' . esc_attr((string) $desc_delay) . '"' . $motion_attr . '>' . esc_html($desc) . '</p>';
             }
             if ($btn_text !== '') {
-                $layer_fragments['button'] = '<a class="sp-slide-btn sp-layer sp-layer-in-' . esc_attr($button_anim) . ' sp-layer-out-' . esc_attr($button_anim_out) . '" data-layer="button" data-delay="' . esc_attr((string) $button_delay) . '" href="' . esc_url($btn_url) . '">' . esc_html($btn_text) . '</a>';
+                $motion_attr = $button_motion_path !== '' ? ' data-motion-path="' . esc_attr($button_motion_path) . '"' : '';
+                $layer_fragments['button'] = '<a class="sp-slide-btn sp-layer sp-layer-in-' . esc_attr($button_anim) . ' sp-layer-out-' . esc_attr($button_anim_out) . '" data-layer="button" data-delay="' . esc_attr((string) $button_delay) . '" href="' . esc_url($btn_url) . '"' . $motion_attr . '>' . esc_html($btn_text) . '</a>';
             }
             if ($caption !== '') {
-                $layer_fragments['caption'] = '<span class="sp-slide-caption sp-layer sp-layer-in-' . esc_attr($caption_anim) . ' sp-layer-out-' . esc_attr($caption_anim_out) . '" data-layer="caption" data-delay="' . esc_attr((string) $caption_delay) . '">' . esc_html($caption) . '</span>';
+                $motion_attr = $caption_motion_path !== '' ? ' data-motion-path="' . esc_attr($caption_motion_path) . '"' : '';
+                $layer_fragments['caption'] = '<span class="sp-slide-caption sp-layer sp-layer-in-' . esc_attr($caption_anim) . ' sp-layer-out-' . esc_attr($caption_anim_out) . '" data-layer="caption" data-delay="' . esc_attr((string) $caption_delay) . '"' . $motion_attr . '>' . esc_html($caption) . '</span>';
+            }
+            if (!empty($settings['countdownLiveDataLayers']) && $countdown_end !== '') {
+                $layer_fragments['countdown'] = '<span class="sp-slide-countdown sp-layer" data-layer="countdown" data-delay="0" data-countdown-end="' . esc_attr($countdown_end) . '"></span>';
+            }
+            if (!empty($settings['countdownLiveDataLayers']) && $live_endpoint !== '') {
+                $layer_fragments['live'] = '<span class="sp-slide-live sp-layer" data-layer="live" data-delay="0" data-live-endpoint="' . esc_url($live_endpoint) . '" data-live-key="' . esc_attr($live_key) . '"></span>';
+            }
+
+            $transcript = trim(implode(' ', array_filter(array($badge, $title, $desc, $caption, $btn_text))));
+            if ($transcript !== '') {
+                $transcript_items[] = $transcript;
             }
 
             $bg_style = (!empty($bg) && empty($settings['lazyLoad'])) ? ' style="background-image:url(' . esc_url($bg) . ');"' : '';
@@ -322,6 +385,11 @@ class Syntekpro_Slider_Core {
                     continue;
                 }
                 $html .= str_replace(' data-layer="', ' data-order="' . esc_attr((string) $order_index) . '" data-layer="', $layer_fragments[$layer_key]);
+            }
+            foreach (array('countdown', 'live') as $utility_layer) {
+                if (isset($layer_fragments[$utility_layer])) {
+                    $html .= $layer_fragments[$utility_layer];
+                }
             }
             $html .= '</div>';
             $html .= '</article>';
@@ -348,19 +416,50 @@ class Syntekpro_Slider_Core {
 
         if (!empty($settings['thumbnails'])) {
             $html .= '<div class="sp-slider-thumbs" aria-label="' . esc_attr__('Slide thumbnails', 'syntekpro-animations') . '">';
+            $thumb_visible_index = 0;
             foreach ($slides as $thumb_index => $slide) {
+                if (isset($slide['enabled']) && empty($slide['enabled'])) {
+                    continue;
+                }
                 $thumb_title = isset($slide['title']) ? $slide['title'] : '';
                 $thumb_bg = isset($slide['backgroundImage']) ? $slide['backgroundImage'] : '';
                 $thumb_style = $thumb_bg ? ' style="background-image:url(' . esc_url($thumb_bg) . ');"' : '';
-                $html .= '<button type="button" class="sp-slider-thumb" data-index="' . esc_attr((string) $thumb_index) . '" aria-label="' . esc_attr(sprintf(__('Open slide %d', 'syntekpro-animations'), $thumb_index + 1)) . '">';
+                $html .= '<button type="button" class="sp-slider-thumb" data-index="' . esc_attr((string) $thumb_visible_index) . '" aria-label="' . esc_attr(sprintf(__('Open slide %d', 'syntekpro-animations'), $thumb_visible_index + 1)) . '">';
                 $html .= '<span class="sp-slider-thumb-bg"' . $thumb_style . '></span>';
-                $html .= '<span class="sp-slider-thumb-title">' . esc_html($thumb_title !== '' ? $thumb_title : sprintf(__('Slide %d', 'syntekpro-animations'), $thumb_index + 1)) . '</span>';
+                $html .= '<span class="sp-slider-thumb-title">' . esc_html($thumb_title !== '' ? $thumb_title : sprintf(__('Slide %d', 'syntekpro-animations'), $thumb_visible_index + 1)) . '</span>';
                 $html .= '</button>';
+                $thumb_visible_index++;
             }
             $html .= '</div>';
         }
 
+        if (!empty($settings['screenReaderSlideTranscript']) && !empty($transcript_items)) {
+            $html .= '<ol class="sp-slider-transcript" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">';
+            foreach ($transcript_items as $item) {
+                $html .= '<li>' . esc_html($item) . '</li>';
+            }
+            $html .= '</ol>';
+        }
+
         $html .= '</div>';
+
+        $critical_css = get_post_meta($slider_id, '_sp_slider_critical_css', true);
+        if (!empty($settings['criticalCssExtraction']) && is_string($critical_css) && $critical_css !== '') {
+            $html = '<style class="sp-slider-critical-css">' . wp_strip_all_tags($critical_css) . '</style>' . $html;
+        }
+
+        if (!empty($settings['edgeCachingLayer'])) {
+            $snapshot_html = get_post_meta($slider_id, '_sp_slider_snapshot_html', true);
+            if (is_string($snapshot_html) && $snapshot_html !== '') {
+                $html = '<div class="sp-slider-edge-snapshot" aria-hidden="true" style="display:none;">' . $snapshot_html . '</div>' . $html;
+            }
+        }
+
+        if (!empty($settings['webComponentsOutputMode'])) {
+            $html = '<slider-pro data-slider-id="' . esc_attr((string) $slider_id) . '">' . $html . '</slider-pro>';
+        }
+
+        do_action('syntekpro_slider_rendered', $slider_id, $settings, $slides, $instance_id);
 
         return $html;
     }
@@ -494,16 +593,41 @@ class Syntekpro_Slider_Core {
         $pause_on_interaction = !empty($settings['pauseOnInteraction']);
         $transition = isset($settings['transition']) ? sanitize_text_field($settings['transition']) : 'slide';
         $transition_speed = isset($settings['transitionSpeed']) ? absint($settings['transitionSpeed']) : 600;
+        $easing = isset($settings['easing']) ? sanitize_text_field($settings['easing']) : 'ease';
         $height_desktop = isset($settings['heightDesktop']) ? absint($settings['heightDesktop']) : 460;
         $height_tablet = isset($settings['heightTablet']) ? absint($settings['heightTablet']) : 400;
         $height_mobile = isset($settings['heightMobile']) ? absint($settings['heightMobile']) : 320;
         $content_align = isset($settings['contentAlign']) ? sanitize_text_field($settings['contentAlign']) : 'center';
         $overlay_strength = isset($settings['overlayStrength']) ? absint($settings['overlayStrength']) : 55;
+        $slider_width = isset($settings['sliderWidth']) ? absint($settings['sliderWidth']) : 1200;
+        $pause_on_focus = !empty($settings['pauseOnFocus']);
+        $fluid_mode = isset($settings['fluidMode']) ? sanitize_text_field($settings['fluidMode']) : 'auto-scale';
+        $swipe_sensitivity = isset($settings['swipeSensitivity']) ? absint($settings['swipeSensitivity']) : 35;
+        $swipe_direction = isset($settings['swipeDirection']) ? sanitize_text_field($settings['swipeDirection']) : 'horizontal';
+        $dynamic_source = isset($settings['dynamicSource']) ? sanitize_text_field($settings['dynamicSource']) : 'manual';
+        $dynamic_post_type = isset($settings['dynamicPostType']) ? sanitize_text_field($settings['dynamicPostType']) : 'post';
+        $dynamic_limit = isset($settings['dynamicLimit']) ? absint($settings['dynamicLimit']) : 5;
+        $analytics_enabled = !empty($settings['analyticsEnabled']);
+        $ga4_enabled = !empty($settings['ga4Enabled']);
+        $ga4_event_prefix = isset($settings['ga4EventPrefix']) ? sanitize_text_field($settings['ga4EventPrefix']) : 'syntekpro_slider';
+        $custom_transition_css = isset($settings['customTransitionCss']) ? sanitize_textarea_field($settings['customTransitionCss']) : '';
+        $ab_traffic_split = isset($settings['abTrafficSplit']) ? sanitize_text_field($settings['abTrafficSplit']) : '50:50';
+        $event_webhook_url = isset($settings['eventWebhookUrl']) ? esc_url($settings['eventWebhookUrl']) : '';
+        $conversion_goal_url = isset($settings['conversionGoalUrl']) ? esc_url($settings['conversionGoalUrl']) : '';
 
         echo '<p><strong>' . esc_html__('Shortcode:', 'syntekpro-animations') . '</strong> <code>[sp_slider id="' . esc_html((string) $post->ID) . '"]</code></p>';
         echo '<p>' . esc_html__('Use the visual controls below to build your slider. JSON fallback remains available for advanced editing.', 'syntekpro-animations') . '</p>';
 
         echo '<div class="sp-slider-editor">';
+        echo '<section class="sp-slider-hero">';
+        echo '<div class="sp-slider-hero-copy">';
+        echo '<h3>' . esc_html__('SyntekPro Slider Studio', 'syntekpro-animations') . '</h3>';
+        echo '<p>' . esc_html__('Build polished, high-converting sliders with AI tools, performance tuning, and advanced motion controls.', 'syntekpro-animations') . '</p>';
+        echo '</div>';
+        echo '<div class="sp-slider-hero-actions">';
+        echo '<button type="button" class="button sp-btn-features" id="sp-open-features">' . esc_html__('View Slider Features', 'syntekpro-animations') . '</button>';
+        echo '</div>';
+        echo '</section>';
 
         echo '<div class="sp-slider-settings">';
         echo '<h4>' . esc_html__('Slider Settings', 'syntekpro-animations') . '</h4>';
@@ -511,7 +635,7 @@ class Syntekpro_Slider_Core {
 
         echo '<label><span>' . esc_html__('Transition', 'syntekpro-animations') . '</span>';
         echo '<select name="sp_slider_settings[transition]">';
-        $transition_options = array('slide', 'fade', 'zoom');
+        $transition_options = array('slide', 'fade', 'zoom', 'crossfade', 'parallax', 'ken-burns', 'cube', 'flip', 'custom-css');
         foreach ($transition_options as $option) {
             echo '<option value="' . esc_attr($option) . '" ' . selected($transition, $option, false) . '>' . esc_html(ucfirst($option)) . '</option>';
         }
@@ -521,13 +645,23 @@ class Syntekpro_Slider_Core {
         echo '<label><span>' . esc_html__('Height (Tablet px)', 'syntekpro-animations') . '</span><input type="number" min="180" max="1000" name="sp_slider_settings[heightTablet]" value="' . esc_attr((string) $height_tablet) . '"></label>';
         echo '<label><span>' . esc_html__('Height (Mobile px)', 'syntekpro-animations') . '</span><input type="number" min="160" max="900" name="sp_slider_settings[heightMobile]" value="' . esc_attr((string) $height_mobile) . '"></label>';
         echo '<label><span>' . esc_html__('Transition Speed (ms)', 'syntekpro-animations') . '</span><input type="number" min="100" max="3000" step="50" name="sp_slider_settings[transitionSpeed]" value="' . esc_attr((string) $transition_speed) . '"></label>';
+        echo '<label><span>' . esc_html__('Easing', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_settings[easing]" value="' . esc_attr($easing) . '" placeholder="ease"></label>';
         echo '<label><span>' . esc_html__('Autoplay Delay (ms)', 'syntekpro-animations') . '</span><input type="number" min="1000" max="20000" step="100" name="sp_slider_settings[autoplayDelay]" value="' . esc_attr((string) $autoplay_delay) . '"></label>';
+        echo '<label><span>' . esc_html__('Slider Width (px)', 'syntekpro-animations') . '</span><input type="number" min="320" max="2560" step="10" name="sp_slider_settings[sliderWidth]" value="' . esc_attr((string) $slider_width) . '"></label>';
         echo '<label><span>' . esc_html__('Content Align', 'syntekpro-animations') . '</span><select name="sp_slider_settings[contentAlign]"><option value="left" ' . selected($content_align, 'left', false) . '>' . esc_html__('Left', 'syntekpro-animations') . '</option><option value="center" ' . selected($content_align, 'center', false) . '>' . esc_html__('Center', 'syntekpro-animations') . '</option><option value="right" ' . selected($content_align, 'right', false) . '>' . esc_html__('Right', 'syntekpro-animations') . '</option></select></label>';
+        echo '<label><span>' . esc_html__('Fluid Mode', 'syntekpro-animations') . '</span><select name="sp_slider_settings[fluidMode]"><option value="auto-scale" ' . selected($fluid_mode, 'auto-scale', false) . '>Auto Scale</option><option value="fixed" ' . selected($fluid_mode, 'fixed', false) . '>Fixed</option><option value="full-width" ' . selected($fluid_mode, 'full-width', false) . '>Full Width</option><option value="full-screen" ' . selected($fluid_mode, 'full-screen', false) . '>Full Screen</option><option value="aspect-lock" ' . selected($fluid_mode, 'aspect-lock', false) . '>Aspect Lock</option></select></label>';
+        echo '<label><span>' . esc_html__('Swipe Sensitivity', 'syntekpro-animations') . '</span><input type="number" min="10" max="160" step="1" name="sp_slider_settings[swipeSensitivity]" value="' . esc_attr((string) $swipe_sensitivity) . '"></label>';
+        echo '<label><span>' . esc_html__('Swipe Direction', 'syntekpro-animations') . '</span><select name="sp_slider_settings[swipeDirection]"><option value="horizontal" ' . selected($swipe_direction, 'horizontal', false) . '>Horizontal</option><option value="vertical" ' . selected($swipe_direction, 'vertical', false) . '>Vertical</option><option value="both" ' . selected($swipe_direction, 'both', false) . '>Both</option></select></label>';
+        echo '<label><span>' . esc_html__('Dynamic Source', 'syntekpro-animations') . '</span><select name="sp_slider_settings[dynamicSource]"><option value="manual" ' . selected($dynamic_source, 'manual', false) . '>Manual</option><option value="posts" ' . selected($dynamic_source, 'posts', false) . '>Posts</option><option value="products" ' . selected($dynamic_source, 'products', false) . '>Products</option><option value="cpt" ' . selected($dynamic_source, 'cpt', false) . '>Custom Post Type</option><option value="acf" ' . selected($dynamic_source, 'acf', false) . '>ACF Mapping</option></select></label>';
+        echo '<label><span>' . esc_html__('Dynamic Post Type', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_settings[dynamicPostType]" value="' . esc_attr($dynamic_post_type) . '" placeholder="post"></label>';
+        echo '<label><span>' . esc_html__('Dynamic Limit', 'syntekpro-animations') . '</span><input type="number" min="1" max="30" step="1" name="sp_slider_settings[dynamicLimit]" value="' . esc_attr((string) $dynamic_limit) . '"></label>';
         echo '<label><span>' . esc_html__('Overlay Strength (%)', 'syntekpro-animations') . '</span><input type="number" min="0" max="90" step="1" name="sp_slider_settings[overlayStrength]" value="' . esc_attr((string) $overlay_strength) . '"></label>';
+        echo '<label class="full"><span>' . esc_html__('Custom Transition CSS', 'syntekpro-animations') . '</span><textarea rows="3" name="sp_slider_settings[customTransitionCss]" placeholder=".sp-slider-runtime.sp-transition-custom-css .sp-slide{}">' . esc_textarea($custom_transition_css) . '</textarea></label>';
 
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[autoplay]" value="1" ' . checked($autoplay, true, false) . '><span>' . esc_html__('Enable Autoplay', 'syntekpro-animations') . '</span></label>';
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[autoplayPauseOnHover]" value="1" ' . checked($autoplay_pause_hover, true, false) . '><span>' . esc_html__('Pause Autoplay on Hover', 'syntekpro-animations') . '</span></label>';
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[pauseOnInteraction]" value="1" ' . checked($pause_on_interaction, true, false) . '><span>' . esc_html__('Pause on Manual Interaction', 'syntekpro-animations') . '</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[pauseOnFocus]" value="1" ' . checked($pause_on_focus, true, false) . '><span>' . esc_html__('Pause on Focus', 'syntekpro-animations') . '</span></label>';
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[loop]" value="1" ' . checked($loop, true, false) . '><span>' . esc_html__('Enable Loop', 'syntekpro-animations') . '</span></label>';
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[navigation]" value="1" ' . checked($navigation, true, false) . '><span>' . esc_html__('Show Arrows', 'syntekpro-animations') . '</span></label>';
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[pagination]" value="1" ' . checked($pagination, true, false) . '><span>' . esc_html__('Show Dots', 'syntekpro-animations') . '</span></label>';
@@ -537,12 +671,90 @@ class Syntekpro_Slider_Core {
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[showCounter]" value="1" ' . checked($show_counter, true, false) . '><span>' . esc_html__('Show Slide Counter', 'syntekpro-animations') . '</span></label>';
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[thumbnails]" value="1" ' . checked($thumbnails, true, false) . '><span>' . esc_html__('Show Thumbnails', 'syntekpro-animations') . '</span></label>';
         echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[lazyLoad]" value="1" ' . checked($lazy_load, true, false) . '><span>' . esc_html__('Lazy Load Slide Backgrounds', 'syntekpro-animations') . '</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[analyticsEnabled]" value="1" ' . checked($analytics_enabled, true, false) . '><span>' . esc_html__('Enable Slider Analytics', 'syntekpro-animations') . '</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[ga4Enabled]" value="1" ' . checked($ga4_enabled, true, false) . '><span>' . esc_html__('Enable GA4 Event Bridge', 'syntekpro-animations') . '</span></label>';
+        echo '<label><span>' . esc_html__('GA4 Event Prefix', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_settings[ga4EventPrefix]" value="' . esc_attr($ga4_event_prefix) . '"></label>';
+        echo '<label class="full"><span>' . esc_html__('Event Webhook URL (Zapier/Make)', 'syntekpro-animations') . '</span><input type="url" name="sp_slider_settings[eventWebhookUrl]" value="' . esc_attr($event_webhook_url) . '" placeholder="https://hooks.zapier.com/..." /></label>';
+        echo '<label><span>' . esc_html__('A/B Traffic Split', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_settings[abTrafficSplit]" value="' . esc_attr($ab_traffic_split) . '" placeholder="50:50" /></label>';
+        echo '<label><span>' . esc_html__('Conversion Goal URL', 'syntekpro-animations') . '</span><input type="url" name="sp_slider_settings[conversionGoalUrl]" value="' . esc_attr($conversion_goal_url) . '" placeholder="https://example.com/checkout" /></label>';
+
+        echo '<details class="full" style="background:#f8fafc;border:1px solid #dbe3ee;border-radius:8px;padding:10px;">';
+        echo '<summary style="cursor:pointer;font-weight:600;">' . esc_html__('Advanced Feature Matrix (25-slider update)', 'syntekpro-animations') . '</summary>';
+        echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;margin-top:10px;">';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[aiSlideGenerator]" value="1" ' . checked(!empty($settings['aiSlideGenerator']), true, false) . '><span>AI Slide Generator</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[aiSmartCrop]" value="1" ' . checked(!empty($settings['aiSmartCrop']), true, false) . '><span>AI Smart Image Cropping</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[aiAutoContrast]" value="1" ' . checked(!empty($settings['aiAutoContrast']), true, false) . '><span>AI Auto Contrast & Readability</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[aiCopySuggestions]" value="1" ' . checked(!empty($settings['aiCopySuggestions']), true, false) . '><span>AI Copy Suggestions</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[aiTimingPredictor]" value="1" ' . checked(!empty($settings['aiTimingPredictor']), true, false) . '><span>AI Timing Predictor</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[criticalCssExtraction]" value="1" ' . checked(!empty($settings['criticalCssExtraction']), true, false) . '><span>Critical CSS Extraction</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[adaptiveVideoLoading]" value="1" ' . checked(!empty($settings['adaptiveVideoLoading']), true, false) . '><span>Adaptive Video Loading</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[edgeCachingLayer]" value="1" ' . checked(!empty($settings['edgeCachingLayer']), true, false) . '><span>Edge Caching Snapshot</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[coreWebVitalsDashboard]" value="1" ' . checked(!empty($settings['coreWebVitalsDashboard']), true, false) . '><span>Core Web Vitals Dashboard</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[autoConvertImages]" value="1" ' . checked(!empty($settings['autoConvertImages']), true, false) . '><span>AVIF/WebP Auto Convert</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[bulkEditor]" value="1" ' . checked(!empty($settings['bulkEditor']), true, false) . '><span>Multi-slide Bulk Editor</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[globalDesignTokens]" value="1" ' . checked(!empty($settings['globalDesignTokens']), true, false) . '><span>Global Design Tokens</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[revisionHistoryDiff]" value="1" ' . checked(!empty($settings['revisionHistoryDiff']), true, false) . '><span>Revision History with Diff</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[collaborativeEditing]" value="1" ' . checked(!empty($settings['collaborativeEditing']), true, false) . '><span>Collaborative Editing</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[motionPathEditor]" value="1" ' . checked(!empty($settings['motionPathEditor']), true, false) . '><span>Motion Path Editor</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[abTestingBuilder]" value="1" ' . checked(!empty($settings['abTestingBuilder']), true, false) . '><span>A/B Testing Builder</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[restApiEnabled]" value="1" ' . checked(!empty($settings['restApiEnabled']), true, false) . '><span>REST API & Webhooks</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[blockHeadlessOutput]" value="1" ' . checked(!empty($settings['blockHeadlessOutput']), true, false) . '><span>Headless / Block Output</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[figmaImport]" value="1" ' . checked(!empty($settings['figmaImport']), true, false) . '><span>Figma Import</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[gsapLottieLayer]" value="1" ' . checked(!empty($settings['gsapLottieLayer']), true, false) . '><span>GSAP & Lottie Layer Type</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[zapierMakeTriggers]" value="1" ' . checked(!empty($settings['zapierMakeTriggers']), true, false) . '><span>Zapier/Make Triggers</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[whiteLabelMode]" value="1" ' . checked(!empty($settings['whiteLabelMode']), true, false) . '><span>White Label Mode</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[cloudTemplateMarketplace]" value="1" ' . checked(!empty($settings['cloudTemplateMarketplace']), true, false) . '><span>Cloud Template Marketplace</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[usageCloudSync]" value="1" ' . checked(!empty($settings['usageCloudSync']), true, false) . '><span>Usage-based Cloud Sync</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[conversionGoalTracking]" value="1" ' . checked(!empty($settings['conversionGoalTracking']), true, false) . '><span>Conversion Goal Tracking</span></label>';
+        echo '</div>';
+        echo '</details>';
+
+        echo '<details class="full" style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px;margin-top:8px;">';
+        echo '<summary style="cursor:pointer;font-weight:600;">' . esc_html__('Enhancement Matrix (30-request pack)', 'syntekpro-animations') . '</summary>';
+        echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;margin-top:10px;">';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[cliScaffoldTool]" value="1" ' . checked(!empty($settings['cliScaffoldTool']), true, false) . '><span>CLI Scaffold Tool</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[typeScriptDefinitions]" value="1" ' . checked(!empty($settings['typeScriptDefinitions']), true, false) . '><span>TypeScript Definitions</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[storybookComponentLibrary]" value="1" ' . checked(!empty($settings['storybookComponentLibrary']), true, false) . '><span>Storybook Layer Library</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[automatedUpgradeMigrations]" value="1" ' . checked(!empty($settings['automatedUpgradeMigrations']), true, false) . '><span>Automated Upgrade Migrations</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[localImportExport]" value="1" ' . checked(!empty($settings['localImportExport']), true, false) . '><span>Local Import / Export</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[scheduledSlidePublishing]" value="1" ' . checked(!empty($settings['scheduledSlidePublishing']), true, false) . '><span>Scheduled Slide Publishing</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[personalisationEngine]" value="1" ' . checked(!empty($settings['personalisationEngine']), true, false) . '><span>Personalisation Engine</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[multilingualLayerSupport]" value="1" ' . checked(!empty($settings['multilingualLayerSupport']), true, false) . '><span>Multilingual Layer Support</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[csvGoogleSheetsDataSource]" value="1" ' . checked(!empty($settings['csvGoogleSheetsDataSource']), true, false) . '><span>CSV / Google Sheets Source</span></label>';
+        echo '<label><span>' . esc_html__('CSV/Sheets URL', 'syntekpro-animations') . '</span><input type="url" name="sp_slider_settings[csvDataUrl]" value="' . esc_attr(isset($settings['csvDataUrl']) ? $settings['csvDataUrl'] : '') . '" placeholder="https://..."></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[countdownLiveDataLayers]" value="1" ' . checked(!empty($settings['countdownLiveDataLayers']), true, false) . '><span>Countdown & Live Data Layers</span></label>';
+        echo '<label><span>' . esc_html__('Live Data Refresh (sec)', 'syntekpro-animations') . '</span><input type="number" min="5" max="300" step="1" name="sp_slider_settings[liveDataRefresh]" value="' . esc_attr((string) (isset($settings['liveDataRefresh']) ? absint($settings['liveDataRefresh']) : 30)) . '"></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[contentSecurityPolicyHeaders]" value="1" ' . checked(!empty($settings['contentSecurityPolicyHeaders']), true, false) . '><span>CSP Headers</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[signedAssetIntegrityChecks]" value="1" ' . checked(!empty($settings['signedAssetIntegrityChecks']), true, false) . '><span>Signed Asset Integrity Checks</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[gdprConsentLayer]" value="1" ' . checked(!empty($settings['gdprConsentLayer']), true, false) . '><span>GDPR Consent Layer</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[roleBasedEditorPermissions]" value="1" ' . checked(!empty($settings['roleBasedEditorPermissions']), true, false) . '><span>Role-based Editor Permissions</span></label>';
+        echo '<label><span>' . esc_html__('Allowed Roles (csv)', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_settings[allowedEditorRoles]" value="' . esc_attr(isset($settings['allowedEditorRoles']) ? $settings['allowedEditorRoles'] : 'administrator,editor') . '"></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[officialAddonSdk]" value="1" ' . checked(!empty($settings['officialAddonSdk']), true, false) . '><span>Official Add-on SDK</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[pageBuilderDeepIntegration]" value="1" ' . checked(!empty($settings['pageBuilderDeepIntegration']), true, false) . '><span>Page Builder Deep Integration</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[wpCliCommands]" value="1" ' . checked(!empty($settings['wpCliCommands']), true, false) . '><span>WP CLI Commands</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[multisiteNetworkManagement]" value="1" ' . checked(!empty($settings['multisiteNetworkManagement']), true, false) . '><span>Multisite Network Management</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[wcagAuditMode]" value="1" ' . checked(!empty($settings['wcagAuditMode']), true, false) . '><span>WCAG 2.2 AA Audit Mode</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[reducedMotionMode]" value="1" ' . checked(!empty($settings['reducedMotionMode']), true, false) . '><span>Reduced Motion Mode</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[screenReaderSlideTranscript]" value="1" ' . checked(!empty($settings['screenReaderSlideTranscript']), true, false) . '><span>Screen Reader Transcript</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[focusTrapManagement]" value="1" ' . checked(!empty($settings['focusTrapManagement']), true, false) . '><span>Focus Trap Management</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[webComponentsOutputMode]" value="1" ' . checked(!empty($settings['webComponentsOutputMode']), true, false) . '><span>Web Components Output Mode</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[moduleFederationRuntime]" value="1" ' . checked(!empty($settings['moduleFederationRuntime']), true, false) . '><span>Module Federation Runtime</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[e2eTestSuite]" value="1" ' . checked(!empty($settings['e2eTestSuite']), true, false) . '><span>E2E Test Suite</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[pluginHealthMonitor]" value="1" ' . checked(!empty($settings['pluginHealthMonitor']), true, false) . '><span>Plugin Health Monitor</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[stagingEnvironmentSync]" value="1" ' . checked(!empty($settings['stagingEnvironmentSync']), true, false) . '><span>Staging Environment Sync</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[changeApprovalWorkflow]" value="1" ' . checked(!empty($settings['changeApprovalWorkflow']), true, false) . '><span>Change Approval Workflow</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[auditLog]" value="1" ' . checked(!empty($settings['auditLog']), true, false) . '><span>Audit Log</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[maintenanceModePerSlider]" value="1" ' . checked(!empty($settings['maintenanceModePerSlider']), true, false) . '><span>Maintenance Mode per Slider</span></label>';
+        echo '<label class="sp-check"><input type="checkbox" name="sp_slider_settings[maintenanceActive]" value="1" ' . checked(!empty($settings['maintenanceActive']), true, false) . '><span>Maintenance Active</span></label>';
+        echo '<label class="full"><span>' . esc_html__('Maintenance Message', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_settings[maintenanceMessage]" value="' . esc_attr(isset($settings['maintenanceMessage']) ? $settings['maintenanceMessage'] : '') . '" placeholder="Slider is under maintenance"></label>';
+        echo '</div>';
+        echo '</details>';
 
         echo '</div>';
         echo '</div>';
 
         echo '<div class="sp-slides-wrap">';
-        echo '<div class="sp-slides-head"><h4>' . esc_html__('Slides', 'syntekpro-animations') . '</h4><button type="button" class="button button-secondary" id="sp-add-slide">' . esc_html__('Add Slide', 'syntekpro-animations') . '</button></div>';
+        echo '<div class="sp-slides-head"><h4>' . esc_html__('Slides', 'syntekpro-animations') . '</h4><div class="sp-slide-toolbar"><button type="button" class="button" id="sp-bulk-edit">' . esc_html__('Bulk Edit Selected', 'syntekpro-animations') . '</button><button type="button" class="button" id="sp-undo-slide">' . esc_html__('Undo', 'syntekpro-animations') . '</button><button type="button" class="button" id="sp-redo-slide">' . esc_html__('Redo', 'syntekpro-animations') . '</button><button type="button" class="button sp-btn-features" id="sp-open-features-toolbar">' . esc_html__('Features', 'syntekpro-animations') . '</button><button type="button" class="button button-secondary sp-btn-add-slide" id="sp-add-slide">' . esc_html__('Add New Slide', 'syntekpro-animations') . '</button></div></div>';
         echo '<div id="sp-slides-list">';
 
         foreach ($slides as $index => $slide) {
@@ -561,18 +773,80 @@ class Syntekpro_Slider_Core {
         echo '<textarea name="sp_slider_slides_json" rows="10" style="width:100%;font-family:monospace;">' . esc_textarea(wp_json_encode($slides, JSON_PRETTY_PRINT)) . '</textarea>';
         echo '</details>';
 
+        $revision_history = get_post_meta($post->ID, '_sp_slider_revision_history', true);
+        $revision_history = is_array($revision_history) ? $revision_history : array();
+        if (!empty($revision_history)) {
+            echo '<details style="margin-top:14px;"><summary><strong>' . esc_html__('Revision History with Diff View', 'syntekpro-animations') . '</strong></summary>';
+            echo '<p style="margin-top:8px;">' . esc_html__('Compare two revisions and restore manually by copying JSON if needed.', 'syntekpro-animations') . '</p>';
+            echo '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+            echo '<label><span>' . esc_html__('Revision A', 'syntekpro-animations') . '</span><select id="sp-rev-a">';
+            foreach ($revision_history as $index => $revision) {
+                $label = '#' . ($index + 1) . ' - ' . (isset($revision['savedAt']) ? $revision['savedAt'] : 'n/a');
+                echo '<option value="' . esc_attr((string) $index) . '">' . esc_html($label) . '</option>';
+            }
+            echo '</select></label>';
+            echo '<label><span>' . esc_html__('Revision B', 'syntekpro-animations') . '</span><select id="sp-rev-b">';
+            foreach ($revision_history as $index => $revision) {
+                $label = '#' . ($index + 1) . ' - ' . (isset($revision['savedAt']) ? $revision['savedAt'] : 'n/a');
+                echo '<option value="' . esc_attr((string) $index) . '">' . esc_html($label) . '</option>';
+            }
+            echo '</select></label>';
+            echo '</div>';
+            echo '<button type="button" class="button" id="sp-rev-diff" style="margin-top:8px;">' . esc_html__('Compare Revisions', 'syntekpro-animations') . '</button>';
+            echo '<pre id="sp-rev-diff-out" style="margin-top:8px;background:#0f172a;color:#dbeafe;padding:10px;max-height:240px;overflow:auto;">' . esc_html__('Choose revisions and click compare.', 'syntekpro-animations') . '</pre>';
+            echo '<script>window.SP_REVISION_HISTORY = ' . wp_json_encode($revision_history) . ';</script>';
+            echo '</details>';
+        }
+
+        echo '<div class="sp-features-modal" id="sp-features-modal" aria-hidden="true">';
+        echo '<div class="sp-features-backdrop" data-close="1"></div>';
+        echo '<div class="sp-features-dialog" role="dialog" aria-modal="true" aria-labelledby="sp-features-title">';
+        echo '<div class="sp-features-head">';
+        echo '<div class="sp-features-head-title"><h4 id="sp-features-title">' . esc_html__('Slider Features Document', 'syntekpro-animations') . '</h4><p>' . esc_html__('Everything available in Slider Studio, organized by capability.', 'syntekpro-animations') . '</p></div>';
+        echo '<button type="button" class="sp-features-close" id="sp-close-features" aria-label="' . esc_attr__('Close features modal', 'syntekpro-animations') . '">Close</button>';
+        echo '</div>';
+        echo '<div class="sp-features-body">';
+        echo '<div class="sp-features-card">';
+        echo '<div class="sp-features-card-head"><span class="sp-feature-pill">AI</span><h5>' . esc_html__('AI-Powered Features', 'syntekpro-animations') . '</h5></div>';
+        echo '<ul><li>AI slide generation from prompts</li><li>Smart crop focal suggestions by breakpoint</li><li>Auto-contrast readability guidance</li><li>Copy alternatives by tone</li><li>Animation timing prediction</li></ul>';
+        echo '</div>';
+        echo '<div class="sp-features-card">';
+        echo '<div class="sp-features-card-head"><span class="sp-feature-pill">Performance</span><h5>' . esc_html__('Performance Features', 'syntekpro-animations') . '</h5></div>';
+        echo '<ul><li>Critical CSS extraction path</li><li>Adaptive video loading by connection quality</li><li>Edge cache snapshot generation</li><li>Core Web Vitals dashboard and beacons</li><li>WebP and AVIF conversion hooks</li></ul>';
+        echo '</div>';
+        echo '<div class="sp-features-card">';
+        echo '<div class="sp-features-card-head"><span class="sp-feature-pill">Editor</span><h5>' . esc_html__('Editor and UX Features', 'syntekpro-animations') . '</h5></div>';
+        echo '<ul><li>Bulk edit selected slides</li><li>Global design tokens</li><li>Revision history with diff view</li><li>Collaborative presence endpoints</li><li>Motion path data support</li><li>A/B foundations and traffic split</li></ul>';
+        echo '</div>';
+        echo '<div class="sp-features-card">';
+        echo '<div class="sp-features-card-head"><span class="sp-feature-pill">Integrations</span><h5>' . esc_html__('Integrations and Monetization', 'syntekpro-animations') . '</h5></div>';
+        echo '<ul><li>REST API and webhook automation</li><li>Headless JSON output</li><li>Figma import adapter endpoint</li><li>GSAP and Lottie-ready layer architecture</li><li>Zapier and Make webhook flow</li><li>White label, marketplace, cloud sync, and conversion goal settings</li></ul>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
         echo '</div>';
 
         ?>
         <style>
             .sp-slider-editor { display: grid; gap: 14px; }
+            .sp-slider-hero { background: radial-gradient(circle at top right,#0ea5e9 0%,#1d4ed8 50%,#0f172a 100%); border-radius: 12px; color: #fff; border: 1px solid #1e3a8a; padding: 16px 18px; display: flex; justify-content: space-between; gap: 14px; align-items: center; }
+            .sp-slider-hero h3 { margin: 0 0 6px 0; color: #fff; font-size: 20px; }
+            .sp-slider-hero p { margin: 0; color: rgba(255,255,255,.9); font-size: 13px; max-width: 760px; }
+            .sp-slider-hero-actions { display: flex; gap: 8px; align-items: center; }
             .sp-slider-settings, .sp-slides-wrap { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; }
             .sp-slider-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
             .sp-slider-grid label span { display: block; font-weight: 600; margin-bottom: 4px; }
             .sp-slider-grid input[type="number"], .sp-slider-grid select, .sp-slide-card input[type="text"], .sp-slide-card input[type="url"], .sp-slide-card textarea { width: 100%; }
             .sp-check { display: flex; align-items: center; gap: 8px; padding-top: 24px; }
             .sp-slides-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+            .sp-slide-toolbar { display: flex; align-items: center; gap: 6px; }
+            .sp-btn-add-slide { background: linear-gradient(135deg,#0ea5e9,#2563eb) !important; color: #fff !important; border: none !important; border-radius: 8px !important; font-weight: 700 !important; padding: 0 14px !important; box-shadow: 0 8px 20px rgba(37,99,235,.24); }
+            .sp-btn-add-slide:hover { filter: brightness(1.03); transform: translateY(-1px); }
+            .sp-btn-features { border-radius: 8px !important; border-color: #93c5fd !important; color: #1d4ed8 !important; background: #eff6ff !important; font-weight: 600 !important; }
             .sp-slide-card { border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px; margin-bottom: 10px; background: #f8fafc; }
+            .sp-slide-card.is-disabled { opacity: .72; border-style: dashed; }
             .sp-slide-card h5 { margin: 0 0 8px 0; }
             .sp-slide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
             .sp-slide-grid .full { grid-column: 1 / -1; }
@@ -588,6 +862,7 @@ class Syntekpro_Slider_Core {
             .sp-image-row { display: flex; align-items: center; gap: 8px; }
             .sp-image-preview { width: 64px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #d1d5db; background: #fff; }
             .sp-slide-actions { margin-top: 8px; text-align: right; }
+            .sp-slide-actions .button { margin-left: 6px; }
             .sp-live-preview { margin-top: 10px; border: 1px solid #dbeafe; border-radius: 8px; background: linear-gradient(135deg,#0f172a,#1f2937); color:#fff; padding: 10px; overflow: hidden; }
             .sp-live-preview-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
             .sp-live-preview-head strong { font-size: 12px; letter-spacing: .3px; }
@@ -606,12 +881,73 @@ class Syntekpro_Slider_Core {
             .sp-preview-in-fade-right { transform: translate3d(-18px,0,0); }
             .sp-preview-in-zoom-in { transform: scale(.92); filter: blur(2px); }
             .sp-preview-in-zoom-out { transform: scale(1.08); filter: blur(2px); }
+            .sp-features-modal { position: fixed; inset: 0; z-index: 100000; display: none; }
+            .sp-features-modal.is-open { display: block; }
+            .sp-features-backdrop { position: absolute; inset: 0; background: rgba(15,23,42,.5); }
+            .sp-features-dialog { position: relative; max-width: 860px; margin: 7vh auto; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #dbeafe; box-shadow: 0 18px 48px rgba(15,23,42,.28); }
+            .sp-features-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px; background: linear-gradient(135deg,#dbeafe,#eff6ff); border-bottom: 1px solid #bfdbfe; }
+            .sp-features-head-title h4 { margin: 0; color: #0f172a; }
+            .sp-features-head-title p { margin: 3px 0 0; color: #475569; font-size: 12px; }
+            .sp-features-close { border: 1px solid #93c5fd; background: #fff; color: #1d4ed8; border-radius: 8px; padding: 6px 10px; font-weight: 600; cursor: pointer; }
+            .sp-features-close:hover { background: #eff6ff; }
+            .sp-features-body { padding: 14px 16px; max-height: 68vh; overflow-y: auto; display: grid; gap: 10px; background: #f8fafc; }
+            .sp-features-card { border: 1px solid #dbeafe; background: #fff; border-radius: 10px; padding: 10px 12px; box-shadow: 0 3px 12px rgba(15,23,42,.05); }
+            .sp-features-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; }
+            .sp-features-card-head h5 { margin: 0; color: #1e293b; }
+            .sp-feature-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 2px 8px; background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; }
+            .sp-features-card ul { margin: 0; padding-left: 18px; color: #334155; line-height: 1.5; }
+            @media (max-width: 920px) { .sp-slider-hero { flex-direction: column; align-items: flex-start; } .sp-features-dialog { margin: 3vh 12px; } }
         </style>
         <script>
             (function() {
                 const list = document.getElementById('sp-slides-list');
                 const addBtn = document.getElementById('sp-add-slide');
+                const featuresBtn = document.getElementById('sp-open-features');
+                const featuresBtnToolbar = document.getElementById('sp-open-features-toolbar');
+                const featuresModal = document.getElementById('sp-features-modal');
+                const closeFeaturesBtn = document.getElementById('sp-close-features');
+                const bulkBtn = document.getElementById('sp-bulk-edit');
+                const undoBtn = document.getElementById('sp-undo-slide');
+                const redoBtn = document.getElementById('sp-redo-slide');
+                const revDiffBtn = document.getElementById('sp-rev-diff');
+                const revA = document.getElementById('sp-rev-a');
+                const revB = document.getElementById('sp-rev-b');
+                const revOut = document.getElementById('sp-rev-diff-out');
                 if (!list || !addBtn) return;
+
+                const history = [];
+                const redoStack = [];
+                const MAX_HISTORY = 40;
+
+                function updateUndoRedoButtons() {
+                    if (undoBtn) undoBtn.disabled = history.length <= 1;
+                    if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+                }
+
+                function snapshot() {
+                    return list.innerHTML;
+                }
+
+                function restoreState(markup) {
+                    if (!markup) return;
+                    list.innerHTML = markup;
+                    list.querySelectorAll('.sp-slide-card').forEach(bindCardEvents);
+                    reindex();
+                    updateUndoRedoButtons();
+                }
+
+                function pushHistory() {
+                    const state = snapshot();
+                    if (history.length && history[history.length - 1] === state) {
+                        return;
+                    }
+                    history.push(state);
+                    if (history.length > MAX_HISTORY) {
+                        history.shift();
+                    }
+                    redoStack.length = 0;
+                    updateUndoRedoButtons();
+                }
 
                 const animationOptions = [
                     { value: 'none', label: 'No Animation', hint: 'Layer appears instantly with no movement.' },
@@ -689,9 +1025,9 @@ class Syntekpro_Slider_Core {
                     const cards = list.querySelectorAll('.sp-slide-card');
                     cards.forEach((card, index) => {
                         card.dataset.index = index;
-                        const title = card.querySelector('.sp-slide-title');
-                        if (title) {
-                            title.textContent = 'Slide ' + (index + 1);
+                        const titleText = card.querySelector('.sp-slide-title-text');
+                        if (titleText) {
+                            titleText.textContent = 'Slide ' + (index + 1);
                         }
                         card.querySelectorAll('[name]').forEach((input) => {
                             input.name = input.name.replace(/sp_slider_slides\[\d+\]/, 'sp_slider_slides[' + index + ']');
@@ -699,8 +1035,25 @@ class Syntekpro_Slider_Core {
                     });
                 }
 
+                function openFeaturesModal() {
+                    if (!featuresModal) return;
+                    featuresModal.classList.add('is-open');
+                    featuresModal.setAttribute('aria-hidden', 'false');
+                }
+
+                function closeFeaturesModal() {
+                    if (!featuresModal) return;
+                    featuresModal.classList.remove('is-open');
+                    featuresModal.setAttribute('aria-hidden', 'true');
+                }
+
                 function bindCardEvents(card) {
                     const removeBtn = card.querySelector('.sp-remove-slide');
+                    const duplicateBtn = card.querySelector('.sp-duplicate-slide');
+                    const moveUpBtn = card.querySelector('.sp-move-slide-up');
+                    const moveDownBtn = card.querySelector('.sp-move-slide-down');
+                    const toggleEnabledBtn = card.querySelector('.sp-toggle-slide-enabled');
+                    const enabledInput = card.querySelector('.sp-slide-enabled-input');
                     const pickBtn = card.querySelector('.sp-select-image');
                     const clearBtn = card.querySelector('.sp-clear-image');
                     const imageInput = card.querySelector('.sp-image-input');
@@ -714,6 +1067,14 @@ class Syntekpro_Slider_Core {
                     const resetAnimationsBtn = card.querySelector('.sp-reset-layer-animations');
 
                     card.querySelectorAll('input[type="text"][name*="Anim"], input[type="text"][name*="AnimOut"]').forEach(toSelectInput);
+
+                    function syncEnabledVisual() {
+                        const enabled = !enabledInput || enabledInput.value !== '0';
+                        card.classList.toggle('is-disabled', !enabled);
+                        if (toggleEnabledBtn) {
+                            toggleEnabledBtn.textContent = enabled ? 'Hide Slide' : 'Show Slide';
+                        }
+                    }
 
                     function getField(namePart) {
                         return card.querySelector('[name*="[' + namePart + ']"]');
@@ -846,6 +1207,45 @@ class Syntekpro_Slider_Core {
                         removeBtn.addEventListener('click', function() {
                             card.remove();
                             reindex();
+                            pushHistory();
+                        });
+                    }
+
+                    if (duplicateBtn) {
+                        duplicateBtn.addEventListener('click', function() {
+                            const clone = card.cloneNode(true);
+                            card.insertAdjacentElement('afterend', clone);
+                            bindCardEvents(clone);
+                            reindex();
+                            pushHistory();
+                        });
+                    }
+
+                    if (moveUpBtn) {
+                        moveUpBtn.addEventListener('click', function() {
+                            const prev = card.previousElementSibling;
+                            if (!prev) return;
+                            list.insertBefore(card, prev);
+                            reindex();
+                            pushHistory();
+                        });
+                    }
+
+                    if (moveDownBtn) {
+                        moveDownBtn.addEventListener('click', function() {
+                            const next = card.nextElementSibling;
+                            if (!next) return;
+                            list.insertBefore(next, card);
+                            reindex();
+                            pushHistory();
+                        });
+                    }
+
+                    if (toggleEnabledBtn && enabledInput) {
+                        toggleEnabledBtn.addEventListener('click', function() {
+                            enabledInput.value = enabledInput.value === '0' ? '1' : '0';
+                            syncEnabledVisual();
+                            pushHistory();
                         });
                     }
 
@@ -892,6 +1292,7 @@ class Syntekpro_Slider_Core {
                         el.addEventListener('change', function() {
                             updatePreviewText();
                             runPreview();
+                            pushHistory();
                         });
                     });
 
@@ -899,15 +1300,17 @@ class Syntekpro_Slider_Core {
                     syncLayerOrder();
                     updatePreviewText();
                     runPreview();
+                    syncEnabledVisual();
                 }
 
                 function addSlide() {
                     const index = list.querySelectorAll('.sp-slide-card').length;
                     const html = `
                         <div class="sp-slide-card" data-index="${index}">
-                            <h5 class="sp-slide-title">Slide ${index + 1}</h5>
+                            <h5 class="sp-slide-title"><span class="sp-slide-title-text">Slide ${index + 1}</span> <label style="margin-left:8px;font-weight:400;font-size:12px;"><input type="checkbox" class="sp-slide-select"> Select</label></h5>
                             <div class="sp-slide-grid">
                                 <label class="full"><span>Title</span><input type="text" name="sp_slider_slides[${index}][title]" value=""></label>
+                                <input type="hidden" class="sp-slide-enabled-input" name="sp_slider_slides[${index}][enabled]" value="1">
                                 <label><span>Badge</span><input type="text" name="sp_slider_slides[${index}][badge]" value=""></label>
                                 <label><span>Caption</span><input type="text" name="sp_slider_slides[${index}][caption]" value=""></label>
                                 <label class="full"><span>Description</span><textarea rows="3" name="sp_slider_slides[${index}][description]"></textarea></label>
@@ -921,6 +1324,14 @@ class Syntekpro_Slider_Core {
                                         <button type="button" class="button sp-clear-image">Clear</button>
                                     </div>
                                 </label>
+                                <label><span>Publish Start</span><input type="datetime-local" name="sp_slider_slides[${index}][publishStart]" value=""></label>
+                                <label><span>Publish End</span><input type="datetime-local" name="sp_slider_slides[${index}][publishEnd]" value=""></label>
+                                <label><span>Audience</span><select name="sp_slider_slides[${index}][audience]"><option value="all">All</option><option value="guest">Guest Only</option><option value="logged-in">Logged-in Only</option></select></label>
+                                <label><span>Roles (csv)</span><input type="text" name="sp_slider_slides[${index}][roles]" value="" placeholder="subscriber,customer"></label>
+                                <label><span>Geo Allow (csv)</span><input type="text" name="sp_slider_slides[${index}][geoAllow]" value="" placeholder="US,CA,GB"></label>
+                                <label><span>Countdown End</span><input type="datetime-local" name="sp_slider_slides[${index}][countdownEnd]" value=""></label>
+                                <label><span>Live Endpoint</span><input type="url" name="sp_slider_slides[${index}][liveEndpoint]" value="" placeholder="https://api.example.com/metrics"></label>
+                                <label><span>Live Key</span><input type="text" name="sp_slider_slides[${index}][liveKey]" value="value"></label>
                                 <label><span>Layer Duration (ms)</span><input type="number" min="100" max="3000" step="10" name="sp_slider_slides[${index}][layerDuration]" value="720"></label>
                                 <label><span>Layer Stagger (ms)</span><input type="number" min="0" max="1000" step="10" name="sp_slider_slides[${index}][layerStagger]" value="70"></label>
                                 <label><span>Ken Burns Duration (ms)</span><input type="number" min="2000" max="30000" step="100" name="sp_slider_slides[${index}][kenBurnsDuration]" value="9000"></label>
@@ -958,15 +1369,89 @@ class Syntekpro_Slider_Core {
                                     </ul>
                                 </div>
                             </div>
-                            <div class="sp-slide-actions"><button type="button" class="button button-link-delete sp-remove-slide">Remove Slide</button></div>
+                            <div class="sp-slide-actions"><button type="button" class="button sp-move-slide-up">Move Up</button><button type="button" class="button sp-move-slide-down">Move Down</button><button type="button" class="button sp-duplicate-slide">Duplicate</button><button type="button" class="button sp-toggle-slide-enabled">Hide Slide</button><button type="button" class="button button-link-delete sp-remove-slide">Remove Slide</button></div>
                         </div>
                     `;
                     list.insertAdjacentHTML('beforeend', html);
                     bindCardEvents(list.lastElementChild);
+                    pushHistory();
                 }
 
                 list.querySelectorAll('.sp-slide-card').forEach(bindCardEvents);
                 addBtn.addEventListener('click', addSlide);
+                if (featuresBtn) featuresBtn.addEventListener('click', openFeaturesModal);
+                if (featuresBtnToolbar) featuresBtnToolbar.addEventListener('click', openFeaturesModal);
+                if (closeFeaturesBtn) closeFeaturesBtn.addEventListener('click', closeFeaturesModal);
+                if (featuresModal) {
+                    featuresModal.addEventListener('click', function(event) {
+                        if (event.target && event.target.hasAttribute('data-close')) {
+                            closeFeaturesModal();
+                        }
+                    });
+                }
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape') closeFeaturesModal();
+                });
+                if (bulkBtn) {
+                    bulkBtn.addEventListener('click', function() {
+                        const selectedCards = Array.from(list.querySelectorAll('.sp-slide-card')).filter((card) => {
+                            const checkbox = card.querySelector('.sp-slide-select');
+                            return checkbox && checkbox.checked;
+                        });
+
+                        if (!selectedCards.length) {
+                            window.alert('Select at least one slide for bulk edit.');
+                            return;
+                        }
+
+                        const field = window.prompt('Field key to update (e.g. titleAnim, titleAnimOut, layerDuration, buttonText):', 'titleAnim');
+                        if (!field) return;
+                        const value = window.prompt('Set value for ' + field + ':', 'fade-up');
+                        if (value === null) return;
+
+                        selectedCards.forEach((card) => {
+                            const input = card.querySelector('[name*="[' + field + ']"]');
+                            if (!input) return;
+                            input.value = value;
+                            input.dispatchEvent(new Event('input', { bubbles: true }));
+                            input.dispatchEvent(new Event('change', { bubbles: true }));
+                        });
+
+                        pushHistory();
+                    });
+                }
+                if (undoBtn) {
+                    undoBtn.addEventListener('click', function() {
+                        if (history.length <= 1) return;
+                        const current = history.pop();
+                        redoStack.push(current);
+                        restoreState(history[history.length - 1]);
+                    });
+                }
+                if (redoBtn) {
+                    redoBtn.addEventListener('click', function() {
+                        if (!redoStack.length) return;
+                        const state = redoStack.pop();
+                        history.push(state);
+                        restoreState(state);
+                    });
+                }
+                if (revDiffBtn && revA && revB && revOut && Array.isArray(window.SP_REVISION_HISTORY)) {
+                    revDiffBtn.addEventListener('click', function() {
+                        const aIndex = parseInt(revA.value || '0', 10);
+                        const bIndex = parseInt(revB.value || '0', 10);
+                        const a = window.SP_REVISION_HISTORY[aIndex] || {};
+                        const b = window.SP_REVISION_HISTORY[bIndex] || {};
+                        const aJson = JSON.stringify({ settings: a.settings || {}, slides: a.slides || [] }, null, 2);
+                        const bJson = JSON.stringify({ settings: b.settings || {}, slides: b.slides || [] }, null, 2);
+                        if (aJson === bJson) {
+                            revOut.textContent = 'No differences found.';
+                            return;
+                        }
+                        revOut.textContent = 'Revision A:\n' + aJson + '\n\n---\n\nRevision B:\n' + bJson;
+                    });
+                }
+                pushHistory();
             })();
         </script>
         <?php
@@ -1003,10 +1488,22 @@ class Syntekpro_Slider_Core {
         $ken_burns_scale_end = isset($slide['kenBurnsScaleEnd']) ? (float) $slide['kenBurnsScaleEnd'] : 1.16;
         $ken_burns_duration = isset($slide['kenBurnsDuration']) ? absint($slide['kenBurnsDuration']) : 9000;
         $ken_burns_direction = isset($slide['kenBurnsDirection']) ? $slide['kenBurnsDirection'] : 'left-to-right';
+        $enabled = !isset($slide['enabled']) || !empty($slide['enabled']);
+        $publish_start = isset($slide['publishStart']) ? sanitize_text_field($slide['publishStart']) : '';
+        $publish_end = isset($slide['publishEnd']) ? sanitize_text_field($slide['publishEnd']) : '';
+        $publish_start_attr = $publish_start !== '' ? str_replace(' ', 'T', substr($publish_start, 0, 16)) : '';
+        $publish_end_attr = $publish_end !== '' ? str_replace(' ', 'T', substr($publish_end, 0, 16)) : '';
+        $audience = isset($slide['audience']) ? sanitize_key($slide['audience']) : 'all';
+        $roles = isset($slide['roles']) ? sanitize_text_field($slide['roles']) : '';
+        $geo_allow = isset($slide['geoAllow']) ? sanitize_text_field($slide['geoAllow']) : '';
+        $countdown_end = isset($slide['countdownEnd']) ? sanitize_text_field($slide['countdownEnd']) : '';
+        $live_endpoint = isset($slide['liveEndpoint']) ? esc_url($slide['liveEndpoint']) : '';
+        $live_key = isset($slide['liveKey']) ? sanitize_key($slide['liveKey']) : 'value';
 
-        echo '<div class="sp-slide-card" data-index="' . esc_attr((string) $index) . '">';
-        echo '<h5 class="sp-slide-title">' . esc_html(sprintf(__('Slide %d', 'syntekpro-animations'), $index + 1)) . '</h5>';
+        echo '<div class="sp-slide-card' . ($enabled ? '' : ' is-disabled') . '" data-index="' . esc_attr((string) $index) . '">';
+        echo '<h5 class="sp-slide-title"><span class="sp-slide-title-text">' . esc_html(sprintf(__('Slide %d', 'syntekpro-animations'), $index + 1)) . '</span> <label style="margin-left:8px;font-weight:400;font-size:12px;"><input type="checkbox" class="sp-slide-select"> ' . esc_html__('Select', 'syntekpro-animations') . '</label></h5>';
         echo '<div class="sp-slide-grid">';
+        echo '<input type="hidden" class="sp-slide-enabled-input" name="sp_slider_slides[' . esc_attr((string) $index) . '][enabled]" value="' . ($enabled ? '1' : '0') . '">';
 
         echo '<label class="full"><span>' . esc_html__('Title', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][title]" value="' . esc_attr($title) . '"></label>';
         echo '<label><span>' . esc_html__('Badge', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][badge]" value="' . esc_attr($badge) . '"></label>';
@@ -1023,6 +1520,15 @@ class Syntekpro_Slider_Core {
         echo '<button type="button" class="button sp-clear-image">' . esc_html__('Clear', 'syntekpro-animations') . '</button>';
         echo '</div>';
         echo '</label>';
+
+        echo '<label><span>' . esc_html__('Publish Start', 'syntekpro-animations') . '</span><input type="datetime-local" name="sp_slider_slides[' . esc_attr((string) $index) . '][publishStart]" value="' . esc_attr($publish_start_attr) . '"></label>';
+        echo '<label><span>' . esc_html__('Publish End', 'syntekpro-animations') . '</span><input type="datetime-local" name="sp_slider_slides[' . esc_attr((string) $index) . '][publishEnd]" value="' . esc_attr($publish_end_attr) . '"></label>';
+        echo '<label><span>' . esc_html__('Audience', 'syntekpro-animations') . '</span><select name="sp_slider_slides[' . esc_attr((string) $index) . '][audience]"><option value="all" ' . selected($audience, 'all', false) . '>All</option><option value="guest" ' . selected($audience, 'guest', false) . '>Guest Only</option><option value="logged-in" ' . selected($audience, 'logged-in', false) . '>Logged-in Only</option></select></label>';
+        echo '<label><span>' . esc_html__('Roles (csv)', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][roles]" value="' . esc_attr($roles) . '" placeholder="subscriber,customer"></label>';
+        echo '<label><span>' . esc_html__('Geo Allow (csv)', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][geoAllow]" value="' . esc_attr($geo_allow) . '" placeholder="US,CA,GB"></label>';
+        echo '<label><span>' . esc_html__('Countdown End', 'syntekpro-animations') . '</span><input type="datetime-local" name="sp_slider_slides[' . esc_attr((string) $index) . '][countdownEnd]" value="' . esc_attr($countdown_end) . '"></label>';
+        echo '<label><span>' . esc_html__('Live Endpoint', 'syntekpro-animations') . '</span><input type="url" name="sp_slider_slides[' . esc_attr((string) $index) . '][liveEndpoint]" value="' . esc_attr($live_endpoint) . '" placeholder="https://api.example.com/metrics"></label>';
+        echo '<label><span>' . esc_html__('Live Key', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][liveKey]" value="' . esc_attr($live_key) . '"></label>';
 
         echo '<label><span>' . esc_html__('Layer Duration (ms)', 'syntekpro-animations') . '</span><input type="number" min="100" max="3000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][layerDuration]" value="' . esc_attr((string) $layer_duration) . '"></label>';
         echo '<label><span>' . esc_html__('Layer Stagger (ms)', 'syntekpro-animations') . '</span><input type="number" min="0" max="1000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][layerStagger]" value="' . esc_attr((string) $layer_stagger) . '"></label>';
@@ -1057,7 +1563,7 @@ class Syntekpro_Slider_Core {
         echo '</div>';
 
         echo '</div>';
-        echo '<div class="sp-slide-actions"><button type="button" class="button button-link-delete sp-remove-slide">' . esc_html__('Remove Slide', 'syntekpro-animations') . '</button></div>';
+        echo '<div class="sp-slide-actions"><button type="button" class="button sp-move-slide-up">' . esc_html__('Move Up', 'syntekpro-animations') . '</button><button type="button" class="button sp-move-slide-down">' . esc_html__('Move Down', 'syntekpro-animations') . '</button><button type="button" class="button sp-duplicate-slide">' . esc_html__('Duplicate', 'syntekpro-animations') . '</button><button type="button" class="button sp-toggle-slide-enabled">' . esc_html($enabled ? __('Hide Slide', 'syntekpro-animations') : __('Show Slide', 'syntekpro-animations')) . '</button><button type="button" class="button button-link-delete sp-remove-slide">' . esc_html__('Remove Slide', 'syntekpro-animations') . '</button></div>';
         echo '</div>';
     }
 
@@ -1112,19 +1618,44 @@ class Syntekpro_Slider_Core {
             'lazyLoad' => !empty($settings['lazyLoad']),
             'transition' => isset($settings['transition']) ? sanitize_text_field($settings['transition']) : 'slide',
             'transitionSpeed' => isset($settings['transitionSpeed']) ? absint($settings['transitionSpeed']) : 600,
+            'easing' => isset($settings['easing']) ? sanitize_text_field($settings['easing']) : 'ease',
             'heightDesktop' => isset($settings['heightDesktop']) ? absint($settings['heightDesktop']) : 460,
             'heightTablet' => isset($settings['heightTablet']) ? absint($settings['heightTablet']) : 400,
             'heightMobile' => isset($settings['heightMobile']) ? absint($settings['heightMobile']) : 320,
             'contentAlign' => isset($settings['contentAlign']) ? sanitize_text_field($settings['contentAlign']) : 'center',
             'overlayStrength' => isset($settings['overlayStrength']) ? absint($settings['overlayStrength']) : 55,
+            'sliderWidth' => isset($settings['sliderWidth']) ? absint($settings['sliderWidth']) : 1200,
+            'pauseOnFocus' => !empty($settings['pauseOnFocus']),
+            'fluidMode' => isset($settings['fluidMode']) ? sanitize_text_field($settings['fluidMode']) : 'auto-scale',
+            'swipeSensitivity' => isset($settings['swipeSensitivity']) ? absint($settings['swipeSensitivity']) : 35,
+            'swipeDirection' => isset($settings['swipeDirection']) ? sanitize_text_field($settings['swipeDirection']) : 'horizontal',
+            'dynamicSource' => isset($settings['dynamicSource']) ? sanitize_text_field($settings['dynamicSource']) : 'manual',
+            'dynamicPostType' => isset($settings['dynamicPostType']) ? sanitize_text_field($settings['dynamicPostType']) : 'post',
+            'dynamicLimit' => isset($settings['dynamicLimit']) ? absint($settings['dynamicLimit']) : 5,
+            'analyticsEnabled' => !empty($settings['analyticsEnabled']),
+            'ga4Enabled' => !empty($settings['ga4Enabled']),
+            'ga4EventPrefix' => isset($settings['ga4EventPrefix']) ? sanitize_text_field($settings['ga4EventPrefix']) : 'syntekpro_slider',
+            'customTransitionCss' => isset($settings['customTransitionCss']) ? sanitize_textarea_field($settings['customTransitionCss']) : '',
         );
 
-        if (!in_array($safe_settings['transition'], array('slide', 'fade', 'zoom'), true)) {
+        if (!in_array($safe_settings['transition'], array('slide', 'fade', 'zoom', 'crossfade', 'parallax', 'ken-burns', 'cube', 'flip', 'custom-css'), true)) {
             $safe_settings['transition'] = 'slide';
         }
         if (!in_array($safe_settings['contentAlign'], array('left', 'center', 'right'), true)) {
             $safe_settings['contentAlign'] = 'center';
         }
+        if (!in_array($safe_settings['fluidMode'], array('auto-scale', 'fixed', 'full-width', 'full-screen', 'aspect-lock'), true)) {
+            $safe_settings['fluidMode'] = 'auto-scale';
+        }
+        if (!in_array($safe_settings['swipeDirection'], array('horizontal', 'vertical', 'both'), true)) {
+            $safe_settings['swipeDirection'] = 'horizontal';
+        }
+        if (!in_array($safe_settings['dynamicSource'], array('manual', 'posts', 'products', 'cpt', 'acf'), true)) {
+            $safe_settings['dynamicSource'] = 'manual';
+        }
+        $safe_settings['swipeSensitivity'] = max(10, min(160, $safe_settings['swipeSensitivity']));
+        $safe_settings['dynamicLimit'] = max(1, min(30, $safe_settings['dynamicLimit']));
+        $safe_settings['sliderWidth'] = max(320, min(2560, $safe_settings['sliderWidth']));
         $safe_settings['overlayStrength'] = max(0, min(90, $safe_settings['overlayStrength']));
 
         $safe_slides = array();
@@ -1155,6 +1686,11 @@ class Syntekpro_Slider_Core {
                 'buttonAnimOut' => isset($slide['buttonAnimOut']) ? sanitize_key($slide['buttonAnimOut']) : 'zoom-out',
                 'badgeAnimOut' => isset($slide['badgeAnimOut']) ? sanitize_key($slide['badgeAnimOut']) : 'fade-up',
                 'captionAnimOut' => isset($slide['captionAnimOut']) ? sanitize_key($slide['captionAnimOut']) : 'fade-down',
+                'titleMotionPath' => isset($slide['titleMotionPath']) ? sanitize_text_field($slide['titleMotionPath']) : '',
+                'descMotionPath' => isset($slide['descMotionPath']) ? sanitize_text_field($slide['descMotionPath']) : '',
+                'buttonMotionPath' => isset($slide['buttonMotionPath']) ? sanitize_text_field($slide['buttonMotionPath']) : '',
+                'badgeMotionPath' => isset($slide['badgeMotionPath']) ? sanitize_text_field($slide['badgeMotionPath']) : '',
+                'captionMotionPath' => isset($slide['captionMotionPath']) ? sanitize_text_field($slide['captionMotionPath']) : '',
                 'layerDuration' => isset($slide['layerDuration']) ? absint($slide['layerDuration']) : 720,
                 'layerStagger' => isset($slide['layerStagger']) ? absint($slide['layerStagger']) : 70,
                 'layerOrder' => isset($slide['layerOrder']) ? sanitize_text_field($slide['layerOrder']) : 'badge,title,description,button,caption',
@@ -1163,6 +1699,16 @@ class Syntekpro_Slider_Core {
                 'kenBurnsScaleEnd' => isset($slide['kenBurnsScaleEnd']) ? (float) $slide['kenBurnsScaleEnd'] : 1.16,
                 'kenBurnsDuration' => isset($slide['kenBurnsDuration']) ? absint($slide['kenBurnsDuration']) : 9000,
                 'kenBurnsDirection' => isset($slide['kenBurnsDirection']) ? sanitize_key($slide['kenBurnsDirection']) : 'left-to-right',
+                'enabled' => !isset($slide['enabled']) || !empty($slide['enabled']),
+                'publishStart' => isset($slide['publishStart']) ? sanitize_text_field($slide['publishStart']) : '',
+                'publishEnd' => isset($slide['publishEnd']) ? sanitize_text_field($slide['publishEnd']) : '',
+                'audience' => isset($slide['audience']) ? sanitize_key($slide['audience']) : 'all',
+                'roles' => isset($slide['roles']) ? sanitize_text_field($slide['roles']) : '',
+                'geoAllow' => isset($slide['geoAllow']) ? sanitize_text_field($slide['geoAllow']) : '',
+                'countdownEnd' => isset($slide['countdownEnd']) ? sanitize_text_field($slide['countdownEnd']) : '',
+                'liveEndpoint' => isset($slide['liveEndpoint']) ? esc_url_raw($slide['liveEndpoint']) : '',
+                'liveKey' => isset($slide['liveKey']) ? sanitize_key($slide['liveKey']) : 'value',
+                'translations' => isset($slide['translations']) && is_array($slide['translations']) ? $slide['translations'] : array(),
             );
 
             $allowed_layer_anims = array('none', 'fade-up', 'fade-down', 'fade-left', 'fade-right', 'zoom-in', 'zoom-out');
@@ -1189,6 +1735,24 @@ class Syntekpro_Slider_Core {
 
             if ($safe_slide['title'] === '' && $safe_slide['badge'] === '' && $safe_slide['caption'] === '' && $safe_slide['description'] === '' && $safe_slide['buttonText'] === '' && $safe_slide['backgroundImage'] === '') {
                 continue;
+            }
+
+            if (!empty($safe_slide['translations']) && is_array($safe_slide['translations'])) {
+                $clean_translations = array();
+                foreach ($safe_slide['translations'] as $locale => $row) {
+                    if (!is_array($row)) {
+                        continue;
+                    }
+                    $locale_key = sanitize_text_field((string) $locale);
+                    $clean_translations[$locale_key] = array(
+                        'title' => isset($row['title']) ? sanitize_text_field($row['title']) : '',
+                        'badge' => isset($row['badge']) ? sanitize_text_field($row['badge']) : '',
+                        'caption' => isset($row['caption']) ? sanitize_text_field($row['caption']) : '',
+                        'description' => isset($row['description']) ? sanitize_textarea_field($row['description']) : '',
+                        'buttonText' => isset($row['buttonText']) ? sanitize_text_field($row['buttonText']) : '',
+                    );
+                }
+                $safe_slide['translations'] = $clean_translations;
             }
 
             $safe_slides[] = $safe_slide;

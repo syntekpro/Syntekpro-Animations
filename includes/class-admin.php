@@ -140,9 +140,6 @@ class Syntekpro_Animations_Admin {
         <?php
     }
 
-    /**
-     * Keep the custom menu icon scaled to a small footprint in the WP sidebar.
-     */
     public function menu_icon_sizing_css() {
         echo '<style>
             #toplevel_page_syntekpro-animations .wp-menu-image img{
@@ -177,7 +174,7 @@ class Syntekpro_Animations_Admin {
                 line-height:1;
             }
             #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations"]::before{content:"\\f226";}
-            #toplevel_page_syntekpro-animations .wp-submenu a[href="edit.php?post_type=syntekpro_slider"]::before{content:"\\f161";}
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-sliders"]::before{content:"\\f161";}
             #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-patterns"]::before{content:"\\f538";}
             #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-builder"]::before{content:"\\f540";}
             #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-presets"]::before{content:"\\f479";}
@@ -202,7 +199,7 @@ class Syntekpro_Animations_Admin {
      */
     public function dashboard_page() {
         $cards = array(
-            array('label' => __('Sliders', 'syntekpro-animations'), 'icon' => '🎠', 'desc' => __('Build interactive slider experiences', 'syntekpro-animations'), 'url' => admin_url('edit.php?post_type=syntekpro_slider'), 'style' => 'linear-gradient(135deg,#ecfeff,#f0f9ff)'),
+            array('label' => __('Sliders', 'syntekpro-animations'), 'icon' => '🎠', 'desc' => __('Build interactive slider experiences', 'syntekpro-animations'), 'url' => admin_url('admin.php?page=syntekpro-animations-sliders'), 'style' => 'linear-gradient(135deg,#ecfeff,#f0f9ff)'),
             array('label' => __('Presets', 'syntekpro-animations'), 'icon' => '🗂️', 'desc' => __('Browse ready animations', 'syntekpro-animations'), 'url' => admin_url('admin.php?page=syntekpro-animations-presets'), 'style' => 'linear-gradient(135deg,#f8fafc,#eef2ff)'),
             array('label' => __('Patterns', 'syntekpro-animations'), 'icon' => '🧩', 'desc' => __('Drop ready-made page sections', 'syntekpro-animations'), 'url' => admin_url('admin.php?page=syntekpro-animations-patterns'), 'style' => 'linear-gradient(135deg,#f1f5f9,#e2e8f0)'),
             array('label' => __('Builder', 'syntekpro-animations'), 'icon' => '🎨', 'desc' => __('Visual animation builder', 'syntekpro-animations'), 'url' => admin_url('admin.php?page=syntekpro-animations-builder'), 'style' => 'linear-gradient(135deg,#fff7ed,#ffe4e6)'),
@@ -271,6 +268,157 @@ class Syntekpro_Animations_Admin {
     }
 
     /**
+     * Custom sliders management page with beautiful design
+     */
+    public function sliders_page() {
+        // Get all sliders
+        $sliders = get_posts(array(
+            'post_type' => 'syntekpro_slider',
+            'posts_per_page' => -1,
+            'orderby' => 'modified',
+            'order' => 'DESC',
+        ));
+
+        $sliders = is_array($sliders) ? $sliders : array();
+        ?>
+        <div class="wrap syntekpro-settings-wrapper">
+            <!-- Header with Logo -->
+            <?php $this->render_page_header(__('Interactive Sliders', 'syntekpro-animations'), __('Create stunning carousel experiences with advanced controls and animations.', 'syntekpro-animations'), sprintf(__('%d sliders created', 'syntekpro-animations'), count($sliders))); ?>
+
+            <!-- Top Menu with Features/Options -->
+            <div class="syntekpro-settings-section" style="margin-bottom:24px;border-top:3px solid #ffd9e6;padding-top:16px;">
+                <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                        <div class="syntekpro-feature-badge" style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#f0fdf4;border:1px solid #dcfce7;border-radius:6px;font-size:12px;color:#166534;">
+                            <span style="font-size:14px;">⚙️</span>
+                            <strong><?php _e('Responsive Layouts', 'syntekpro-animations'); ?></strong>
+                        </div>
+                        <div class="syntekpro-feature-badge" style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#fef3c7;border:1px solid #fde68a;border-radius:6px;font-size:12px;color:#92400e;">
+                            <span style="font-size:14px;">✨</span>
+                            <strong><?php _e('GSAP Animations', 'syntekpro-animations'); ?></strong>
+                        </div>
+                        <div class="syntekpro-feature-badge" style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#dbeafe;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#1e40af;">
+                            <span style="font-size:14px;">📊</span>
+                            <strong><?php _e('Analytics Built-in', 'syntekpro-animations'); ?></strong>
+                        </div>
+                        <div class="syntekpro-feature-badge" style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#fce7f3;border:1px solid #fbcfe8;border-radius:6px;font-size:12px;color:#be185d;">
+                            <span style="font-size:14px;">🎨</span>
+                            <strong><?php _e('Advanced Styling', 'syntekpro-animations'); ?></strong>
+                        </div>
+                    </div>
+                    <a href="<?php echo esc_url(admin_url('post-new.php?post_type=syntekpro_slider')); ?>" class="button button-primary" style="background:#0ea5e9;color:#fff;border-color:#0ea5e9;padding:10px 24px;font-weight:600;border-radius:8px;box-shadow:0 4px 12px rgba(14,165,233,0.3);transition:all 200ms ease;display:flex;align-items:center;gap:8px;text-decoration:none;">
+                        <span style="font-size:18px;">+</span>
+                        <strong><?php _e('Add New Slider', 'syntekpro-animations'); ?></strong>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sliders Grid -->
+            <div class="syntekpro-settings-section" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;">
+                <?php if (empty($sliders)) : ?>
+                    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;">
+                        <div style="font-size:48px;margin-bottom:12px;">🎠</div>
+                        <h3 style="margin:0 0 8px 0;color:#0f172a;font-size:18px;"><?php _e('No sliders yet', 'syntekpro-animations'); ?></h3>
+                        <p style="margin:0 0 16px 0;color:#64748b;font-size:14px;"><?php _e('Create your first slider to get started with beautiful carousel experiences.', 'syntekpro-animations'); ?></p>
+                        <a href="<?php echo esc_url(admin_url('post-new.php?post_type=syntekpro_slider')); ?>" class="button button-primary" style="background:#0ea5e9;color:#fff;border-color:#0ea5e9;padding:10px 20px;font-weight:600;border-radius:6px;"><?php _e('Create First Slider', 'syntekpro-animations'); ?></a>
+                    </div>
+                <?php else : ?>
+                    <?php foreach ($sliders as $slider) : ?>
+                        <?php
+                        $settings = get_post_meta($slider->ID, '_sp_slider_settings', true);
+                        $slides = get_post_meta($slider->ID, '_sp_slider_slides', true);
+                        $settings = is_array($settings) ? $settings : array();
+                        $slides = is_array($slides) ? $slides : array();
+                        $slide_count = count($slides);
+                        $is_published = $slider->post_status === 'publish';
+                        $modified = strtotime($slider->post_modified) ? date_i18n('M d, Y', strtotime($slider->post_modified)) : '-';
+                        ?>
+                        <div class="syntekpro-slider-card" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:0;overflow:hidden;box-shadow:0 2px 8px rgba(15,23,42,0.06);transition:all 200ms ease;position:relative;">
+                            <!-- Card Header -->
+                            <div style="padding:16px;border-bottom:1px solid #f1f5f9;background:linear-gradient(135deg,#f8fafc,#f0f9ff);">
+                                <div style="display:flex;justify-content:space-between;align-items:start;gap:12px;">
+                                    <div style="flex:1;">
+                                        <h3 style="margin:0 0 6px 0;color:#0f172a;word-break:break-word;">
+                                            <a href="<?php echo esc_url(get_edit_post_link($slider->ID)); ?>" style="text-decoration:none;color:#0ea5e9;font-weight:600;font-size:15px;">
+                                                <?php echo esc_html($slider->post_title); ?>
+                                            </a>
+                                        </h3>
+                                        <div style="font-size:12px;color:#64748b;">
+                                            <?php echo wp_sprintf(__('Modified %s', 'syntekpro-animations'), esc_html($modified)); ?>
+                                        </div>
+                                    </div>
+                                    <div style="padding:4px 8px;background:<?php echo $is_published ? '#dcfce7' : '#fef3c7'; ?>;color:<?php echo $is_published ? '#166534' : '#92400e'; ?>;border-radius:4px;font-size:11px;font-weight:600;">
+                                        <?php echo $is_published ? __('Published', 'syntekpro-animations') : __('Draft', 'syntekpro-animations'); ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Body - Features/Stats -->
+                            <div style="padding:16px;border-bottom:1px solid #f1f5f9;">
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                                    <div style="padding:10px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0;">
+                                        <div style="font-size:11px;color:#64748b;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;"><?php _e('Slides', 'syntekpro-animations'); ?></div>
+                                        <div style="font-size:20px;font-weight:700;color:#0ea5e9;"><?php echo absint($slide_count); ?></div>
+                                    </div>
+                                    <div style="padding:10px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0;">
+                                        <div style="font-size:11px;color:#64748b;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;"><?php _e('Views', 'syntekpro-animations'); ?></div>
+                                        <div style="font-size:20px;font-weight:700;color:#22c55e;"><?php echo esc_html(isset($settings['analyticsEnabled']) && !empty($settings['analyticsEnabled']) ? '📊' : '—'); ?></div>
+                                    </div>
+                                </div>
+
+                                <!-- Features Grid -->
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+                                    <div style="display:flex;align-items:center;gap:6px;color:#334155;">
+                                        <span><?php echo (isset($settings['autoplay']) && !empty($settings['autoplay'])) ? '✓' : '○'; ?></span>
+                                        <span><?php _e('Autoplay', 'syntekpro-animations'); ?></span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:6px;color:#334155;">
+                                        <span><?php echo (isset($settings['navigation']) && !empty($settings['navigation'])) ? '✓' : '○'; ?></span>
+                                        <span><?php _e('Navigation', 'syntekpro-animations'); ?></span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:6px;color:#334155;">
+                                        <span><?php echo (isset($settings['pagination']) && !empty($settings['pagination'])) ? '✓' : '○'; ?></span>
+                                        <span><?php _e('Pagination', 'syntekpro-animations'); ?></span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:6px;color:#334155;">
+                                        <span><?php echo (isset($settings['loop']) && !empty($settings['loop'])) ? '✓' : '○'; ?></span>
+                                        <span><?php _e('Loop', 'syntekpro-animations'); ?></span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:6px;color:#334155;">
+                                        <span><?php echo (isset($settings['lazyLoad']) && !empty($settings['lazyLoad'])) ? '✓' : '○'; ?></span>
+                                        <span><?php _e('Lazy Load', 'syntekpro-animations'); ?></span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:6px;color:#334155;">
+                                        <span><?php echo (isset($settings['analyticsEnabled']) && !empty($settings['analyticsEnabled'])) ? '✓' : '○'; ?></span>
+                                        <span><?php _e('Analytics', 'syntekpro-animations'); ?></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Footer - Actions -->
+                            <div style="padding:12px;display:flex;gap:8px;background:#f8fafc;border-top:1px solid #f1f5f9;">
+                                <a href="<?php echo esc_url(get_edit_post_link($slider->ID)); ?>" class="button button-small" style="flex:1;text-align:center;background:#0ea5e9;color:#fff;border-color:#0ea5e9;text-decoration:none;border-radius:4px;font-size:12px;padding:8px;">
+                                    <?php _e('Edit', 'syntekpro-animations'); ?>
+                                </a>
+                                <a href="<?php echo esc_url(get_permalink($slider->ID)); ?>" class="button button-small" target="_blank" style="flex:1;text-align:center;background:#f1f5f9;color:#0f172a;border-color:#e2e8f0;text-decoration:none;border-radius:4px;font-size:12px;padding:8px;display:flex;align-items:center;justify-content:center;gap:4px;">
+                                    👁
+                                </a>
+                                <a href="<?php echo esc_url(get_delete_post_link($slider->ID, '', true)); ?>" class="button button-small" onclick="return confirm('<?php echo esc_attr(__('Are you sure?', 'syntekpro-animations')); ?>');" style="flex:0 0 auto;background:#fee2e2;color:#dc2626;border-color:#fecaca;text-decoration:none;border-radius:4px;font-size:12px;padding:8px 10px;">
+                                    ✕
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
+            <!-- Footer -->
+            <?php $this->render_page_footer(__('Manage interactive slider experiences for your WordPress content.', 'syntekpro-animations')); ?>
+        </div>
+        <?php
+    }
+
+    /**
      * Register admin menu pages
      */
     public function add_admin_menu() {
@@ -301,7 +449,8 @@ class Syntekpro_Animations_Admin {
             __('Sliders', 'syntekpro-animations'),
             __('Sliders', 'syntekpro-animations'),
             $capability,
-            'edit.php?post_type=syntekpro_slider'
+            'syntekpro-animations-sliders',
+            array($this, 'sliders_page')
         );
 
         add_submenu_page('syntekpro-animations', __('Patterns', 'syntekpro-animations'), __('Patterns', 'syntekpro-animations'), $capability, 'syntekpro-animations-patterns', array($this, 'patterns_page'));
@@ -2882,7 +3031,7 @@ gsap.to('.scroll-element', {
                 </div>
 
                 <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:10px;">
-                    <h3 style="margin:0;color:#0f172a;">ℹ️ <?php _e('About version 2.4.1', 'syntekpro-animations'); ?></h3>
+                    <h3 style="margin:0;color:#0f172a;">ℹ️ <?php _e('About version 2.4.3', 'syntekpro-animations'); ?></h3>
                     <p style="margin:0;color:#334155;">
                         <?php _e('This release expands the pattern library, cleans up Pattern Data editing, and polishes the admin icon experience.', 'syntekpro-animations'); ?>
                     </p>

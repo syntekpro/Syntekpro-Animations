@@ -4,6 +4,55 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [Unreleased]
+
+### Added
+
+### Notes
+
+## [2.4.3] - 2026-03-31
+
+### Added
+- Added custom branded slider management page with beautiful card-based UI matching plugin design system.
+- Added feature badges (Responsive Layouts, GSAP Animations, Analytics, Advanced Styling) in top menu.
+- Added enhanced "Add New Slider" button with gradient styling and prominent UI placement.
+- Added slider feature indicators on cards (autoplay, navigation, pagination, loop, lazy load, analytics).
+- Added responsive slider grid layout that auto-adjusts column count based on screen size.
+- Added smooth hover animations and transitions for better UX on slider cards and admin buttons.
+- Added empty state UI with call-to-action for first slider creation.
+- Added slider stats display (slide count, analytics status) in card headers.
+
+### Changed
+- Changed Sliders admin menu to use custom branded page instead of standard WordPress post list.
+- Updated slider card footer with beautiful Edit, View, and Delete action buttons.
+- Improved visual hierarchy with status badges (Published/Draft) and modified date display.
+- Enhanced admin CSS with new slider-specific styles and animations in admin-settings-ui.css.
+
+### Notes
+- This release focuses on improving the admin UX for slider management with branded styling and interactive UI patterns.
+
+## [2.4.2] - 2026-03-30
+
+### Added
+- Expanded slider runtime transitions with `crossfade`, `parallax`, `cube`, `flip`, and `custom-css` handling in frontend styles/runtime.
+- Added new slider editor controls for slide operations: duplicate, move up/down, show/hide toggle, and undo/redo history.
+- Added advanced global slider settings in the visual editor for easing, fluid mode, swipe sensitivity/direction, dynamic source controls, analytics/GA4 toggles, and custom transition CSS.
+- Added a new advanced module (`includes/class-slider-advanced.php`) with AI utility REST endpoints, headless slider REST output, Figma import adapter hook, and token management endpoints.
+- Added Core Web Vitals collection endpoint and wp-admin dashboard page under Sliders.
+- Added publish/unpublish webhook dispatch for integrations and optional runtime event webhook forwarding (Zapier/Make style flows).
+- Added lightweight revision snapshots and diff view in the slider editor.
+- Added adaptive video background loading and conversion goal analytics tracking in runtime.
+
+### Changed
+- Updated slider frontend rendering to skip disabled slides and keep thumbnail indexing aligned with visible slides.
+- Extended per-slide save data to include enabled/disabled state.
+- Added motion-path data support for layers via JSON keys (`titleMotionPath`, `descMotionPath`, `buttonMotionPath`, etc.).
+- Added critical CSS meta extraction and optional inline output path.
+- Bumped plugin version metadata and release docs to 2.4.2.
+
+### Notes
+- This release focuses on the 2.4.2 slider expansion path with stronger editor workflow and runtime configurability.
+
 ## [2.4.1] - 2026-03-30
 
 ### Added
