@@ -472,6 +472,25 @@ class Syntekpro_Animations_Admin {
      * Render General tab
      */
     private function render_general_tab() {
+        $release = get_site_transient('syntekpro_anim_github_release');
+        $latest_version = get_option('syntekpro_anim_update_latest_version', '');
+        if (empty($latest_version) && is_array($release) && !empty($release['version'])) {
+            $latest_version = (string) $release['version'];
+        }
+        $last_checked = (string) get_option('syntekpro_anim_update_last_checked', '');
+        $last_result = (string) get_option('syntekpro_anim_update_last_result', 'not_checked');
+
+        $update_state = __('Not checked yet', 'syntekpro-animations');
+        if ($last_result === 'ok') {
+            $update_state = __('Connected to GitHub release feed', 'syntekpro-animations');
+        } elseif ($last_result === 'error') {
+            $update_state = __('Last check failed (network/API)', 'syntekpro-animations');
+        } elseif ($last_result === 'invalid_payload') {
+            $update_state = __('Last check returned unexpected release data', 'syntekpro-animations');
+        }
+
+        $last_checked_label = !empty($last_checked) ? $last_checked : __('Never', 'syntekpro-animations');
+        $latest_label = !empty($latest_version) ? $latest_version : __('Unknown', 'syntekpro-animations');
         ?>
         <style>
             .syntekpro-persona-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:10px 0 16px;}
@@ -483,6 +502,17 @@ class Syntekpro_Animations_Admin {
         </style>
 
         <h2>⚙️ <?php _e('Core Settings', 'syntekpro-animations'); ?></h2>
+
+        <div style="margin:12px 0 16px;border:1px solid #dbeafe;background:#eff6ff;border-radius:10px;padding:14px;">
+            <h3 style="margin:0 0 8px 0;color:#1e3a8a;">🔄 <?php _e('Update Channel Status', 'syntekpro-animations'); ?></h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
+                <div><strong><?php _e('Installed Version', 'syntekpro-animations'); ?>:</strong> <?php echo esc_html(SYNTEKPRO_ANIM_VERSION); ?></div>
+                <div><strong><?php _e('Latest GitHub Release', 'syntekpro-animations'); ?>:</strong> <?php echo esc_html($latest_label); ?></div>
+                <div><strong><?php _e('Last Update Check', 'syntekpro-animations'); ?>:</strong> <?php echo esc_html($last_checked_label); ?></div>
+                <div><strong><?php _e('Connection Status', 'syntekpro-animations'); ?>:</strong> <?php echo esc_html($update_state); ?></div>
+            </div>
+            <p style="margin:10px 0 0 0;color:#334155;"><?php _e('WordPress checks for plugin updates on its normal schedule. You can also trigger checks from Dashboard > Updates.', 'syntekpro-animations'); ?></p>
+        </div>
 
         <div class="syntekpro-persona-grid">
             <a class="syntekpro-persona-card" href="#user-options">

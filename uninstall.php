@@ -45,6 +45,9 @@ $option_names = array(
     'syntekpro_anim_license_last_checked',
     'syntekpro_anim_license_last_result',
     'syntekpro_anim_free_preset_limit',
+    'syntekpro_anim_update_last_checked',
+    'syntekpro_anim_update_last_result',
+    'syntekpro_anim_update_latest_version',
 );
 
 foreach ($option_names as $option_name) {

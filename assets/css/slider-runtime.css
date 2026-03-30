@@ -4,11 +4,12 @@
     border-radius: 12px;
     background: #0f172a;
     color: #fff;
+    min-height: var(--sp-height-desktop, 460px);
 }
 
 .sp-slider-track {
     display: flex;
-    transition: transform 0.5s ease;
+    transition: transform var(--sp-slider-speed, 600ms) ease;
     width: 100%;
     height: 100%;
 }
@@ -27,7 +28,7 @@
 .sp-slide-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.65));
+    background: linear-gradient(180deg, rgba(15, 23, 42, calc(var(--sp-overlay-alpha, 0.55) - 0.18)), rgba(15, 23, 42, var(--sp-overlay-alpha, 0.55)));
 }
 
 .sp-slide-content {
@@ -36,6 +37,21 @@
     max-width: 760px;
     text-align: center;
     padding: 28px 20px;
+}
+
+.sp-slider-runtime[data-align="left"] .sp-slide-content { text-align: left; margin-right: auto; }
+.sp-slider-runtime[data-align="right"] .sp-slide-content { text-align: right; margin-left: auto; }
+
+.sp-slide-badge {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
 }
 
 .sp-slide-content h3 {
@@ -58,6 +74,13 @@
     color: #0f172a;
     font-weight: 600;
     text-decoration: none;
+}
+
+.sp-slide-caption {
+    display: block;
+    margin-top: 10px;
+    opacity: 0.9;
+    font-size: 0.86rem;
 }
 
 .sp-slider-prev,
@@ -103,4 +126,119 @@
 
 .sp-slider-dot.is-active {
     background: #fff;
+}
+
+.sp-slider-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 4;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sp-slider-progress-fill {
+    display: block;
+    height: 100%;
+    background: #22d3ee;
+    transform: scaleX(0);
+    transform-origin: left center;
+}
+
+.sp-slider-counter {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    z-index: 4;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.sp-slider-thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.sp-slider-thumb {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    color: #0f172a;
+    overflow: hidden;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+}
+
+.sp-slider-thumb.is-active {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.25);
+}
+
+.sp-slider-thumb-bg {
+    display: block;
+    height: 52px;
+    background: linear-gradient(140deg, #e2e8f0, #cbd5e1);
+    background-size: cover;
+    background-position: center;
+}
+
+.sp-slider-thumb-title {
+    display: block;
+    padding: 6px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sp-slider-runtime.sp-transition-fade .sp-slider-track,
+.sp-slider-runtime.sp-transition-zoom .sp-slider-track {
+    display: block;
+    position: relative;
+}
+
+.sp-slider-runtime.sp-transition-fade .sp-slide,
+.sp-slider-runtime.sp-transition-zoom .sp-slide {
+    position: absolute;
+    inset: 0;
+    min-width: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--sp-slider-speed, 600ms) ease, transform var(--sp-slider-speed, 600ms) ease;
+}
+
+.sp-slider-runtime.sp-transition-fade .sp-slide.is-active,
+.sp-slider-runtime.sp-transition-zoom .sp-slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sp-slider-runtime.sp-transition-zoom .sp-slide {
+    transform: scale(1.06);
+}
+
+.sp-slider-runtime.sp-transition-zoom .sp-slide.is-active {
+    transform: scale(1);
+}
+
+@media (max-width: 991px) {
+    .sp-slider-runtime { min-height: var(--sp-height-tablet, 400px); }
+}
+
+@media (max-width: 640px) {
+    .sp-slider-runtime { min-height: var(--sp-height-mobile, 320px); }
+    .sp-slider-prev,
+    .sp-slider-next {
+        width: 34px;
+        height: 34px;
+    }
 }

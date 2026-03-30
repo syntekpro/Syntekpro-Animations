@@ -94,8 +94,13 @@ class Syntekpro_Animations_GitHub_Updater {
     private function get_latest_release_data() {
         $cached = get_site_transient($this->transient_key);
         if (is_array($cached) && !empty($cached['version'])) {
+            if (empty(get_option('syntekpro_anim_update_latest_version', ''))) {
+                update_option('syntekpro_anim_update_latest_version', (string) $cached['version']);
+            }
             return $cached;
         }
+
+        update_option('syntekpro_anim_update_last_checked', current_time('mysql'));
 
         $request_url = sprintf(
             'https://api.github.com/repos/%s/%s/releases/latest',
@@ -115,11 +120,13 @@ class Syntekpro_Animations_GitHub_Updater {
         );
 
         if (is_wp_error($response) || (int) wp_remote_retrieve_response_code($response) !== 200) {
+            update_option('syntekpro_anim_update_last_result', 'error');
             return array();
         }
 
         $payload = json_decode(wp_remote_retrieve_body($response), true);
         if (!is_array($payload) || empty($payload['tag_name'])) {
+            update_option('syntekpro_anim_update_last_result', 'invalid_payload');
             return array();
         }
 
@@ -132,6 +139,9 @@ class Syntekpro_Animations_GitHub_Updater {
             'package' => $package,
             'body' => !empty($payload['body']) ? (string) $payload['body'] : '',
         );
+
+        update_option('syntekpro_anim_update_last_result', 'ok');
+        update_option('syntekpro_anim_update_latest_version', $version);
 
         set_site_transient($this->transient_key, $release, 6 * HOUR_IN_SECONDS);
 
