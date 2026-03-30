@@ -34,6 +34,35 @@
         var counter = withCounter ? root.querySelector('.sp-slider-counter') : null;
         var thumbs = withThumbs ? Array.prototype.slice.call(root.querySelectorAll('.sp-slider-thumb')) : [];
 
+        function clearLayerState(slide) {
+            if (!slide) return;
+            slide.querySelectorAll('.sp-layer').forEach(function(layer) {
+                layer.classList.remove('is-layer-active');
+                layer.style.transitionDuration = '';
+                layer.style.transitionDelay = '';
+            });
+        }
+
+        function animateLayers(slide) {
+            if (!slide) return;
+
+            var baseDuration = parseInt(slide.getAttribute('data-layer-duration') || '720', 10);
+            var stagger = parseInt(slide.getAttribute('data-layer-stagger') || '70', 10);
+            var layers = Array.prototype.slice.call(slide.querySelectorAll('.sp-layer'));
+
+            layers.forEach(function(layer, idx) {
+                var customDelay = parseInt(layer.getAttribute('data-delay') || '0', 10);
+                var totalDelay = Math.max(0, customDelay + (idx * stagger));
+                layer.style.transitionDuration = baseDuration + 'ms';
+                layer.style.transitionDelay = totalDelay + 'ms';
+                layer.classList.remove('is-layer-active');
+
+                requestAnimationFrame(function() {
+                    layer.classList.add('is-layer-active');
+                });
+            });
+        }
+
         function ensureLazyBackground(i) {
             if (!withLazy || !slides[i]) {
                 return;
@@ -105,12 +134,21 @@
                 slides.forEach(function(slide, i) {
                     if (i === index) {
                         slide.classList.add('is-active');
+                        animateLayers(slide);
                     } else {
                         slide.classList.remove('is-active');
+                        clearLayerState(slide);
                     }
                 });
             } else {
                 track.style.transform = 'translateX(' + (-index * 100) + '%)';
+                slides.forEach(function(slide, i) {
+                    if (i === index) {
+                        animateLayers(slide);
+                    } else {
+                        clearLayerState(slide);
+                    }
+                });
             }
 
             ensureLazyBackground(index);

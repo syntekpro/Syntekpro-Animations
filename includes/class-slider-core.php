@@ -154,6 +154,18 @@ class Syntekpro_Slider_Core {
                     'buttonText' => __('Learn More', 'syntekpro-animations'),
                     'buttonUrl' => '#',
                     'backgroundImage' => '',
+                    'titleAnim' => 'fade-up',
+                    'titleDelay' => 80,
+                    'descAnim' => 'fade-up',
+                    'descDelay' => 180,
+                    'buttonAnim' => 'zoom-in',
+                    'buttonDelay' => 300,
+                    'badgeAnim' => 'fade-down',
+                    'badgeDelay' => 0,
+                    'captionAnim' => 'fade-up',
+                    'captionDelay' => 360,
+                    'layerDuration' => 720,
+                    'layerStagger' => 70,
                 )
             );
         }
@@ -202,26 +214,38 @@ class Syntekpro_Slider_Core {
             $btn_text = isset($slide['buttonText']) ? $slide['buttonText'] : '';
             $btn_url = isset($slide['buttonUrl']) ? $slide['buttonUrl'] : '#';
             $bg = isset($slide['backgroundImage']) ? $slide['backgroundImage'] : '';
+            $title_anim = isset($slide['titleAnim']) ? sanitize_key($slide['titleAnim']) : 'fade-up';
+            $title_delay = isset($slide['titleDelay']) ? absint($slide['titleDelay']) : 80;
+            $desc_anim = isset($slide['descAnim']) ? sanitize_key($slide['descAnim']) : 'fade-up';
+            $desc_delay = isset($slide['descDelay']) ? absint($slide['descDelay']) : 180;
+            $button_anim = isset($slide['buttonAnim']) ? sanitize_key($slide['buttonAnim']) : 'zoom-in';
+            $button_delay = isset($slide['buttonDelay']) ? absint($slide['buttonDelay']) : 300;
+            $badge_anim = isset($slide['badgeAnim']) ? sanitize_key($slide['badgeAnim']) : 'fade-down';
+            $badge_delay = isset($slide['badgeDelay']) ? absint($slide['badgeDelay']) : 0;
+            $caption_anim = isset($slide['captionAnim']) ? sanitize_key($slide['captionAnim']) : 'fade-up';
+            $caption_delay = isset($slide['captionDelay']) ? absint($slide['captionDelay']) : 360;
+            $layer_duration = isset($slide['layerDuration']) ? absint($slide['layerDuration']) : 720;
+            $layer_stagger = isset($slide['layerStagger']) ? absint($slide['layerStagger']) : 70;
 
             $bg_style = (!empty($bg) && empty($settings['lazyLoad'])) ? ' style="background-image:url(' . esc_url($bg) . ');"' : '';
             $bg_data = (!empty($bg) && !empty($settings['lazyLoad'])) ? ' data-bg="' . esc_url($bg) . '"' : '';
-            $html .= '<article class="sp-slide"' . $bg_style . $bg_data . '>';
+            $html .= '<article class="sp-slide" data-layer-duration="' . esc_attr((string) $layer_duration) . '" data-layer-stagger="' . esc_attr((string) $layer_stagger) . '"' . $bg_style . $bg_data . '>';
             $html .= '<div class="sp-slide-overlay"></div>';
             $html .= '<div class="sp-slide-content">';
             if ($badge !== '') {
-                $html .= '<span class="sp-slide-badge">' . esc_html($badge) . '</span>';
+                $html .= '<span class="sp-slide-badge sp-layer sp-layer-anim-' . esc_attr($badge_anim) . '" data-layer="badge" data-delay="' . esc_attr((string) $badge_delay) . '">' . esc_html($badge) . '</span>';
             }
             if ($title !== '') {
-                $html .= '<h3>' . esc_html($title) . '</h3>';
+                $html .= '<h3 class="sp-layer sp-layer-anim-' . esc_attr($title_anim) . '" data-layer="title" data-delay="' . esc_attr((string) $title_delay) . '">' . esc_html($title) . '</h3>';
             }
             if ($desc !== '') {
-                $html .= '<p>' . esc_html($desc) . '</p>';
+                $html .= '<p class="sp-layer sp-layer-anim-' . esc_attr($desc_anim) . '" data-layer="description" data-delay="' . esc_attr((string) $desc_delay) . '">' . esc_html($desc) . '</p>';
             }
             if ($caption !== '') {
-                $html .= '<span class="sp-slide-caption">' . esc_html($caption) . '</span>';
+                $html .= '<span class="sp-slide-caption sp-layer sp-layer-anim-' . esc_attr($caption_anim) . '" data-layer="caption" data-delay="' . esc_attr((string) $caption_delay) . '">' . esc_html($caption) . '</span>';
             }
             if ($btn_text !== '') {
-                $html .= '<a class="sp-slide-btn" href="' . esc_url($btn_url) . '">' . esc_html($btn_text) . '</a>';
+                $html .= '<a class="sp-slide-btn sp-layer sp-layer-anim-' . esc_attr($button_anim) . '" data-layer="button" data-delay="' . esc_attr((string) $button_delay) . '" href="' . esc_url($btn_url) . '">' . esc_html($btn_text) . '</a>';
             }
             $html .= '</div>';
             $html .= '</article>';
@@ -320,6 +344,18 @@ class Syntekpro_Slider_Core {
                     'buttonText' => 'Learn More',
                     'buttonUrl' => '#',
                     'backgroundImage' => '',
+                    'titleAnim' => 'fade-up',
+                    'titleDelay' => 80,
+                    'descAnim' => 'fade-up',
+                    'descDelay' => 180,
+                    'buttonAnim' => 'zoom-in',
+                    'buttonDelay' => 300,
+                    'badgeAnim' => 'fade-down',
+                    'badgeDelay' => 0,
+                    'captionAnim' => 'fade-up',
+                    'captionDelay' => 360,
+                    'layerDuration' => 720,
+                    'layerStagger' => 70,
                 ),
                 array(
                     'title' => 'Slide Two',
@@ -329,6 +365,18 @@ class Syntekpro_Slider_Core {
                     'buttonText' => 'Get Started',
                     'buttonUrl' => '#',
                     'backgroundImage' => '',
+                    'titleAnim' => 'fade-up',
+                    'titleDelay' => 80,
+                    'descAnim' => 'fade-right',
+                    'descDelay' => 180,
+                    'buttonAnim' => 'zoom-in',
+                    'buttonDelay' => 300,
+                    'badgeAnim' => 'fade-down',
+                    'badgeDelay' => 0,
+                    'captionAnim' => 'fade-up',
+                    'captionDelay' => 360,
+                    'layerDuration' => 720,
+                    'layerStagger' => 70,
                 ),
             );
         }
@@ -430,6 +478,7 @@ class Syntekpro_Slider_Core {
             .sp-slide-card h5 { margin: 0 0 8px 0; }
             .sp-slide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
             .sp-slide-grid .full { grid-column: 1 / -1; }
+            .sp-layer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin-top: 6px; }
             .sp-image-row { display: flex; align-items: center; gap: 8px; }
             .sp-image-preview { width: 64px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #d1d5db; background: #fff; }
             .sp-slide-actions { margin-top: 8px; text-align: right; }
@@ -512,6 +561,19 @@ class Syntekpro_Slider_Core {
                                         <button type="button" class="button sp-clear-image">Clear</button>
                                     </div>
                                 </label>
+                                <label><span>Layer Duration (ms)</span><input type="number" min="100" max="3000" step="10" name="sp_slider_slides[${index}][layerDuration]" value="720"></label>
+                                <label><span>Layer Stagger (ms)</span><input type="number" min="0" max="1000" step="10" name="sp_slider_slides[${index}][layerStagger]" value="70"></label>
+                                <div class="full">
+                                    <span style="display:block;font-weight:600;margin-bottom:4px;">Layer Entrances</span>
+                                    <div class="sp-layer-grid">
+                                        <strong>Layer</strong><strong>Animation</strong><strong>Delay (ms)</strong><strong>Preset</strong>
+                                        <span>Badge</span><input type="text" name="sp_slider_slides[${index}][badgeAnim]" value="fade-down"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][badgeDelay]" value="0"><span>fade-down</span>
+                                        <span>Title</span><input type="text" name="sp_slider_slides[${index}][titleAnim]" value="fade-up"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][titleDelay]" value="80"><span>fade-up</span>
+                                        <span>Description</span><input type="text" name="sp_slider_slides[${index}][descAnim]" value="fade-up"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][descDelay]" value="180"><span>fade-up</span>
+                                        <span>Button</span><input type="text" name="sp_slider_slides[${index}][buttonAnim]" value="zoom-in"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][buttonDelay]" value="300"><span>zoom-in</span>
+                                        <span>Caption</span><input type="text" name="sp_slider_slides[${index}][captionAnim]" value="fade-up"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][captionDelay]" value="360"><span>fade-up</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="sp-slide-actions"><button type="button" class="button button-link-delete sp-remove-slide">Remove Slide</button></div>
                         </div>
@@ -535,6 +597,18 @@ class Syntekpro_Slider_Core {
         $button_text = isset($slide['buttonText']) ? $slide['buttonText'] : '';
         $button_url = isset($slide['buttonUrl']) ? $slide['buttonUrl'] : '#';
         $background = isset($slide['backgroundImage']) ? $slide['backgroundImage'] : '';
+        $title_anim = isset($slide['titleAnim']) ? $slide['titleAnim'] : 'fade-up';
+        $title_delay = isset($slide['titleDelay']) ? absint($slide['titleDelay']) : 80;
+        $desc_anim = isset($slide['descAnim']) ? $slide['descAnim'] : 'fade-up';
+        $desc_delay = isset($slide['descDelay']) ? absint($slide['descDelay']) : 180;
+        $button_anim = isset($slide['buttonAnim']) ? $slide['buttonAnim'] : 'zoom-in';
+        $button_delay = isset($slide['buttonDelay']) ? absint($slide['buttonDelay']) : 300;
+        $badge_anim = isset($slide['badgeAnim']) ? $slide['badgeAnim'] : 'fade-down';
+        $badge_delay = isset($slide['badgeDelay']) ? absint($slide['badgeDelay']) : 0;
+        $caption_anim = isset($slide['captionAnim']) ? $slide['captionAnim'] : 'fade-up';
+        $caption_delay = isset($slide['captionDelay']) ? absint($slide['captionDelay']) : 360;
+        $layer_duration = isset($slide['layerDuration']) ? absint($slide['layerDuration']) : 720;
+        $layer_stagger = isset($slide['layerStagger']) ? absint($slide['layerStagger']) : 70;
 
         echo '<div class="sp-slide-card" data-index="' . esc_attr((string) $index) . '">';
         echo '<h5 class="sp-slide-title">' . esc_html(sprintf(__('Slide %d', 'syntekpro-animations'), $index + 1)) . '</h5>';
@@ -555,6 +629,21 @@ class Syntekpro_Slider_Core {
         echo '<button type="button" class="button sp-clear-image">' . esc_html__('Clear', 'syntekpro-animations') . '</button>';
         echo '</div>';
         echo '</label>';
+
+        echo '<label><span>' . esc_html__('Layer Duration (ms)', 'syntekpro-animations') . '</span><input type="number" min="100" max="3000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][layerDuration]" value="' . esc_attr((string) $layer_duration) . '"></label>';
+        echo '<label><span>' . esc_html__('Layer Stagger (ms)', 'syntekpro-animations') . '</span><input type="number" min="0" max="1000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][layerStagger]" value="' . esc_attr((string) $layer_stagger) . '"></label>';
+
+        echo '<div class="full">';
+        echo '<span style="display:block;font-weight:600;margin-bottom:4px;">' . esc_html__('Layer Entrances', 'syntekpro-animations') . '</span>';
+        echo '<div class="sp-layer-grid">';
+        echo '<strong>' . esc_html__('Layer', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Animation', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Delay (ms)', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Preset', 'syntekpro-animations') . '</strong>';
+        echo '<span>' . esc_html__('Badge', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeAnim]" value="' . esc_attr($badge_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeDelay]" value="' . esc_attr((string) $badge_delay) . '"><span>fade-down</span>';
+        echo '<span>' . esc_html__('Title', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][titleAnim]" value="' . esc_attr($title_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][titleDelay]" value="' . esc_attr((string) $title_delay) . '"><span>fade-up</span>';
+        echo '<span>' . esc_html__('Description', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][descAnim]" value="' . esc_attr($desc_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][descDelay]" value="' . esc_attr((string) $desc_delay) . '"><span>fade-up</span>';
+        echo '<span>' . esc_html__('Button', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][buttonAnim]" value="' . esc_attr($button_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][buttonDelay]" value="' . esc_attr((string) $button_delay) . '"><span>zoom-in</span>';
+        echo '<span>' . esc_html__('Caption', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][captionAnim]" value="' . esc_attr($caption_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][captionDelay]" value="' . esc_attr((string) $caption_delay) . '"><span>fade-up</span>';
+        echo '</div>';
+        echo '</div>';
 
         echo '</div>';
         echo '<div class="sp-slide-actions"><button type="button" class="button button-link-delete sp-remove-slide">' . esc_html__('Remove Slide', 'syntekpro-animations') . '</button></div>';
@@ -640,7 +729,34 @@ class Syntekpro_Slider_Core {
                 'buttonText' => isset($slide['buttonText']) ? sanitize_text_field($slide['buttonText']) : '',
                 'buttonUrl' => isset($slide['buttonUrl']) ? esc_url_raw($slide['buttonUrl']) : '#',
                 'backgroundImage' => isset($slide['backgroundImage']) ? esc_url_raw($slide['backgroundImage']) : '',
+                'titleAnim' => isset($slide['titleAnim']) ? sanitize_key($slide['titleAnim']) : 'fade-up',
+                'titleDelay' => isset($slide['titleDelay']) ? absint($slide['titleDelay']) : 80,
+                'descAnim' => isset($slide['descAnim']) ? sanitize_key($slide['descAnim']) : 'fade-up',
+                'descDelay' => isset($slide['descDelay']) ? absint($slide['descDelay']) : 180,
+                'buttonAnim' => isset($slide['buttonAnim']) ? sanitize_key($slide['buttonAnim']) : 'zoom-in',
+                'buttonDelay' => isset($slide['buttonDelay']) ? absint($slide['buttonDelay']) : 300,
+                'badgeAnim' => isset($slide['badgeAnim']) ? sanitize_key($slide['badgeAnim']) : 'fade-down',
+                'badgeDelay' => isset($slide['badgeDelay']) ? absint($slide['badgeDelay']) : 0,
+                'captionAnim' => isset($slide['captionAnim']) ? sanitize_key($slide['captionAnim']) : 'fade-up',
+                'captionDelay' => isset($slide['captionDelay']) ? absint($slide['captionDelay']) : 360,
+                'layerDuration' => isset($slide['layerDuration']) ? absint($slide['layerDuration']) : 720,
+                'layerStagger' => isset($slide['layerStagger']) ? absint($slide['layerStagger']) : 70,
             );
+
+            $allowed_layer_anims = array('none', 'fade-up', 'fade-down', 'fade-left', 'fade-right', 'zoom-in');
+            foreach (array('titleAnim', 'descAnim', 'buttonAnim', 'badgeAnim', 'captionAnim') as $layer_key) {
+                if (!in_array($safe_slide[$layer_key], $allowed_layer_anims, true)) {
+                    $safe_slide[$layer_key] = 'fade-up';
+                }
+            }
+
+            $safe_slide['layerDuration'] = max(100, min(3000, $safe_slide['layerDuration']));
+            $safe_slide['layerStagger'] = max(0, min(1000, $safe_slide['layerStagger']));
+            $safe_slide['titleDelay'] = min(4000, $safe_slide['titleDelay']);
+            $safe_slide['descDelay'] = min(4000, $safe_slide['descDelay']);
+            $safe_slide['buttonDelay'] = min(4000, $safe_slide['buttonDelay']);
+            $safe_slide['badgeDelay'] = min(4000, $safe_slide['badgeDelay']);
+            $safe_slide['captionDelay'] = min(4000, $safe_slide['captionDelay']);
 
             if ($safe_slide['title'] === '' && $safe_slide['badge'] === '' && $safe_slide['caption'] === '' && $safe_slide['description'] === '' && $safe_slide['buttonText'] === '' && $safe_slide['backgroundImage'] === '') {
                 continue;

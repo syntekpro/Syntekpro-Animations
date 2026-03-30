@@ -83,6 +83,26 @@
     font-size: 0.86rem;
 }
 
+.sp-layer {
+    opacity: 0;
+    transition-property: opacity, transform, filter;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+.sp-layer.is-layer-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+}
+
+.sp-layer-anim-none { opacity: 1; }
+.sp-layer-anim-fade-up { transform: translate3d(0, 18px, 0); }
+.sp-layer-anim-fade-down { transform: translate3d(0, -18px, 0); }
+.sp-layer-anim-fade-left { transform: translate3d(20px, 0, 0); }
+.sp-layer-anim-fade-right { transform: translate3d(-20px, 0, 0); }
+.sp-layer-anim-zoom-in { transform: scale(0.92); filter: blur(2px); }
+
 .sp-slider-prev,
 .sp-slider-next {
     position: absolute;
