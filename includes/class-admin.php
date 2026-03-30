@@ -157,6 +157,13 @@ class Syntekpro_Animations_Admin {
                 filter: grayscale(1) brightness(1.05) contrast(92%);
                 opacity:1;
             }
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-plus"]{
+                color:#f4c542 !important;
+                font-weight:700;
+            }
+            #toplevel_page_syntekpro-animations .wp-submenu li.current a[href="admin.php?page=syntekpro-animations-plus"]{
+                color:#ffd84d !important;
+            }
         </style>';
     }
 
@@ -279,6 +286,15 @@ class Syntekpro_Animations_Admin {
             array($this, 'dashboard_page')
         );
 
+        // Sliders (kept near top for Smart Slider-style workflow)
+        add_submenu_page(
+            'syntekpro-animations',
+            __('Sliders', 'syntekpro-animations'),
+            __('🎞 Sliders', 'syntekpro-animations'),
+            $capability,
+            'edit.php?post_type=syntekpro_slider'
+        );
+
         // Settings (duplicates parent for clarity in submenu)
         add_submenu_page(
             'syntekpro-animations',
@@ -293,11 +309,11 @@ class Syntekpro_Animations_Admin {
         add_submenu_page('syntekpro-animations', __('Builder', 'syntekpro-animations'), __('🎨 Builder', 'syntekpro-animations'), $capability, 'syntekpro-animations-builder', array($this, 'builder_page'));
         add_submenu_page('syntekpro-animations', __('Timeline', 'syntekpro-animations'), __('⏱️ Timeline', 'syntekpro-animations'), $capability, 'syntekpro-animations-timeline', array($this, 'timeline_page'));
         add_submenu_page('syntekpro-animations', __('Patterns', 'syntekpro-animations'), __('🧩 Patterns', 'syntekpro-animations'), $capability, 'syntekpro-animations-patterns', array($this, 'patterns_page'));
-        add_submenu_page('syntekpro-animations', __('Animations+', 'syntekpro-animations'), __('➕ Animations+', 'syntekpro-animations'), $capability, 'syntekpro-animations-plus', array($this, 'animations_plus_page'));
         add_submenu_page('syntekpro-animations', __('Pattern Data', 'syntekpro-animations'), __('🗂️ Pattern Data', 'syntekpro-animations'), $capability, 'syntekpro-animations-pattern-data', array($this, 'pattern_data_page'));
         add_submenu_page('syntekpro-animations', __('Documentation', 'syntekpro-animations'), __('📖 Documentation', 'syntekpro-animations'), $capability, 'syntekpro-animations-docs', array($this, 'documentation_page'));
         add_submenu_page('syntekpro-animations', __('Help', 'syntekpro-animations'), __('💡 Help', 'syntekpro-animations'), $capability, 'syntekpro-animations-help', array($this, 'help_page'));
         add_submenu_page('syntekpro-animations', __('System Status', 'syntekpro-animations'), __('🩺 System Status', 'syntekpro-animations'), $capability, 'syntekpro-animations-system-status', array($this, 'system_status_page'));
+        add_submenu_page('syntekpro-animations', __('Animations+', 'syntekpro-animations'), __('★ Animations+', 'syntekpro-animations'), $capability, 'syntekpro-animations-plus', array($this, 'animations_plus_page'));
     }
     
     /**

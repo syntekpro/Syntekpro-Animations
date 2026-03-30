@@ -79,7 +79,7 @@ class Syntekpro_Slider_Core {
             'labels' => $labels,
             'public' => false,
             'show_ui' => true,
-            'show_in_menu' => 'syntekpro-animations',
+            'show_in_menu' => false,
             'menu_position' => 30,
             'supports' => array('title'),
             'capability_type' => 'post',
@@ -584,12 +584,97 @@ class Syntekpro_Slider_Core {
             .sp-image-row { display: flex; align-items: center; gap: 8px; }
             .sp-image-preview { width: 64px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #d1d5db; background: #fff; }
             .sp-slide-actions { margin-top: 8px; text-align: right; }
+            .sp-live-preview { margin-top: 10px; border: 1px solid #dbeafe; border-radius: 8px; background: linear-gradient(135deg,#0f172a,#1f2937); color:#fff; padding: 10px; overflow: hidden; }
+            .sp-live-preview-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+            .sp-live-preview-head strong { font-size: 12px; letter-spacing: .3px; }
+            .sp-live-preview-canvas { min-height: 150px; border-radius: 6px; position: relative; padding: 14px; background: rgba(255,255,255,0.04); }
+            .sp-preview-layer { opacity: 0; transition-property: opacity, transform, filter; transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); will-change: transform, opacity; }
+            .sp-preview-layer.is-active { opacity: 1; transform: translate3d(0,0,0) scale(1); filter: blur(0); }
+            .sp-preview-layer-badge { display:inline-block; background: rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.28); border-radius:999px; padding:3px 8px; font-size:11px; font-weight:700; margin-bottom:8px; }
+            .sp-preview-layer-title { font-size: 20px; font-weight: 700; margin: 0 0 8px 0; }
+            .sp-preview-layer-description { margin: 0 0 8px 0; opacity: .9; }
+            .sp-preview-layer-button { display:inline-block; background:#fff; color:#0f172a; font-weight:600; border-radius:6px; padding:6px 10px; text-decoration:none; }
+            .sp-preview-layer-caption { display:block; margin-top:8px; font-size:12px; opacity:.9; }
+            .sp-preview-in-none { opacity: 1; }
+            .sp-preview-in-fade-up { transform: translate3d(0,16px,0); }
+            .sp-preview-in-fade-down { transform: translate3d(0,-16px,0); }
+            .sp-preview-in-fade-left { transform: translate3d(18px,0,0); }
+            .sp-preview-in-fade-right { transform: translate3d(-18px,0,0); }
+            .sp-preview-in-zoom-in { transform: scale(.92); filter: blur(2px); }
+            .sp-preview-in-zoom-out { transform: scale(1.08); filter: blur(2px); }
         </style>
         <script>
             (function() {
                 const list = document.getElementById('sp-slides-list');
                 const addBtn = document.getElementById('sp-add-slide');
                 if (!list || !addBtn) return;
+
+                const animationOptions = [
+                    'none',
+                    'fade-up',
+                    'fade-down',
+                    'fade-left',
+                    'fade-right',
+                    'zoom-in',
+                    'zoom-out'
+                ];
+
+                function toSelectInput(input) {
+                    if (!input || input.tagName !== 'INPUT') return input;
+                    const name = input.getAttribute('name') || '';
+                    if (!name.includes('Anim]') && !name.includes('AnimOut]')) return input;
+
+                    const value = (input.value || '').trim() || 'fade-up';
+                    const select = document.createElement('select');
+                    select.name = input.name;
+                    select.className = input.className;
+
+                    animationOptions.forEach((opt) => {
+                        const option = document.createElement('option');
+                        option.value = opt;
+                        option.textContent = opt;
+                        if (opt === value) option.selected = true;
+                        select.appendChild(option);
+                    });
+
+                    if (!animationOptions.includes(value)) {
+                        const custom = document.createElement('option');
+                        custom.value = value;
+                        custom.textContent = value;
+                        custom.selected = true;
+                        select.appendChild(custom);
+                    }
+
+                    input.replaceWith(select);
+                    return select;
+                }
+
+                function ensureLivePreview(card) {
+                    let wrap = card.querySelector('.sp-live-preview');
+                    if (wrap) return wrap;
+
+                    wrap = document.createElement('div');
+                    wrap.className = 'sp-live-preview full';
+                    wrap.innerHTML = `
+                        <div class="sp-live-preview-head">
+                            <strong>Live Layer Preview</strong>
+                            <button type="button" class="button button-small sp-preview-replay">Replay</button>
+                        </div>
+                        <div class="sp-live-preview-canvas">
+                            <span class="sp-preview-layer sp-preview-layer-badge" data-preview-layer="badge">Badge</span>
+                            <h4 class="sp-preview-layer sp-preview-layer-title" data-preview-layer="title">Slide Title</h4>
+                            <p class="sp-preview-layer sp-preview-layer-description" data-preview-layer="description">Slide description text for animation timing preview.</p>
+                            <a href="#" class="sp-preview-layer sp-preview-layer-button" data-preview-layer="button">Button</a>
+                            <span class="sp-preview-layer sp-preview-layer-caption" data-preview-layer="caption">Caption text</span>
+                        </div>
+                    `;
+
+                    const slideGrid = card.querySelector('.sp-slide-grid');
+                    if (slideGrid) {
+                        slideGrid.appendChild(wrap);
+                    }
+                    return wrap;
+                }
 
                 function reindex() {
                     const cards = list.querySelectorAll('.sp-slide-card');
@@ -613,11 +698,72 @@ class Syntekpro_Slider_Core {
                     const imagePreview = card.querySelector('.sp-image-preview');
                     const layerList = card.querySelector('.sp-layer-order-list');
                     const layerOrderInput = card.querySelector('.sp-layer-order-input');
+                    const previewWrap = ensureLivePreview(card);
+                    const previewCanvas = previewWrap ? previewWrap.querySelector('.sp-live-preview-canvas') : null;
+                    const replayBtn = previewWrap ? previewWrap.querySelector('.sp-preview-replay') : null;
+
+                    card.querySelectorAll('input[type="text"][name*="Anim"], input[type="text"][name*="AnimOut"]').forEach(toSelectInput);
+
+                    function getField(namePart) {
+                        return card.querySelector('[name*="[' + namePart + ']"]');
+                    }
+
+                    function updatePreviewText() {
+                        if (!previewCanvas) return;
+                        const mapping = {
+                            badge: (getField('badge') && getField('badge').value) || 'Badge',
+                            title: (getField('title') && getField('title').value) || 'Slide Title',
+                            description: (getField('description') && getField('description').value) || 'Slide description text for animation timing preview.',
+                            button: (getField('buttonText') && getField('buttonText').value) || 'Button',
+                            caption: (getField('caption') && getField('caption').value) || 'Caption text'
+                        };
+
+                        Object.keys(mapping).forEach((key) => {
+                            const el = previewCanvas.querySelector('[data-preview-layer="' + key + '"]');
+                            if (el) {
+                                el.textContent = mapping[key];
+                            }
+                        });
+                    }
+
+                    function runPreview() {
+                        if (!previewCanvas) return;
+
+                        const layerOrder = (layerOrderInput && layerOrderInput.value ? layerOrderInput.value : 'badge,title,description,button,caption')
+                            .split(',')
+                            .map((s) => s.trim())
+                            .filter(Boolean);
+                        const duration = parseInt((getField('layerDuration') && getField('layerDuration').value) || '720', 10) || 720;
+                        const stagger = parseInt((getField('layerStagger') && getField('layerStagger').value) || '70', 10) || 70;
+
+                        layerOrder.forEach((key, idx) => {
+                            const el = previewCanvas.querySelector('[data-preview-layer="' + key + '"]');
+                            if (!el) return;
+                            const animField = getField(key + 'Anim');
+                            const delayField = getField(key + 'Delay');
+                            const anim = (animField && animField.value) ? animField.value : 'fade-up';
+                            const delay = parseInt((delayField && delayField.value) || '0', 10) || 0;
+                            const totalDelay = Math.max(0, delay + (idx * stagger));
+
+                            el.className = el.className
+                                .replace(/\bsp-preview-in-[^\s]+/g, '')
+                                .replace(/\bis-active\b/g, '')
+                                .trim();
+                            el.classList.add('sp-preview-in-' + anim);
+                            el.style.transitionDuration = duration + 'ms';
+                            el.style.transitionDelay = totalDelay + 'ms';
+
+                            requestAnimationFrame(() => {
+                                el.classList.add('is-active');
+                            });
+                        });
+                    }
 
                     function syncLayerOrder() {
                         if (!layerList || !layerOrderInput) return;
                         const keys = Array.from(layerList.querySelectorAll('.sp-layer-order-item')).map((item) => item.dataset.layerKey).filter(Boolean);
                         layerOrderInput.value = keys.join(',');
+                        runPreview();
                     }
 
                     function bindLayerDnD() {
@@ -681,8 +827,25 @@ class Syntekpro_Slider_Core {
                         });
                     }
 
+                    if (replayBtn) {
+                        replayBtn.addEventListener('click', runPreview);
+                    }
+
+                    card.querySelectorAll('input, textarea, select').forEach((el) => {
+                        el.addEventListener('input', function() {
+                            updatePreviewText();
+                            runPreview();
+                        });
+                        el.addEventListener('change', function() {
+                            updatePreviewText();
+                            runPreview();
+                        });
+                    });
+
                     bindLayerDnD();
                     syncLayerOrder();
+                    updatePreviewText();
+                    runPreview();
                 }
 
                 function addSlide() {
