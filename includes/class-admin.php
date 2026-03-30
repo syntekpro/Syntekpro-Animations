@@ -3001,7 +3001,7 @@ gsap.to('.scroll-element', {
                 'name' => 'SyntekPro Toggle',
                 'url' => 'https://plugins.syntekpro.com/toggle',
                 'description' => __('Interactive toggle blocks for pricing, FAQs, and feature comparisons.', 'syntekpro-animations'),
-                'icon' => $icon_url_for(array('SyntekPro Toggle Icon.png', 'SyntekPro Plugins Icon .png')),
+                'icon' => $icon_url_for(array('SyntekPro Toggle Icon Color.png', 'SyntekPro Toggle Icon.png', 'SyntekPro Plugins Icon .png')),
             ),
             array(
                 'name' => 'SyntekPro License Server',
