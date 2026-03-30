@@ -13,10 +13,10 @@ class Syntekpro_Animations_Shortcodes {
         // Basic animation shortcode
         add_shortcode('sp_animate', array($this, 'animate_shortcode'));
         
-        // Text animation shortcode (PRO)
+        // Text animation shortcode (Get+)
         add_shortcode('sp_text_animate', array($this, 'text_animate_shortcode'));
         
-        // SVG animation shortcode (PRO)
+        // SVG animation shortcode (Get+)
         add_shortcode('sp_svg_animate', array($this, 'svg_animate_shortcode'));
     }
     
@@ -60,12 +60,12 @@ class Syntekpro_Animations_Shortcodes {
     }
     
     /**
-     * Text animation shortcode (PRO FEATURE)
+     * Text animation shortcode (Get+ FEATURE)
      * Usage: [sp_text_animate type="chars" effect="fadeIn"]Your Text[/sp_text_animate]
      */
     public function text_animate_shortcode($atts, $content = null) {
-        if (!syntekpro_animations()->is_pro_active()) {
-            return $this->pro_placeholder('Text Animation');
+        if (!syntekpro_animations()->is_plus_active()) {
+            return $this->plus_placeholder('Text Animation');
         }
         
         $atts = shortcode_atts(array(
@@ -96,12 +96,12 @@ class Syntekpro_Animations_Shortcodes {
     }
     
     /**
-     * SVG animation shortcode (PRO FEATURE)
+     * SVG animation shortcode (Get+ FEATURE)
      * Usage: [sp_svg_animate type="draw" duration="2"]<svg>...</svg>[/sp_svg_animate]
      */
     public function svg_animate_shortcode($atts, $content = null) {
-        if (!syntekpro_animations()->is_pro_active()) {
-            return $this->pro_placeholder('SVG Animation');
+        if (!syntekpro_animations()->is_plus_active()) {
+            return $this->plus_placeholder('SVG Animation');
         }
         
         $atts = shortcode_atts(array(
@@ -130,12 +130,12 @@ class Syntekpro_Animations_Shortcodes {
     }
     
     /**
-     * Timeline shortcode (PRO FEATURE)
+     * Timeline shortcode (Get+ FEATURE)
      * Usage: [sp_timeline][sp_animate]...[/sp_animate][sp_animate]...[/sp_animate][/sp_timeline]
      */
     public function timeline_shortcode($atts, $content = null) {
-        if (!syntekpro_animations()->is_pro_active()) {
-            return $this->pro_placeholder('Timeline Animation');
+        if (!syntekpro_animations()->is_plus_active()) {
+            return $this->plus_placeholder('Timeline Animation');
         }
         
         $atts = shortcode_atts(array(
@@ -160,9 +160,9 @@ class Syntekpro_Animations_Shortcodes {
     }
     
     /**
-     * Pro feature placeholder
+     * Get+ feature placeholder
      */
-    private function pro_placeholder($feature_name) {
+    private function plus_placeholder($feature_name) {
         $is_admin = current_user_can('manage_options');
         
         if (!$is_admin) {
@@ -170,12 +170,12 @@ class Syntekpro_Animations_Shortcodes {
         }
         
         return sprintf(
-            '<div class="sp-pro-notice" style="background:#fff3cd;border:1px solid #ffc107;padding:15px;margin:10px 0;border-radius:4px;">
-                <strong>🔒 PRO Feature: %s</strong>
-                <p>This feature requires Syntekpro Animations Pro. <a href="%s" target="_blank">Upgrade Now</a></p>
+            '<div class="sp-plus-notice" style="background:#fff3cd;border:1px solid #ffc107;padding:15px;margin:10px 0;border-radius:4px;">
+                <strong>🔒 Get+ Feature: %s</strong>
+                <p>This feature requires Syntekpro Animations Get+. <a href="%s" target="_blank">Get+</a></p>
             </div>',
             esc_html($feature_name),
-            esc_url('https://syntekpro.com/animations-pro')
+            esc_url('https://syntekpro.com/animations-plus')
         );
     }
 }

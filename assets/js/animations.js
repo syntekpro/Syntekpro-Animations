@@ -261,7 +261,7 @@
         const globalEngine = (typeof syntekproAnim !== 'undefined' && syntekproAnim.engine) ? syntekproAnim.engine : 'auto';
         const defaultDuration = (typeof syntekproAnim !== 'undefined' && syntekproAnim.defaultDuration) ? parseFloat(syntekproAnim.defaultDuration) : 1;
         const defaultEase = (typeof syntekproAnim !== 'undefined' && syntekproAnim.defaultEase) ? syntekproAnim.defaultEase : 'power2.out';
-        const isPro = (typeof syntekproAnim !== 'undefined' && syntekproAnim.isPro === true);
+        const isPlus = (typeof syntekproAnim !== 'undefined' && syntekproAnim.isPlus === true);
         const freePresetKeys = (typeof syntekproAnim !== 'undefined' && Array.isArray(syntekproAnim.freePresetKeys)) ? syntekproAnim.freePresetKeys : [];
         const debugItems = [];
 
@@ -270,7 +270,7 @@
                 console.log('Processing animation element:', element.id);
                 
                 let animationType = element.getAttribute('data-animation') || 'fadeIn';
-                if (!isPro && freePresetKeys.length > 0 && freePresetKeys.indexOf(animationType) === -1) {
+                if (!isPlus && freePresetKeys.length > 0 && freePresetKeys.indexOf(animationType) === -1) {
                     animationType = 'fadeIn';
                     element.dataset.spLocked = 'true';
                 }
@@ -554,7 +554,7 @@
                 to: { rotationX: 0, opacity: 1 }
             },
             
-            // Bounce animations (Pro)
+            // Bounce animations (Get+)
             'bounceIn': {
                 from: { scale: 0, opacity: 0 },
                 to: { scale: 1, opacity: 1, ease: 'back.out(1.7)' }
@@ -572,13 +572,13 @@
                 to: { x: 0, opacity: 1, ease: 'back.out(1.7)' }
             },
             
-            // Elastic animations (Pro)
+            // Elastic animations (Get+)
             'elasticIn': {
                 from: { scale: 0 },
                 to: { scale: 1, ease: 'elastic.out(1, 0.3)' }
             },
             
-            // Blur animations (Pro)
+            // Blur animations (Get+)
             'blurIn': {
                 from: { opacity: 0, filter: 'blur(10px)' },
                 to: { opacity: 1, filter: 'blur(0px)' }
@@ -624,7 +624,7 @@
                 to: { clipPath: 'inset(0 0 0 0)' }
             },
             
-            // 3D Perspective animations (Pro)
+            // 3D Perspective animations (Get+)
             'perspective3D': {
                 from: { rotationX: -90, transformOrigin: '50% 50% -200', opacity: 0 },
                 to: { rotationX: 0, opacity: 1 }
@@ -680,7 +680,7 @@
                 to: { scale: 1.3, repeat: 2, yoyo: true, ease: 'power2.inOut' }
             },
             
-            // Advanced easing (Pro)
+            // Advanced easing (Get+)
             'smoothBounce': {
                 from: { y: -100, opacity: 0 },
                 to: { y: 0, opacity: 1, ease: 'bounce.out' }

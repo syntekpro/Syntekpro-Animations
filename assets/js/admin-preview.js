@@ -18,14 +18,14 @@
 
         removeAllPreviewAreas: function() {
             // Aggressively remove ALL preview areas immediately
-            $('.syntekpro-preset-card .preview-area').remove();
-            $('.syntekpro-preset-card .preview-btn').remove();
-            $('.syntekpro-preset-card .preview-box').not('.preset-preview-box').remove();
+            $('.syntekplus-preset-card .preview-area').remove();
+            $('.syntekplus-preset-card .preview-btn').remove();
+            $('.syntekplus-preset-card .preview-box').not('.preset-preview-box').remove();
         },
 
         setupPreviewBoxes: function() {
             // Use the built-in preview tile on each preset card
-            $('.syntekpro-preset-card').each(function() {
+            $('.syntekplus-preset-card').each(function() {
                 const $card = $(this);
                 const animationType = $card.data('preset-key') || $card.data('animation');
                 const $previewBox = $card.find('.preset-preview-element');
@@ -302,8 +302,8 @@
             
             // Set up a mutation observer to continuously remove preview-areas if they appear
             const observer = new MutationObserver(function() {
-                $('.syntekpro-preset-card .preview-area, .syntekpro-preset-card .preview-btn').remove();
-                $('.syntekpro-preset-card .preview-box').not('.preset-preview-box').remove();
+                $('.syntekplus-preset-card .preview-area, .syntekplus-preset-card .preview-btn').remove();
+                $('.syntekplus-preset-card .preview-box').not('.preset-preview-box').remove();
             });
             
             const container = document.querySelector('#presets-container');

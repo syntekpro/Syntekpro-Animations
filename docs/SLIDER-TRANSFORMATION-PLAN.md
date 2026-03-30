@@ -156,7 +156,7 @@ Differentiators for SyntekPro:
 - save/load JSON meta
 - preview panel in admin
 
-### Milestone 3 - Runtime Pro (2 weeks)
+### Milestone 3 - Runtime Get+ (2 weeks)
 - transition engine
 - autoplay/loop/nav/touch
 - lazy loading/performance hardening

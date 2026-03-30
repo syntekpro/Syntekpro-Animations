@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [2.4.1] - 2026-03-30
+
+### Added
+- Enhanced the About -> Other Plugins cards with per-card background color themes and hover interactions for better visual feedback.
+
+### Changed
+- Standardized paid plan naming in plugin-facing copy to `Get+` in place of longer variants.
+- Restored the standard SyntekPro Animations header/logo usage in admin pages after branding cleanup.
+- Bumped plugin version metadata and release docs to 2.4.1.
+
+### Notes
+- This release focuses on UI polish and naming consistency without changing core runtime behavior.
+
 ## [2.4.0] - 2026-03-30
 
 ### Added
@@ -99,8 +112,8 @@ This release transforms Syntekpro Animations into a complete, professional-grade
   - Reveal animations (revealLeft, revealRight, revealUp, revealDown)
   - Wave animations (waveIn, ripple)
   - Swing animations (swingIn, pendulum)
-  - Fold animations (unfoldHorizontal, unfoldVertical) - Pro
-  - Peel animations (peelLeft, peelRight) - Pro
+  - Fold animations (unfoldHorizontal, unfoldVertical) - Get+
+  - Peel animations (peelLeft, peelRight) - Get+
   - Instant code generation
   - Copy-to-clipboard functionality
   - Export timeline configurations
@@ -158,7 +171,7 @@ This release transforms Syntekpro Animations into a complete, professional-grade
 - Faster navigation between pages
 - Better visual hierarchy
 - More intuitive controls
-- Clear Pro feature indicators
+- Clear Get+ feature indicators
 - Improved settings organization
 
 #### Performance
@@ -174,7 +187,7 @@ This release transforms Syntekpro Animations into a complete, professional-grade
 - Renamed "GSAP Library" to "Animation Engine"
 - Updated plugin description and metadata
 - Reorganized plugin settings
-- Enhanced free vs pro distinction
+- Enhanced free vs Get+ distinction
 - Better default settings
 
 #### Code Structure
@@ -207,9 +220,9 @@ New documentation files:
 - Enhanced inline PHP documentation
 - Better JSDoc comments in JavaScript
 
-### 🎯 Pro Features
+### 🎯 Get+ Features
 
-Enhanced Pro offering:
+Enhanced Get+ offering:
 - Timeline Builder with export
 - Text Effects (character-level animations)
 - SVG Morphing capabilities
@@ -228,7 +241,7 @@ Enhanced Pro offering:
 - Basic admin settings
 - ScrollTrigger integration
 - Gutenberg blocks
-- Free and Pro versions
+- Free and Get+ versions
 
 ---
 

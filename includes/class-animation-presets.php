@@ -145,7 +145,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('rotationX' => 0, 'opacity' => 1)
             ),
             
-            // BOUNCE ANIMATIONS (PRO)
+            // BOUNCE ANIMATIONS (Get+)
             'bounceIn' => array(
                 'name' => 'Bounce In',
                 'category' => 'bounce',
@@ -161,7 +161,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('y' => 0, 'opacity' => 1, 'ease' => 'back.out(1.7)')
             ),
             
-            // ELASTIC ANIMATIONS (PRO)
+            // ELASTIC ANIMATIONS (Get+)
             'elasticIn' => array(
                 'name' => 'Elastic In',
                 'category' => 'elastic',
@@ -170,7 +170,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('scale' => 1, 'ease' => 'elastic.out(1, 0.3)')
             ),
             
-            // BLUR ANIMATIONS (PRO)
+            // BLUR ANIMATIONS (Get+)
             'blurIn' => array(
                 'name' => 'Blur In',
                 'category' => 'blur',
@@ -246,7 +246,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('clipPath' => 'inset(0 0 0 0)')
             ),
             
-            // PERSPECTIVE ANIMATIONS (PRO)
+            // PERSPECTIVE ANIMATIONS (Get+)
             'perspective3D' => array(
                 'name' => '3D Perspective',
                 'category' => 'perspective',
@@ -276,7 +276,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('rotationY' => 0, 'opacity' => 1)
             ),
             
-            // GLITCH ANIMATIONS (PRO)
+            // GLITCH ANIMATIONS (Get+)
             'glitchIn' => array(
                 'name' => 'Glitch In',
                 'category' => 'glitch',
@@ -311,7 +311,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('scale' => 1, 'opacity' => 1, 'ease' => 'elastic.out(1, 0.5)')
             ),
             
-            // PEEL ANIMATIONS (PRO)
+            // PEEL ANIMATIONS (Get+)
             'peelLeft' => array(
                 'name' => 'Peel Left',
                 'category' => 'peel',
@@ -343,7 +343,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('rotation' => 0, 'ease' => 'elastic.out(1, 0.3)')
             ),
             
-            // FOLD ANIMATIONS (PRO)
+            // FOLD ANIMATIONS (Get+)
             'unfoldHorizontal' => array(
                 'name' => 'Unfold Horizontal',
                 'category' => 'fold',
@@ -389,7 +389,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('scale' => 1.3, 'repeat' => 2, 'yoyo' => true, 'ease' => 'power2.inOut')
             ),
             
-            // ADVANCED EASING (PRO)
+            // ADVANCED EASING (Get+)
             'smoothBounce' => array(
                 'name' => 'Smooth Bounce',
                 'category' => 'advanced',
@@ -412,7 +412,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('x' => 0, 'opacity' => 1, 'ease' => 'back.out(2)')
             ),
             
-            // TEXT ANIMATIONS (PRO)
+            // TEXT ANIMATIONS (Get+)
             'typewriter' => array(
                 'name' => 'Typewriter',
                 'category' => 'text',
@@ -441,7 +441,7 @@ class Syntekpro_Animation_Presets {
                 'to' => array('rotation' => 0, 'opacity' => 1, 'stagger' => 0.03)
             ),
 
-            // LAYOUT / HERO / GRID PRESETS (PRO)
+            // LAYOUT / HERO / GRID PRESETS (Get+)
             'heroLift' => array(
                 'name' => 'Hero Lift',
                 'category' => 'layout',
@@ -533,16 +533,16 @@ class Syntekpro_Animation_Presets {
             'wave' => 'Wave Animations',
             'swing' => 'Swing Animations',
             'attention' => 'Attention Seekers',
-            'bounce' => 'Bounce Animations (PRO)',
-            'elastic' => 'Elastic Animations (PRO)',
-            'blur' => 'Blur Animations (PRO)',
-            'perspective' => '3D Perspective (PRO)',
-            'glitch' => 'Glitch Effects (PRO)',
-            'peel' => 'Peel Animations (PRO)',
-            'fold' => 'Fold Animations (PRO)',
-            'advanced' => 'Advanced Easing (PRO)',
-            'text' => 'Text Effects (PRO)',
-            'layout' => 'Layout & Sections (PRO)'
+            'bounce' => 'Bounce Animations (Get+)',
+            'elastic' => 'Elastic Animations (Get+)',
+            'blur' => 'Blur Animations (Get+)',
+            'perspective' => '3D Perspective (Get+)',
+            'glitch' => 'Glitch Effects (Get+)',
+            'peel' => 'Peel Animations (Get+)',
+            'fold' => 'Fold Animations (Get+)',
+            'advanced' => 'Advanced Easing (Get+)',
+            'text' => 'Text Effects (Get+)',
+            'layout' => 'Layout & Sections (Get+)'
         );
     }
 }

@@ -11,7 +11,7 @@
             exportBtn.on('click', function(e) {
                 e.preventDefault();
                 var payload = buildExportPayload(presetsData);
-                downloadJSON(payload, 'syntekpro-presets.json');
+                downloadJSON(payload, 'syntekplus-presets.json');
                 toast('Exported ' + payload.presets.length + ' presets to JSON.', 'success');
             });
         }
@@ -39,7 +39,7 @@
                             localStorage.setItem('syntekpro_imported_presets', JSON.stringify(data));
                         } catch (storageErr) {}
                         toast('Imported ' + data.presets.length + ' presets. Downloaded copy ready.', 'success');
-                        downloadJSON(data, 'syntekpro-presets-imported.json');
+                        downloadJSON(data, 'syntekplus-presets-imported.json');
                     } catch (err) {
                         toast('Could not parse JSON file.', 'error');
                     }

@@ -85,12 +85,12 @@
     color: var(--sp-color-accent);
 }
 
-.sp-plugin-card.pro-feature {
+.sp-plugin-card.plus-feature {
     border-left: 4px solid var(--sp-color-danger);
 }
 
-.sp-plugin-card.pro-feature h3::after {
-    content: "PRO";
+.sp-plugin-card.plus-feature h3::after {
+    content: "GET+";
     background: var(--sp-color-danger);
     color: var(--sp-color-accent-contrast);
     font-size: 11px;
@@ -100,7 +100,7 @@
     font-weight: 600;
 }
 
-/* Pro Upgrade Box */
+/* Get+ Upgrade Box */
 .sp-upgrade-box {
     background: linear-gradient(135deg, var(--sp-color-accent) 0%, var(--sp-color-accent-strong) 100%);
     color: var(--sp-color-accent-contrast);

@@ -1,6 +1,6 @@
 # 📖 SYNTEKPRO ANIMATIONS - COMPLETE GUIDE
 
-**Version 2.4.0** | Professional Animation Engine for WordPress
+**Version 2.4.1** | Professional Animation Engine for WordPress
 
 ---
 
@@ -58,7 +58,7 @@ Add this to any page/post:
 - ✅ Enable Scroll Animations
 
 **Optional Settings:**
-- Smooth Scrolling (Pro)
+- Smooth Scrolling (Get+)
 - Developer Mode
 - Additional animation features
 
@@ -69,7 +69,7 @@ This plugin distribution now uses GitHub Releases as its update source.
 Release flow:
 1. Bump plugin version metadata.
 2. Push code updates.
-3. Push a version tag (for example `v2.4.0`).
+3. Push a version tag (for example `v2.4.1`).
 4. Publish a GitHub Release with a plugin zip asset.
 
 Installed sites will receive native WordPress update notifications when a newer release is detected.
@@ -132,44 +132,44 @@ Installed sites will receive native WordPress update notifications when a newer 
 - `wobble` - Wobbling effect
 - `heartbeat` - Heartbeat effect
 
-#### Bounce Animations (Pro) 🔒
+#### Bounce Animations (Get+) 🔒
 - `bounceIn` - Bounce entrance
 - `bounceInUp` - Bounce from below
 - `bounceInLeft` - Bounce from left
 - `bounceInRight` - Bounce from right
 
-#### Elastic Animations (Pro) 🔒
+#### Elastic Animations (Get+) 🔒
 - `elasticIn` - Elastic entrance
 - `elasticScale` - Elastic scaling
 
-#### 3D Perspective (Pro) 🔒
+#### 3D Perspective (Get+) 🔒
 - `perspective3D` - 3D perspective
 - `flipInX` - 3D flip horizontal
 - `flipInY` - 3D flip vertical
 - `cardFlip` - Card flip effect
 
-#### Glitch Effects (Pro) 🔒
+#### Glitch Effects (Get+) 🔒
 - `glitchIn` - Glitch entrance
 - `digitalReveal` - Digital reveal
 
-#### Peel Animations (Pro) 🔒
+#### Peel Animations (Get+) 🔒
 - `peelLeft` - Peel from left
 - `peelRight` - Peel from right
 
-#### Fold Animations (Pro) 🔒
+#### Fold Animations (Get+) 🔒
 - `unfoldHorizontal` - Unfold horizontally
 - `unfoldVertical` - Unfold vertically
 
-#### Advanced Easing (Pro) 🔒
+#### Advanced Easing (Get+) 🔒
 - `smoothBounce` - Smooth bounce
 - `backSlide` - Back slide effect
 
-#### Text Effects (Pro) 🔒
+#### Text Effects (Get+) 🔒
 - `typewriter` - Typewriter effect
 - `textWave` - Wave text animation
 - `textRotate` - Rotating text
 
-#### Blur Effects (Pro) 🔒
+#### Blur Effects (Get+) 🔒
 - `blurIn` - Blur to clear
 
 ---
@@ -738,9 +738,9 @@ add_shortcode('my_anim', function($atts, $content) {
 - **📧 Email:** support@syntekpro.com
 - **💬 Support Portal:** https://syntekpro.com/support
 
-### Pro Features
+### Get+ Features
 
-**Upgrade to Pro for:**
+**Upgrade to Get+ for:**
 - 🔒 20+ additional animations
 - 🔒 Timeline Builder export
 - 🔒 Text effects (character-level)
@@ -749,7 +749,7 @@ add_shortcode('my_anim', function($atts, $content) {
 - 🔒 Priority support
 - 🔒 Future updates
 
-[Upgrade to Pro →](https://syntekpro.com/animations-pro)
+[Upgrade to Get+ →](https://syntekpro.com/animations-plus)
 
 ---
 
@@ -783,7 +783,7 @@ echo do_shortcode('[sp_animate type="fadeIn" duration="' . $duration . '"]Conten
 Configure:
 - Animation Engine (required)
 - Scroll Animations (recommended)
-- Smooth Scrolling (Pro)
+- Smooth Scrolling (Get+)
 - Developer Mode
 - Additional features
 
@@ -887,7 +887,7 @@ syntekpro-animations/
 
 ---
 
-**Version:** 2.4.0  
+**Version:** 2.4.1  
 **Last Updated:** March 30, 2026  
 **© 2026 Syntekpro. All rights reserved.**
 

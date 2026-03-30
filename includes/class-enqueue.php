@@ -52,7 +52,7 @@ class Syntekpro_Animations_Enqueue {
         $this->load_free_plugins();
         
         // Advanced plugin set
-        $this->load_pro_plugins();
+        $this->load_plus_plugins();
         
         // Ensure animations.js loads for blocks and shortcodes (CSS mode friendly)
         $script_deps = array();
@@ -76,7 +76,7 @@ class Syntekpro_Animations_Enqueue {
 
         // Pass data to JavaScript (for animations script when it loads)
         wp_localize_script('syntekpro-animations-frontend', 'syntekproAnim', array(
-            'isPro' => true,
+            'isPlus' => true,
             'smoothScroll' => $options['smooth_scroll'] === 'yes',
             'developerMode' => $options['enable_developer_mode'] === 'yes',
             'engine' => $options['engine'],
@@ -174,8 +174,8 @@ class Syntekpro_Animations_Enqueue {
     /**
      * Load advanced GSAP plugins
      */
-    private function load_pro_plugins() {
-        $pro_plugins = array(
+    private function load_plus_plugins() {
+        $plus_plugins = array(
             'splittext' => 'SplitText.min.js',
             'morphsvgplugin' => 'MorphSVGPlugin.min.js',
             'drawsvgplugin' => 'DrawSVGPlugin.min.js',
@@ -187,7 +187,7 @@ class Syntekpro_Animations_Enqueue {
             'customwiggle' => 'CustomWiggle.min.js'
         );
         
-        foreach ($pro_plugins as $option_key => $file) {
+        foreach ($plus_plugins as $option_key => $file) {
             if (get_option('syntekpro_anim_load_' . $option_key) === 'yes') {
                 wp_enqueue_script(
                     'syntekpro-' . $option_key,

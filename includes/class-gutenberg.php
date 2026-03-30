@@ -26,7 +26,7 @@ class Syntekpro_Animations_Gutenberg {
         return array(
             'pricing' => array(
                 array('title' => __('Starter', 'syntekpro-animations'), 'price' => '$12', 'items' => array(__('Core animations', 'syntekpro-animations'), __('Scroll triggers', 'syntekpro-animations'), __('Email support', 'syntekpro-animations'))),
-                array('title' => __('Pro', 'syntekpro-animations'), 'price' => '$29', 'items' => array(__('All animations unlocked', 'syntekpro-animations'), __('ScrollSmoother + timelines', 'syntekpro-animations'), __('Priority chat support', 'syntekpro-animations'))),
+                array('title' => __('Get+', 'syntekpro-animations'), 'price' => '$29', 'items' => array(__('All animations unlocked', 'syntekpro-animations'), __('ScrollSmoother + timelines', 'syntekpro-animations'), __('Priority chat support', 'syntekpro-animations'))),
                 array('title' => __('Agency', 'syntekpro-animations'), 'price' => '$59', 'items' => array(__('Unlimited sites', 'syntekpro-animations'), __('Team seats included', 'syntekpro-animations'), __('Dedicated success manager', 'syntekpro-animations'))),
             ),
             'faq' => array(
@@ -120,7 +120,7 @@ class Syntekpro_Animations_Gutenberg {
             $list_color = $is_accent ? ' class="has-text-color" style="color:var(--sp-color-text-soft)"' : '';
             $button_class = $is_accent ? ' has-text-color has-background' : '';
             $button_style = $is_accent ? ';color:var(--sp-color-text);background-color:var(--sp-color-surface)' : '';
-            $button_label = ($index === 1) ? __('Go Pro', 'syntekpro-animations') : (($index === 2) ? __('Talk to sales', 'syntekpro-animations') : __('Choose Starter', 'syntekpro-animations'));
+            $button_label = ($index === 1) ? __('Get+', 'syntekpro-animations') : (($index === 2) ? __('Talk to sales', 'syntekpro-animations') : __('Choose Starter', 'syntekpro-animations'));
 
             $pricing_columns .= '<!-- wp:column -->
 <div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"14px","width":"' . $border_width . '","style":"solid"},"spacing":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"}},"color":{"background":"' . $background . '"}},"borderColor":"' . $border_color . '","layout":{"type":"constrained"}} -->
@@ -615,7 +615,7 @@ class Syntekpro_Animations_Gutenberg {
         // Comparison table
         $comparison_content = '<!-- wp:group {"style":{"spacing":{"padding":{"top":"26px","bottom":"26px"}},"color":{"background":"var(--sp-color-surface-subtle)"}},"layout":{"type":"constrained","contentSize":"1100px"}} -->
 <div class="wp-block-group has-background" style="background-color:var(--sp-color-surface-subtle);padding-top:26px;padding-bottom:26px"><!-- wp:heading {"textAlign":"center"} --><h2 class="has-text-align-center">' . esc_html__('Compare plans', 'syntekpro-animations') . '</h2><!-- /wp:heading --><!-- wp:syntekpro/animate {"type":"fadeInUp","duration":0.85,"onceOnly":true} -->
-<figure class="wp-block-table"><table><thead><tr><th></th><th>' . esc_html__('Essential', 'syntekpro-animations') . '</th><th>' . esc_html__('Pro', 'syntekpro-animations') . '</th></tr></thead><tbody><tr><td>' . esc_html__('Animation presets', 'syntekpro-animations') . '</td><td>' . esc_html__('30', 'syntekpro-animations') . '</td><td>' . esc_html__('60+', 'syntekpro-animations') . '</td></tr><tr><td>' . esc_html__('Timeline builder', 'syntekpro-animations') . '</td><td>—</td><td>✔</td></tr><tr><td>' . esc_html__('Support', 'syntekpro-animations') . '</td><td>' . esc_html__('Email', 'syntekpro-animations') . '</td><td>' . esc_html__('Priority', 'syntekpro-animations') . '</td></tr></tbody></table></figure>
+<figure class="wp-block-table"><table><thead><tr><th></th><th>' . esc_html__('Essential', 'syntekpro-animations') . '</th><th>' . esc_html__('Get+', 'syntekpro-animations') . '</th></tr></thead><tbody><tr><td>' . esc_html__('Animation presets', 'syntekpro-animations') . '</td><td>' . esc_html__('30', 'syntekpro-animations') . '</td><td>' . esc_html__('60+', 'syntekpro-animations') . '</td></tr><tr><td>' . esc_html__('Timeline builder', 'syntekpro-animations') . '</td><td>—</td><td>✔</td></tr><tr><td>' . esc_html__('Support', 'syntekpro-animations') . '</td><td>' . esc_html__('Email', 'syntekpro-animations') . '</td><td>' . esc_html__('Priority', 'syntekpro-animations') . '</td></tr></tbody></table></figure>
 <!-- /wp:syntekpro/animate --></div>
 <!-- /wp:group -->';
 
