@@ -164,6 +164,26 @@ class Syntekpro_Animations_Admin {
             #toplevel_page_syntekpro-animations .wp-submenu li.current a[href="admin.php?page=syntekpro-animations-plus"]{
                 color:#ffd84d !important;
             }
+            #toplevel_page_syntekpro-animations .wp-submenu a{
+                display:flex;
+                align-items:center;
+                gap:8px;
+            }
+            #toplevel_page_syntekpro-animations .wp-submenu a::before{
+                font-family:dashicons;
+                font-size:14px;
+                width:16px;
+                color:#94a3b8;
+                line-height:1;
+            }
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations"]::before{content:"\\f226";}
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="edit.php?post_type=syntekpro_slider"]::before{content:"\\f161";}
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-patterns"]::before{content:"\\f538";}
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-builder"]::before{content:"\\f540";}
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-presets"]::before{content:"\\f479";}
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-settings"]::before{content:"\\f111";}
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-about"]::before{content:"\\f223";}
+            #toplevel_page_syntekpro-animations .wp-submenu a[href="admin.php?page=syntekpro-animations-plus"]::before{content:"\\f155";color:#f4c542;}
         </style>';
     }
 
@@ -191,7 +211,7 @@ class Syntekpro_Animations_Admin {
         );
         ?>
         <div class="wrap syntekpro-settings-wrapper">
-            <?php $this->render_page_header(__('Syntekpro Animations', 'syntekpro-animations'), __('Pick your next step: presets, builder, timeline, or docs.', 'syntekpro-animations'), sprintf(__('Version %s', 'syntekpro-animations'), esc_html(SYNTEKPRO_ANIM_VERSION))); ?>
+            <?php $this->render_page_header(__('Syntekpro Animations', 'syntekpro-animations'), __('Pick your next step: sliders, presets, patterns, builder, and settings.', 'syntekpro-animations'), sprintf(__('Version %s', 'syntekpro-animations'), esc_html(SYNTEKPRO_ANIM_VERSION))); ?>
 
             <div class="syntekpro-settings-section" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
                 <?php foreach ($cards as $card) : ?>
@@ -200,39 +220,12 @@ class Syntekpro_Animations_Admin {
                         <div>
                             <div style="font-size:15px;font-weight:700;color:#0f172a;"><?php echo esc_html($card['label']); ?></div>
                             <div style="color:#475569;margin-top:4px;font-size:13px;"><?php echo esc_html($card['desc']); ?></div>
-            $wp_version = get_bloginfo('version');
-            $php_version = PHP_VERSION;
-
-            $license_status_label = $license_status ? ucfirst($license_status) : __('Not validated', 'syntekpro-animations');
-            $license_badge_bg = $is_pro ? '#ecfdf3' : '#fff7ed';
-            $license_badge_fg = $is_pro ? '#166534' : '#9a3412';
                         </div>
                     </a>
                 <?php endforeach; ?>
             </div>
 
-                <style>
-                    .sp-about-shell { display: grid; gap: 14px; }
-                    .sp-about-hero { display: grid; gap: 12px; grid-template-columns: 1.3fr 1fr; }
-                    .sp-about-surface { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; box-shadow: 0 8px 20px rgba(15,23,42,0.04); }
-                    .sp-about-glow { background: linear-gradient(135deg, #ffe6ef, #fff7ed 55%, #eff6ff); border: 1px solid #fbcfe8; border-radius: 12px; padding: 16px; }
-                    .sp-about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
-                    .sp-about-title { margin: 0 0 8px 0; color: #0f172a; font-size: 16px; }
-                    .sp-about-text { margin: 0; color: #334155; line-height: 1.65; }
-                    .sp-about-list { margin: 8px 0 0 18px; color: #334155; line-height: 1.7; }
-                    .sp-about-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-                    .sp-about-chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; border: 1px solid #dbe3ee; background: #f8fafc; color: #0f172a; padding: 6px 10px; font-size: 12px; font-weight: 600; }
-                    .sp-about-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-                    .sp-about-actions .button-primary { background: #e53935; border-color: #e53935; }
-                    .sp-about-table th { width: 42%; color: #0f172a; font-weight: 600; }
-                    .sp-about-table td { color: #334155; }
-                    .sp-about-code { background: #f8fafc; border: 1px solid #e5e7eb; padding: 12px; border-radius: 8px; margin: 0; color: #0f172a; }
-                    @media (max-width: 960px) {
-                        .sp-about-hero { grid-template-columns: 1fr; }
-                    }
-                </style>
-
-                <h2 class="nav-tab-wrapper" style="margin-bottom:14px;">
+            <div class="syntekpro-settings-section" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">
                 <div style="background:#0f172a;color:#fff;border-radius:12px;padding:16px;">
                     <h4 style="margin:0 0 6px 0;">🚀 <?php _e('Start with presets', 'syntekpro-animations'); ?></h4>
                     <p style="margin:0 0 10px 0;opacity:0.85;"><?php _e('Apply a prebuilt animation in seconds, then tweak timing.', 'syntekpro-animations'); ?></p>
@@ -240,122 +233,91 @@ class Syntekpro_Animations_Admin {
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;">
                     <h4 style="margin:0 0 6px 0;">🧩 <?php _e('Pattern library', 'syntekpro-animations'); ?></h4>
-                    <div class="sp-about-shell">
-                        <div class="sp-about-hero">
-                            <div class="sp-about-glow">
-                                <h3 class="sp-about-title">🎯 <?php _e('What this plugin delivers', 'syntekpro-animations'); ?></h3>
-                                <p class="sp-about-text"><?php _e('SyntekPro Animations combines slider design, animation presets, and pattern workflows in one production-friendly toolkit.', 'syntekpro-animations'); ?></p>
-                                <ul class="sp-about-list">
-                                    <li><?php _e('Smart slider workflows with layered timing controls.', 'syntekpro-animations'); ?></li>
-                                    <li><?php _e('Animation presets for quick production builds.', 'syntekpro-animations'); ?></li>
-                                    <li><?php _e('Pattern browser plus editable pattern data.', 'syntekpro-animations'); ?></li>
-                                    <li><?php _e('Animations+ unlock flow for premium capabilities.', 'syntekpro-animations'); ?></li>
-                                </ul>
-                                <div class="sp-about-chip-row">
-                                    <span class="sp-about-chip">🎞 <?php _e('Slider-first workflow', 'syntekpro-animations'); ?></span>
-                                    <span class="sp-about-chip">🧩 <?php _e('Pattern-ready sections', 'syntekpro-animations'); ?></span>
-                                    <span class="sp-about-chip">⚡ <?php _e('GSAP-powered effects', 'syntekpro-animations'); ?></span>
-                                </div>
-                            </div>
-                            <div class="sp-about-surface">
-                                <h3 class="sp-about-title">⭐ <?php _e('Animations+ Status', 'syntekpro-animations'); ?></h3>
-                                <p class="sp-about-text" style="margin-bottom:8px;"><?php echo esc_html($is_pro ? __('Active and unlocked', 'syntekpro-animations') : __('Free mode is active', 'syntekpro-animations')); ?></p>
-                                <span style="display:inline-block;padding:6px 10px;border-radius:999px;background:<?php echo esc_attr($license_badge_bg); ?>;color:<?php echo esc_attr($license_badge_fg); ?>;font-weight:700;font-size:12px;"><?php echo esc_html($license_status_label); ?></span>
-                                <div class="sp-about-chip-row" style="margin-top:12px;">
-                                    <span class="sp-about-chip">WP <?php echo esc_html($wp_version); ?></span>
-                                    <span class="sp-about-chip">PHP <?php echo esc_html($php_version); ?></span>
-                                    <span class="sp-about-chip"><?php echo esc_html($theme->get('Name')); ?></span>
-                                </div>
-                                <div class="sp-about-actions">
-                                    <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-plus')); ?>"><?php _e('Manage Animations+', 'syntekpro-animations'); ?></a>
-                                    <a class="button button-secondary" href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-settings')); ?>"><?php _e('Open Settings', 'syntekpro-animations'); ?></a>
-                                </div>
-                            </div>
-                        </div>
+                    <p style="margin:0 0 10px 0;color:#334155;"><?php _e('Insert ready-made sections with motion baked in.', 'syntekpro-animations'); ?></p>
+                    <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-patterns')); ?>"><?php _e('Open Patterns', 'syntekpro-animations'); ?></a>
+                </div>
+                <div style="background:#fff7ed;border:1px solid #ffedd5;border-radius:12px;padding:16px;">
+                    <h4 style="margin:0 0 6px 0;">🧭 <?php _e('Need guidance?', 'syntekpro-animations'); ?></h4>
+                    <p style="margin:0 0 10px 0;color:#7c2d12;"><?php _e('Open About to access docs, help center, and system status.', 'syntekpro-animations'); ?></p>
+                    <a class="button button-secondary" href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-about')); ?>"><?php _e('Open About', 'syntekpro-animations'); ?></a>
+                </div>
+            </div>
+            <?php $this->render_page_footer(); ?>
+        </div>
+        <?php
+    }
 
-                        <div class="sp-about-grid">
-                            <div class="sp-about-surface">
-                                <h3 class="sp-about-title">🚀 <?php _e('Quick navigation', 'syntekpro-animations'); ?></h3>
-                                <div class="sp-about-actions" style="margin-top:0;">
-                                    <a class="button" href="<?php echo esc_url(admin_url('edit.php?post_type=syntekpro_slider')); ?>"><?php _e('Open Sliders', 'syntekpro-animations'); ?></a>
-                                    <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-patterns')); ?>"><?php _e('Open Patterns', 'syntekpro-animations'); ?></a>
-                                    <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-builder')); ?>"><?php _e('Open Builder', 'syntekpro-animations'); ?></a>
-                                    <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-presets')); ?>"><?php _e('Open Presets', 'syntekpro-animations'); ?></a>
-                                </div>
-                            </div>
-                            <div class="sp-about-surface">
-                                <h3 class="sp-about-title">📦 <?php _e('Product focus', 'syntekpro-animations'); ?></h3>
-                                <p class="sp-about-text"><?php _e('Use this admin space as your central control room: build motion, apply patterns, configure runtime behavior, and monitor environment health from one flow.', 'syntekpro-animations'); ?></p>
-                            </div>
-                        </div>
-                    </div>
-                <?php elseif ($active_tab === 'docs') : ?>
-                    <div class="sp-about-grid">
-                        <div class="sp-about-surface">
-                            <h3 class="sp-about-title">🚀 <?php _e('Quick Start', 'syntekpro-animations'); ?></h3>
-                            <pre class="sp-about-code">[sp_animate type="fadeIn" duration="1" delay="0"]Your content[/sp_animate]</pre>
-                            <p class="sp-about-text" style="margin-top:10px;"><?php _e('Apply this shortcode in pages, posts, or dynamic content fields.', 'syntekpro-animations'); ?></p>
-                        </div>
-                        <div class="sp-about-surface">
-                            <h3 class="sp-about-title">📘 <?php _e('Reference Links', 'syntekpro-animations'); ?></h3>
-                            <ul class="sp-about-list" style="margin-top:0;">
-                                <li><a href="https://syntekpro.com/animations-docs" target="_blank" rel="noopener noreferrer"><?php _e('Full Documentation', 'syntekpro-animations'); ?></a></li>
-                                <li><a href="https://syntekpro.com/animations-dev-docs" target="_blank" rel="noopener noreferrer"><?php _e('Developer Docs', 'syntekpro-animations'); ?></a></li>
-                                <li><a href="https://syntekpro.com/animations-design-docs" target="_blank" rel="noopener noreferrer"><?php _e('Designer Docs', 'syntekpro-animations'); ?></a></li>
-                            </ul>
-                            <div class="sp-about-actions">
-                                <a class="button button-primary" href="https://syntekpro.com/animations-docs" target="_blank" rel="noopener noreferrer"><?php _e('Open Full Docs', 'syntekpro-animations'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                <?php elseif ($active_tab === 'help') : ?>
-                    <div class="sp-about-grid">
-                        <div class="sp-about-surface">
-                            <h3 class="sp-about-title">🧭 <?php _e('Support Channels', 'syntekpro-animations'); ?></h3>
-                            <p class="sp-about-text"><?php _e('Get direct product support, release notes, and onboarding guidance.', 'syntekpro-animations'); ?></p>
-                            <div class="sp-about-actions">
-                                <a class="button button-primary" href="https://syntekpro.com/support" target="_blank" rel="noopener noreferrer"><?php _e('Open Support', 'syntekpro-animations'); ?></a>
-                                <a class="button" href="https://syntekpro.com/animations/changelog" target="_blank" rel="noopener noreferrer"><?php _e('View Changelog', 'syntekpro-animations'); ?></a>
-                            </div>
-                        </div>
-                        <div class="sp-about-surface" style="background:#fefce8;border-color:#fde68a;">
-                            <h3 class="sp-about-title" style="color:#92400e;">💬 <?php _e('Before you contact support', 'syntekpro-animations'); ?></h3>
-                            <ul class="sp-about-list" style="color:#7c2d12;">
-                                <li><?php _e('Include your plugin version and WordPress version.', 'syntekpro-animations'); ?></li>
-                                <li><?php _e('Describe exact reproduction steps.', 'syntekpro-animations'); ?></li>
-                                <li><?php _e('Attach screenshots or short recordings where possible.', 'syntekpro-animations'); ?></li>
-                            </ul>
-                        </div>
-                    </div>
-                <?php else : ?>
-                    <div class="sp-about-grid">
-                        <div class="sp-about-surface">
-                            <h3 class="sp-about-title">📊 <?php _e('Environment', 'syntekpro-animations'); ?></h3>
-                            <table class="widefat striped sp-about-table" style="margin:0;">
-                                <tbody>
-                                    <tr><th><?php _e('Plugin Version', 'syntekpro-animations'); ?></th><td><?php echo esc_html(SYNTEKPRO_ANIM_VERSION); ?></td></tr>
-                                    <tr><th><?php _e('WordPress', 'syntekpro-animations'); ?></th><td><?php echo esc_html($wp_version); ?></td></tr>
-                                    <tr><th><?php _e('PHP', 'syntekpro-animations'); ?></th><td><?php echo esc_html($php_version); ?></td></tr>
-                                    <tr><th><?php _e('Theme', 'syntekpro-animations'); ?></th><td><?php echo esc_html($theme->get('Name') . ' ' . $theme->get('Version')); ?></td></tr>
-                                    <tr><th><?php _e('Memory Limit', 'syntekpro-animations'); ?></th><td><?php echo esc_html($memory_limit ? $memory_limit : __('Unavailable', 'syntekpro-animations')); ?></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="sp-about-surface" style="background:#eff6ff;border-color:#bfdbfe;">
-                            <h3 class="sp-about-title" style="color:#1e3a8a;">🛠 <?php _e('Troubleshooting', 'syntekpro-animations'); ?></h3>
-                            <ul class="sp-about-list" style="color:#1e3a8a;">
-                                <li><?php _e('Clear caches after plugin updates.', 'syntekpro-animations'); ?></li>
-                                <li><?php _e('Disable conflicting animation plugins during testing.', 'syntekpro-animations'); ?></li>
-                                <li><?php _e('Verify theme and builder scripts are not minifying GSAP twice.', 'syntekpro-animations'); ?></li>
-                            </ul>
-                            <div class="sp-about-actions">
-                                <a class="button" href="<?php echo esc_url(admin_url('plugins.php')); ?>"><?php _e('Go to Plugins', 'syntekpro-animations'); ?></a>
-                                <button type="button" class="button button-secondary" onclick="window.print();"><?php _e('Print Status', 'syntekpro-animations'); ?></button>
-                            </div>
-                        </div>
-                    </div>
-                <?php endif; ?>
-        add_submenu_page('syntekpro-animations', __('About', 'syntekpro-animations'), __('ℹ️ About', 'syntekpro-animations'), $capability, 'syntekpro-animations-about', array($this, 'about_page'));
+    /**
+     * Add quick access to the admin bar (block editor)
+     */
+    public function add_admin_bar_item($admin_bar) {
+        if (!is_admin() || !is_user_logged_in()) {
+            return;
+        }
+        if (!function_exists('get_current_screen')) {
+            return;
+        }
+        $screen = get_current_screen();
+        if (!$screen || $screen->base !== 'post') {
+            return;
+        }
+
+        $admin_bar->add_node(array(
+            'id' => 'syntekpro-animations-toolbar',
+            'title' => '<span class="ab-icon dashicons dashicons-image-filter"></span><span class="ab-label">Syntekpro Animation</span>',
+            'href' => admin_url('admin.php?page=syntekpro-animations'),
+            'meta' => array('title' => __('Open Syntekpro Animations settings', 'syntekpro-animations'))
+        ));
+    }
+
+    /**
+     * Register admin menu pages
+     */
+    public function add_admin_menu() {
+        $capability = 'manage_options';
+        $icon = SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/Syntekpro%20Animation%20Favicon%20Greyed%20for%20WP.png';
+
+        add_menu_page(
+            __('Syntekpro Animations', 'syntekpro-animations'),
+            __('SyntekPro Animations', 'syntekpro-animations'),
+            $capability,
+            'syntekpro-animations',
+            array($this, 'dashboard_page'),
+            $icon,
+            58
+        );
+
+        add_submenu_page(
+            'syntekpro-animations',
+            __('Dashboard', 'syntekpro-animations'),
+            __('Dashboard', 'syntekpro-animations'),
+            $capability,
+            'syntekpro-animations',
+            array($this, 'dashboard_page')
+        );
+
+        add_submenu_page(
+            'syntekpro-animations',
+            __('Sliders', 'syntekpro-animations'),
+            __('Sliders', 'syntekpro-animations'),
+            $capability,
+            'edit.php?post_type=syntekpro_slider'
+        );
+
+        add_submenu_page('syntekpro-animations', __('Patterns', 'syntekpro-animations'), __('Patterns', 'syntekpro-animations'), $capability, 'syntekpro-animations-patterns', array($this, 'patterns_page'));
+        add_submenu_page('syntekpro-animations', __('Builder', 'syntekpro-animations'), __('Builder', 'syntekpro-animations'), $capability, 'syntekpro-animations-builder', array($this, 'builder_page'));
+        add_submenu_page('syntekpro-animations', __('Presets', 'syntekpro-animations'), __('Presets', 'syntekpro-animations'), $capability, 'syntekpro-animations-presets', array($this, 'presets_page'));
+
+        add_submenu_page(
+            'syntekpro-animations',
+            __('Settings', 'syntekpro-animations'),
+            __('Settings', 'syntekpro-animations'),
+            $capability,
+            'syntekpro-animations-settings',
+            array($this, 'settings_page')
+        );
+
+        add_submenu_page('syntekpro-animations', __('About', 'syntekpro-animations'), __('About', 'syntekpro-animations'), $capability, 'syntekpro-animations-about', array($this, 'about_page'));
         add_submenu_page('syntekpro-animations', __('Animations+', 'syntekpro-animations'), __('★ Animations+', 'syntekpro-animations'), $capability, 'syntekpro-animations-plus', array($this, 'animations_plus_page'));
     }
     
