@@ -577,6 +577,9 @@ class Syntekpro_Slider_Core {
             .sp-slide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
             .sp-slide-grid .full { grid-column: 1 / -1; }
             .sp-layer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin-top: 6px; }
+            .sp-layer-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+            .sp-layer-head span { font-weight: 600; }
+            .sp-layer-help { margin: 4px 0 0; color: #475569; font-size: 12px; }
             .sp-layer-order-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
             .sp-layer-order-item { background: #fff; border: 1px solid #dbe3ee; border-radius: 6px; padding: 6px 10px; cursor: move; display: flex; align-items: center; gap: 8px; }
             .sp-layer-order-item.dragging { opacity: 0.55; }
@@ -610,14 +613,18 @@ class Syntekpro_Slider_Core {
                 if (!list || !addBtn) return;
 
                 const animationOptions = [
-                    'none',
-                    'fade-up',
-                    'fade-down',
-                    'fade-left',
-                    'fade-right',
-                    'zoom-in',
-                    'zoom-out'
+                    { value: 'none', label: 'No Animation', hint: 'Layer appears instantly with no movement.' },
+                    { value: 'fade-up', label: 'Fade Up', hint: 'Layer rises upward while fading in.' },
+                    { value: 'fade-down', label: 'Fade Down', hint: 'Layer drops downward while fading in.' },
+                    { value: 'fade-left', label: 'Fade Left', hint: 'Layer moves left while fading in.' },
+                    { value: 'fade-right', label: 'Fade Right', hint: 'Layer moves right while fading in.' },
+                    { value: 'zoom-in', label: 'Zoom In', hint: 'Layer scales up into view.' },
+                    { value: 'zoom-out', label: 'Zoom Out', hint: 'Layer scales down into view.' }
                 ];
+
+                function getOptionValueList() {
+                    return animationOptions.map((opt) => opt.value);
+                }
 
                 function toSelectInput(input) {
                     if (!input || input.tagName !== 'INPUT') return input;
@@ -631,16 +638,17 @@ class Syntekpro_Slider_Core {
 
                     animationOptions.forEach((opt) => {
                         const option = document.createElement('option');
-                        option.value = opt;
-                        option.textContent = opt;
-                        if (opt === value) option.selected = true;
+                        option.value = opt.value;
+                        option.textContent = opt.label;
+                        option.title = opt.hint;
+                        if (opt.value === value) option.selected = true;
                         select.appendChild(option);
                     });
 
-                    if (!animationOptions.includes(value)) {
+                    if (!getOptionValueList().includes(value)) {
                         const custom = document.createElement('option');
                         custom.value = value;
-                        custom.textContent = value;
+                        custom.textContent = value + ' (Custom)';
                         custom.selected = true;
                         select.appendChild(custom);
                     }
@@ -701,6 +709,7 @@ class Syntekpro_Slider_Core {
                     const previewWrap = ensureLivePreview(card);
                     const previewCanvas = previewWrap ? previewWrap.querySelector('.sp-live-preview-canvas') : null;
                     const replayBtn = previewWrap ? previewWrap.querySelector('.sp-preview-replay') : null;
+                    const resetBtn = card.querySelector('.sp-reset-layer-timings');
 
                     card.querySelectorAll('input[type="text"][name*="Anim"], input[type="text"][name*="AnimOut"]').forEach(toSelectInput);
 
@@ -724,6 +733,26 @@ class Syntekpro_Slider_Core {
                                 el.textContent = mapping[key];
                             }
                         });
+                    }
+
+                    function setFieldValue(namePart, value) {
+                        const field = getField(namePart);
+                        if (field) {
+                            field.value = value;
+                            field.dispatchEvent(new Event('input', { bubbles: true }));
+                            field.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    }
+
+                    function resetLayerTimings() {
+                        setFieldValue('layerDuration', '720');
+                        setFieldValue('layerStagger', '70');
+                        setFieldValue('badgeDelay', '0');
+                        setFieldValue('titleDelay', '80');
+                        setFieldValue('descDelay', '180');
+                        setFieldValue('buttonDelay', '300');
+                        setFieldValue('captionDelay', '360');
+                        runPreview();
                     }
 
                     function runPreview() {
@@ -831,6 +860,10 @@ class Syntekpro_Slider_Core {
                         replayBtn.addEventListener('click', runPreview);
                     }
 
+                    if (resetBtn) {
+                        resetBtn.addEventListener('click', resetLayerTimings);
+                    }
+
                     card.querySelectorAll('input, textarea, select').forEach((el) => {
                         el.addEventListener('input', function() {
                             updatePreviewText();
@@ -876,7 +909,11 @@ class Syntekpro_Slider_Core {
                                 <label><span>Ken Burns Direction</span><select name="sp_slider_slides[${index}][kenBurnsDirection]"><option value="left-to-right">Left to Right</option><option value="right-to-left">Right to Left</option><option value="top-to-bottom">Top to Bottom</option><option value="bottom-to-top">Bottom to Top</option><option value="center">Center</option></select></label>
                                 <label class="full"><span><input type="checkbox" name="sp_slider_slides[${index}][kenBurns]" value="1"> Enable Ken Burns on this slide</span></label>
                                 <div class="full">
-                                    <span style="display:block;font-weight:600;margin-bottom:4px;">Layer Entrances</span>
+                                    <div class="sp-layer-head">
+                                        <span>Layer Entrances</span>
+                                        <button type="button" class="button button-small sp-reset-layer-timings">Reset Timings</button>
+                                    </div>
+                                    <p class="sp-layer-help">Friendly animation labels are shown in dropdowns. Hover each option to see motion intent.</p>
                                     <div class="sp-layer-grid">
                                         <strong>Layer</strong><strong>In</strong><strong>Out</strong><strong>Delay (ms)</strong>
                                         <span>Badge</span><input type="text" name="sp_slider_slides[${index}][badgeAnim]" value="fade-down"><input type="text" name="sp_slider_slides[${index}][badgeAnimOut]" value="fade-up"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][badgeDelay]" value="0">
@@ -973,7 +1010,8 @@ class Syntekpro_Slider_Core {
         echo '<label class="full"><span><input type="checkbox" name="sp_slider_slides[' . esc_attr((string) $index) . '][kenBurns]" value="1" ' . checked($ken_burns, true, false) . '> ' . esc_html__('Enable Ken Burns on this slide', 'syntekpro-animations') . '</span></label>';
 
         echo '<div class="full">';
-        echo '<span style="display:block;font-weight:600;margin-bottom:4px;">' . esc_html__('Layer Entrances', 'syntekpro-animations') . '</span>';
+        echo '<div class="sp-layer-head"><span>' . esc_html__('Layer Entrances', 'syntekpro-animations') . '</span><button type="button" class="button button-small sp-reset-layer-timings">' . esc_html__('Reset Timings', 'syntekpro-animations') . '</button></div>';
+        echo '<p class="sp-layer-help">' . esc_html__('Friendly animation labels appear in dropdowns. Hover each option to see the motion intent.', 'syntekpro-animations') . '</p>';
         echo '<div class="sp-layer-grid">';
         echo '<strong>' . esc_html__('Layer', 'syntekpro-animations') . '</strong><strong>' . esc_html__('In', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Out', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Delay (ms)', 'syntekpro-animations') . '</strong>';
         echo '<span>' . esc_html__('Badge', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeAnim]" value="' . esc_attr($badge_anim) . '"><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeAnimOut]" value="' . esc_attr($badge_anim_out) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeDelay]" value="' . esc_attr((string) $badge_delay) . '">';
