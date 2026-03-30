@@ -579,6 +579,7 @@ class Syntekpro_Slider_Core {
             .sp-layer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin-top: 6px; }
             .sp-layer-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
             .sp-layer-head span { font-weight: 600; }
+            .sp-layer-actions { display: flex; align-items: center; gap: 6px; }
             .sp-layer-help { margin: 4px 0 0; color: #475569; font-size: 12px; }
             .sp-layer-order-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
             .sp-layer-order-item { background: #fff; border: 1px solid #dbe3ee; border-radius: 6px; padding: 6px 10px; cursor: move; display: flex; align-items: center; gap: 8px; }
@@ -709,7 +710,8 @@ class Syntekpro_Slider_Core {
                     const previewWrap = ensureLivePreview(card);
                     const previewCanvas = previewWrap ? previewWrap.querySelector('.sp-live-preview-canvas') : null;
                     const replayBtn = previewWrap ? previewWrap.querySelector('.sp-preview-replay') : null;
-                    const resetBtn = card.querySelector('.sp-reset-layer-timings');
+                    const resetTimingsBtn = card.querySelector('.sp-reset-layer-timings');
+                    const resetAnimationsBtn = card.querySelector('.sp-reset-layer-animations');
 
                     card.querySelectorAll('input[type="text"][name*="Anim"], input[type="text"][name*="AnimOut"]').forEach(toSelectInput);
 
@@ -752,6 +754,20 @@ class Syntekpro_Slider_Core {
                         setFieldValue('descDelay', '180');
                         setFieldValue('buttonDelay', '300');
                         setFieldValue('captionDelay', '360');
+                        runPreview();
+                    }
+
+                    function resetLayerAnimations() {
+                        setFieldValue('badgeAnim', 'fade-down');
+                        setFieldValue('badgeAnimOut', 'fade-up');
+                        setFieldValue('titleAnim', 'fade-up');
+                        setFieldValue('titleAnimOut', 'fade-down');
+                        setFieldValue('descAnim', 'fade-up');
+                        setFieldValue('descAnimOut', 'fade-down');
+                        setFieldValue('buttonAnim', 'zoom-in');
+                        setFieldValue('buttonAnimOut', 'zoom-out');
+                        setFieldValue('captionAnim', 'fade-up');
+                        setFieldValue('captionAnimOut', 'fade-down');
                         runPreview();
                     }
 
@@ -860,8 +876,12 @@ class Syntekpro_Slider_Core {
                         replayBtn.addEventListener('click', runPreview);
                     }
 
-                    if (resetBtn) {
-                        resetBtn.addEventListener('click', resetLayerTimings);
+                    if (resetTimingsBtn) {
+                        resetTimingsBtn.addEventListener('click', resetLayerTimings);
+                    }
+
+                    if (resetAnimationsBtn) {
+                        resetAnimationsBtn.addEventListener('click', resetLayerAnimations);
                     }
 
                     card.querySelectorAll('input, textarea, select').forEach((el) => {
@@ -911,7 +931,10 @@ class Syntekpro_Slider_Core {
                                 <div class="full">
                                     <div class="sp-layer-head">
                                         <span>Layer Entrances</span>
-                                        <button type="button" class="button button-small sp-reset-layer-timings">Reset Timings</button>
+                                        <div class="sp-layer-actions">
+                                            <button type="button" class="button button-small sp-reset-layer-animations">Reset Animations</button>
+                                            <button type="button" class="button button-small sp-reset-layer-timings">Reset Timings</button>
+                                        </div>
                                     </div>
                                     <p class="sp-layer-help">Friendly animation labels are shown in dropdowns. Hover each option to see motion intent.</p>
                                     <div class="sp-layer-grid">
@@ -1010,7 +1033,7 @@ class Syntekpro_Slider_Core {
         echo '<label class="full"><span><input type="checkbox" name="sp_slider_slides[' . esc_attr((string) $index) . '][kenBurns]" value="1" ' . checked($ken_burns, true, false) . '> ' . esc_html__('Enable Ken Burns on this slide', 'syntekpro-animations') . '</span></label>';
 
         echo '<div class="full">';
-        echo '<div class="sp-layer-head"><span>' . esc_html__('Layer Entrances', 'syntekpro-animations') . '</span><button type="button" class="button button-small sp-reset-layer-timings">' . esc_html__('Reset Timings', 'syntekpro-animations') . '</button></div>';
+        echo '<div class="sp-layer-head"><span>' . esc_html__('Layer Entrances', 'syntekpro-animations') . '</span><div class="sp-layer-actions"><button type="button" class="button button-small sp-reset-layer-animations">' . esc_html__('Reset Animations', 'syntekpro-animations') . '</button><button type="button" class="button button-small sp-reset-layer-timings">' . esc_html__('Reset Timings', 'syntekpro-animations') . '</button></div></div>';
         echo '<p class="sp-layer-help">' . esc_html__('Friendly animation labels appear in dropdowns. Hover each option to see the motion intent.', 'syntekpro-animations') . '</p>';
         echo '<div class="sp-layer-grid">';
         echo '<strong>' . esc_html__('Layer', 'syntekpro-animations') . '</strong><strong>' . esc_html__('In', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Out', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Delay (ms)', 'syntekpro-animations') . '</strong>';
