@@ -4,35 +4,41 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [2.2.4] - 2026-03-09
+## [2.4.0] - 2026-03-30
 
 ### Added
-- Enabled all advanced feature paths by default, including timeline, text/SVG shortcodes, advanced GSAP plugin toggles, and advanced preset packs.
+- Added GitHub-based update integration so installed WordPress sites receive native plugin update notifications when a newer GitHub Release is published.
+- Added `includes/class-github-updater.php` with update transient injection and plugin information integration.
+- Added release automation workflow at `.github/workflows/release.yml` to build and attach versioned plugin zip packages to GitHub Releases.
 
 ### Changed
-- Removed in-plugin license workflow from settings/admin UI and replaced upgrade messaging with neutral product messaging.
-- Updated preset metadata so advanced presets are treated as included.
-- Updated readme content to describe the all-features-included edition.
-
-### Removed
-- Removed license key validation flow and license tab from the admin settings experience.
+- Bumped plugin version metadata to 2.4.0.
+- Consolidated duplicated readme content into a single canonical `README.md` and removed `readme.txt` from this distribution.
+- Updated `COMPLETE_GUIDE.md` with the latest version and release/update guidance.
 
 ### Notes
-- Version metadata was bumped to 2.2.4 across the plugin and readme files.
+- From 2.4.0 onward, release tags and GitHub Releases are the canonical update source for this plugin distribution.
+
+## [2.3.4] - 2026-03-30
+
+### Added
+- Introduced a new slider foundation module with `syntekpro_slider` custom post type and `[sp_slider id="..."]` shortcode rendering.
+- Added slider runtime assets (`assets/js/slider-runtime.js`, `assets/css/slider-runtime.css`) with autoplay, loop, arrows, and pagination dots.
+- Added a visual slider editor in the slider meta box: slide repeater, per-slide title/description/button/background controls, and media picker support.
+- Added a full transformation blueprint for Smart Slider-style evolution at `docs/SLIDER-TRANSFORMATION-PLAN.md`.
+
+### Changed
+- Slider meta save now supports visual form fields first while keeping JSON fallback parsing for backward compatibility.
+- Updated plugin version metadata and distribution tags to 2.3.4.
 
 ## [2.2.3] - 2026-02-22
 
 ### Added
-- Added an uninstall handler that removes all Syntekpro options (general settings, plugin toggles, and license data) plus the syntekpro-animations upload directory.
-- Declared compatibility with the WordPress Consent API via a guarded `wp_set_consent_type()` call on `plugins_loaded` (safe fallback when Consent API functions are unavailable).
 
 ### Changed
-- Admin footers now show only the plugin name, version, and contextual hints so the previous "Powered by SyntekPro" badge drops from every settings screen.
 
 ### Notes
-- All version metadata was bumped to 2.2.3 for the WordPress.org listing.
 
-## [2.2.2] - 2026-02-01
 
 ### Added
 - Ten new block patterns (hero split, stats row, logo strip, steps, checklist, comparison table, newsletter band, gallery tiles, testimonial highlight, CTA minimal).
@@ -228,7 +234,7 @@ Enhanced Pro offering:
 
 ## Upgrade Notes
 
-### From 1.0.0 to 2.1.1
+### From 1.0.0 to 2.4.0
 
 **What's Changed:**
 - Plugin branding updated throughout

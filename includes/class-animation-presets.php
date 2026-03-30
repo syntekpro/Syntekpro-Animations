@@ -17,7 +17,7 @@ class Syntekpro_Animation_Presets {
      * Get all animation presets
      */
     public function get_presets($presets = array()) {
-        return array_merge($presets, array(
+        $all_presets = array_merge($presets, array(
             // FADE ANIMATIONS
             'fadeIn' => array(
                 'name' => 'Fade In',
@@ -471,6 +471,19 @@ class Syntekpro_Animation_Presets {
                 'to' => array('opacity' => 1, 'y' => 0, 'filter' => 'blur(0px)', 'duration' => 1.1)
             )
         ));
+
+        // Animations+ model: first N presets are free, remaining are paid.
+        $free_limit = (int) get_option('syntekpro_anim_free_preset_limit', 15);
+        if ($free_limit < 1) {
+            $free_limit = 15;
+        }
+        $index = 0;
+        foreach ($all_presets as $key => $preset) {
+            $all_presets[$key]['free'] = $index < $free_limit;
+            $index++;
+        }
+
+        return $all_presets;
     }
     
     /**
@@ -497,6 +510,13 @@ class Syntekpro_Animation_Presets {
         return array_filter($all_presets, function($preset) {
             return isset($preset['free']) && $preset['free'] === true;
         });
+    }
+
+    /**
+     * Get free preset keys for frontend runtime checks.
+     */
+    public static function get_free_preset_keys() {
+        return array_keys(self::get_free_presets());
     }
     
     /**

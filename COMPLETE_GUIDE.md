@@ -1,6 +1,6 @@
 # 📖 SYNTEKPRO ANIMATIONS - COMPLETE GUIDE
 
-**Version 2.2.2** | Professional Animation Engine for WordPress
+**Version 2.4.0** | Professional Animation Engine for WordPress
 
 ---
 
@@ -61,6 +61,18 @@ Add this to any page/post:
 - Smooth Scrolling (Pro)
 - Developer Mode
 - Additional animation features
+
+### Update Distribution (GitHub Releases)
+
+This plugin distribution now uses GitHub Releases as its update source.
+
+Release flow:
+1. Bump plugin version metadata.
+2. Push code updates.
+3. Push a version tag (for example `v2.4.0`).
+4. Publish a GitHub Release with a plugin zip asset.
+
+Installed sites will receive native WordPress update notifications when a newer release is detected.
 
 ---
 
@@ -875,8 +887,8 @@ syntekpro-animations/
 
 ---
 
-**Version:** 2.2.2  
-**Last Updated:** February 1, 2026  
+**Version:** 2.4.0  
+**Last Updated:** March 30, 2026  
 **© 2026 Syntekpro. All rights reserved.**
 
 ---

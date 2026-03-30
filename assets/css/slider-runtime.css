@@ -1,0 +1,106 @@
+.sp-slider-runtime {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #fff;
+}
+
+.sp-slider-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 100%;
+    height: 100%;
+}
+
+.sp-slide {
+    min-width: 100%;
+    min-height: inherit;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sp-slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.65));
+}
+
+.sp-slide-content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    text-align: center;
+    padding: 28px 20px;
+}
+
+.sp-slide-content h3 {
+    margin: 0 0 10px;
+    font-size: clamp(1.4rem, 2.6vw, 2.3rem);
+    line-height: 1.2;
+}
+
+.sp-slide-content p {
+    margin: 0 0 14px;
+    font-size: clamp(0.95rem, 1.8vw, 1.08rem);
+    line-height: 1.55;
+}
+
+.sp-slide-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 9px;
+    background: #fff;
+    color: #0f172a;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.sp-slider-prev,
+.sp-slider-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    background: rgba(15, 23, 42, 0.36);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    cursor: pointer;
+    line-height: 1;
+    font-size: 17px;
+}
+
+.sp-slider-prev { left: 12px; }
+.sp-slider-next { right: 12px; }
+
+.sp-slider-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.sp-slider-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.45);
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.sp-slider-dot.is-active {
+    background: #fff;
+}

@@ -25,6 +25,7 @@ yarn-error.log
 *.map
 *.min.js.map
 *.min.css.map
+dist/
 
 # Temporary files
 *.tmp

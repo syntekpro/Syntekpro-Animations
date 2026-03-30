@@ -26,7 +26,7 @@ class Syntekpro_Animations_Pro {
         wp_enqueue_script(
             'syntekpro-pro-animations',
             SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/js/pro-animations.js',
-            array('syntekpro-gsap', 'syntekpro-animations'),
+            array('syntekpro-gsap', 'syntekpro-animations-frontend'),
             SYNTEKPRO_ANIM_VERSION,
             true
         );

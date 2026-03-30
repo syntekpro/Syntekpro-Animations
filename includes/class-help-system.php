@@ -280,6 +280,10 @@ class Syntekpro_Help_System {
      */
     public function ajax_get_help() {
         check_ajax_referer('syntekpro_help_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('You do not have permission to access help data.', 'syntekpro-animations')), 403);
+        }
         
         $topic = isset($_POST['topic']) ? sanitize_text_field($_POST['topic']) : '';
         

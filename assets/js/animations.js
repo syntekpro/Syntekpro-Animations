@@ -5,13 +5,29 @@
 (function() {
     'use strict';
 
-    var silenceLogs = (typeof syntekproAnim !== 'undefined' && syntekproAnim.silenceConsole === true);
-    if (silenceLogs && typeof console !== 'undefined') {
+    var config = (typeof syntekproAnim !== 'undefined') ? syntekproAnim : {};
+    var developerMode = config.developerMode === true;
+    var silenceLogs = config.silenceConsole === true;
+    var debugLogsEnabled = developerMode && !silenceLogs;
+
+    if (!debugLogsEnabled && typeof console !== 'undefined') {
         var noop = function() {};
         console.log = noop;
         console.info = noop;
         console.debug = noop;
-        console.warn = noop;
+    }
+
+    if (silenceLogs && typeof console !== 'undefined') {
+        console.warn = function() {};
+    }
+
+    function revealAllAnimatedElements() {
+        var animatedElements = document.querySelectorAll('.sp-animate');
+        animatedElements.forEach(function(element) {
+            element.style.visibility = 'visible';
+            element.style.opacity = '1';
+            element.classList.add('animated');
+        });
     }
     
     // Log immediately on script load
@@ -26,6 +42,16 @@
         console.log('GSAP available:', typeof gsap !== 'undefined');
         console.log('ScrollTrigger available:', typeof ScrollTrigger !== 'undefined');
         
+        if (config.disableMobile && window.matchMedia('(max-width: 767px)').matches) {
+            revealAllAnimatedElements();
+            return;
+        }
+
+        if (config.reducedMotion && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            revealAllAnimatedElements();
+            return;
+        }
+
         const gsapAvailable = typeof gsap !== 'undefined';
         if (!gsapAvailable) {
             console.warn('GSAP is not loaded. CSS light-mode animations will still run if enabled.');
@@ -46,7 +72,17 @@
         // Initialize animations
         console.log('Calling initAnimations()');
         try {
-            initAnimations();
+            var runAnimationInit = function() {
+                initAnimations();
+            };
+
+            if (config.lazyLoad && 'requestIdleCallback' in window) {
+                requestIdleCallback(runAnimationInit, { timeout: 1200 });
+            } else if (config.lazyLoad) {
+                setTimeout(runAnimationInit, 200);
+            } else {
+                runAnimationInit();
+            }
             
             // Refresh ScrollTrigger after all animations are set up
             if (typeof ScrollTrigger !== 'undefined') {
@@ -223,18 +259,28 @@
         }
         
         const globalEngine = (typeof syntekproAnim !== 'undefined' && syntekproAnim.engine) ? syntekproAnim.engine : 'auto';
+        const defaultDuration = (typeof syntekproAnim !== 'undefined' && syntekproAnim.defaultDuration) ? parseFloat(syntekproAnim.defaultDuration) : 1;
+        const defaultEase = (typeof syntekproAnim !== 'undefined' && syntekproAnim.defaultEase) ? syntekproAnim.defaultEase : 'power2.out';
+        const isPro = (typeof syntekproAnim !== 'undefined' && syntekproAnim.isPro === true);
+        const freePresetKeys = (typeof syntekproAnim !== 'undefined' && Array.isArray(syntekproAnim.freePresetKeys)) ? syntekproAnim.freePresetKeys : [];
         const debugItems = [];
 
         animatedElements.forEach(function(element) {
             try {
                 console.log('Processing animation element:', element.id);
                 
-                const animationType = element.getAttribute('data-animation') || 'fadeIn';
-                const duration = parseFloat(element.getAttribute('data-duration')) || 1;
+                let animationType = element.getAttribute('data-animation') || 'fadeIn';
+                if (!isPro && freePresetKeys.length > 0 && freePresetKeys.indexOf(animationType) === -1) {
+                    animationType = 'fadeIn';
+                    element.dataset.spLocked = 'true';
+                }
+
+                const durationValue = parseFloat(element.getAttribute('data-duration'));
+                const duration = !isNaN(durationValue) ? durationValue : defaultDuration;
                 const delay = parseFloat(element.getAttribute('data-delay')) || 0;
                 const trigger = element.getAttribute('data-trigger') || 'scroll';
                 const start = element.getAttribute('data-start') || 'top 80%';
-                const ease = element.getAttribute('data-ease') || 'power2.out';
+                const ease = element.getAttribute('data-ease') || defaultEase;
                 const stagger = parseFloat(element.getAttribute('data-stagger')) || 0;
                 const repeat = parseInt(element.getAttribute('data-repeat')) || 0;
                 const startPosition = element.getAttribute('data-start') || 'top 80%';

@@ -22,6 +22,9 @@ class Syntekpro_Animations_Enqueue {
         $options = $this->get_options();
         $debug_overlay_enabled = $this->is_debug_overlay_enabled($options);
         $current_role = $this->get_current_user_role();
+        $free_preset_keys = class_exists('Syntekpro_Animation_Presets')
+            ? Syntekpro_Animation_Presets::get_free_preset_keys()
+            : array('fadeIn', 'fadeInUp', 'fadeInDown', 'fadeInLeft', 'fadeInRight');
         
         // Core GSAP (always load if enabled)
         if ($options['load_gsap'] === 'yes') {
@@ -77,10 +80,16 @@ class Syntekpro_Animations_Enqueue {
             'smoothScroll' => $options['smooth_scroll'] === 'yes',
             'developerMode' => $options['enable_developer_mode'] === 'yes',
             'engine' => $options['engine'],
+            'disableMobile' => $options['disable_mobile'] === 'yes',
+            'lazyLoad' => $options['lazy_load'] === 'yes',
+            'reducedMotion' => $options['reduced_motion'] === 'yes',
+            'defaultDuration' => (float) $options['default_duration'],
+            'defaultEase' => $options['default_ease'],
             'debugOverlay' => $debug_overlay_enabled,
             'debugOverlayPersistRole' => $options['debug_overlay_persist_role'] === 'yes',
             'debugOverlayRole' => $current_role,
-            'silenceConsole' => $options['silence_console'] === 'yes'
+            'silenceConsole' => $options['silence_console'] === 'yes',
+            'freePresetKeys' => $free_preset_keys
         ));
 
         if ($debug_overlay_enabled) {
@@ -294,6 +303,11 @@ class Syntekpro_Animations_Enqueue {
             'smooth_scroll' => get_option('syntekpro_anim_smooth_scroll', 'no'),
             'enable_developer_mode' => get_option('syntekpro_anim_enable_developer_mode', 'no'),
             'engine' => get_option('syntekpro_anim_engine', 'auto'),
+            'disable_mobile' => get_option('syntekpro_anim_disable_mobile', 'no'),
+            'lazy_load' => get_option('syntekpro_anim_lazy_load', 'no'),
+            'reduced_motion' => get_option('syntekpro_anim_reduced_motion', 'yes'),
+            'default_duration' => get_option('syntekpro_anim_default_duration', '0.8'),
+            'default_ease' => get_option('syntekpro_anim_default_ease', 'power2.out'),
             'debug_overlay' => get_option('syntekpro_anim_debug_overlay', 'no'),
             'debug_overlay_persist_role' => get_option('syntekpro_anim_debug_overlay_persist_role', 'no'),
             'silence_console' => get_option('syntekpro_anim_silence_console', 'no')
