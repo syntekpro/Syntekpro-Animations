@@ -2965,7 +2965,7 @@ gsap.to('.scroll-element', {
      */
     public function about_page() {
         $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'overview';
-        if (!in_array($active_tab, array('overview', 'docs', 'help', 'status'), true)) {
+        if (!in_array($active_tab, array('overview', 'docs', 'help', 'other', 'status'), true)) {
             $active_tab = 'overview';
         }
 
@@ -2973,6 +2973,61 @@ gsap.to('.scroll-element', {
         $memory_limit = defined('WP_MEMORY_LIMIT') ? WP_MEMORY_LIMIT : ini_get('memory_limit');
         $license_status = get_option('syntekpro_anim_license_status', '');
         $is_pro = function_exists('syntekpro_animations') && syntekpro_animations()->is_pro_active();
+
+        $icon_url_for = function($candidates) {
+            foreach ((array) $candidates as $filename) {
+                $path = SYNTEKPRO_ANIM_PLUGIN_DIR . 'assets/img/' . $filename;
+                if (file_exists($path)) {
+                    return SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/' . str_replace(' ', '%20', $filename);
+                }
+            }
+            return SYNTEKPRO_ANIM_PLUGIN_URL . 'assets/img/SyntekPro%20Plugins%20Icon%20.png';
+        };
+
+        $other_plugins = array(
+            array(
+                'name' => 'SyntekPro Forms',
+                'url' => 'https://plugins.syntekpro.com/forms',
+                'description' => __('Drag-and-drop form workflows with clean, conversion-focused design.', 'syntekpro-animations'),
+                'icon' => $icon_url_for(array('Syntekpro Forms Icon.png')),
+            ),
+            array(
+                'name' => 'SyntekPro Chat',
+                'url' => 'https://plugins.syntekpro.com/chat',
+                'description' => __('Live chat and support widgets for faster customer conversations.', 'syntekpro-animations'),
+                'icon' => $icon_url_for(array('SyntekPro Chat Icon.png')),
+            ),
+            array(
+                'name' => 'SyntekPro Toggle',
+                'url' => 'https://plugins.syntekpro.com/toggle',
+                'description' => __('Interactive toggle blocks for pricing, FAQs, and feature comparisons.', 'syntekpro-animations'),
+                'icon' => $icon_url_for(array('SyntekPro Toggle Icon.png', 'SyntekPro Plugins Icon .png')),
+            ),
+            array(
+                'name' => 'SyntekPro License Server',
+                'url' => 'https://plugins.syntekpro.com/license-server',
+                'description' => __('License management and activation infrastructure for premium products.', 'syntekpro-animations'),
+                'icon' => $icon_url_for(array('SyntekPro License Server Icon.png')),
+            ),
+            array(
+                'name' => 'SyntekPro Plugins Support',
+                'url' => 'https://plugins.syntekpro.com/support',
+                'description' => __('Central support portal for plugin help, onboarding, and troubleshooting.', 'syntekpro-animations'),
+                'icon' => $icon_url_for(array('SyntekPro Plugins Support Icon.png')),
+            ),
+            array(
+                'name' => 'SyntekPro WordPress Themes',
+                'url' => 'https://themes.syntekpro.com',
+                'description' => __('Theme collection designed to pair with SyntekPro plugin experiences.', 'syntekpro-animations'),
+                'icon' => $icon_url_for(array('SyntekPro Themes Icon.png', 'SyntekPro Plugins Logo.png')),
+            ),
+            array(
+                'name' => 'Main Website',
+                'url' => 'https://syntekpro.com',
+                'description' => __('Company home for products, updates, and ecosystem announcements.', 'syntekpro-animations'),
+                'icon' => $icon_url_for(array('syntekpro-logo.png', 'SYNTEK PRO LOGO Transparent HD 1563x402.png')),
+            ),
+        );
 
         ?>
         <div class="wrap syntekpro-settings-wrapper">
@@ -2982,6 +3037,7 @@ gsap.to('.scroll-element', {
                 <a href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-about&tab=overview')); ?>" class="nav-tab <?php echo $active_tab === 'overview' ? 'nav-tab-active' : ''; ?>">✨ <?php _e('Overview', 'syntekpro-animations'); ?></a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-about&tab=docs')); ?>" class="nav-tab <?php echo $active_tab === 'docs' ? 'nav-tab-active' : ''; ?>">📖 <?php _e('Documentation', 'syntekpro-animations'); ?></a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-about&tab=help')); ?>" class="nav-tab <?php echo $active_tab === 'help' ? 'nav-tab-active' : ''; ?>">💡 <?php _e('Help Center', 'syntekpro-animations'); ?></a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-about&tab=other')); ?>" class="nav-tab <?php echo $active_tab === 'other' ? 'nav-tab-active' : ''; ?>">🧰 <?php _e('Other Plugins', 'syntekpro-animations'); ?></a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=syntekpro-animations-about&tab=status')); ?>" class="nav-tab <?php echo $active_tab === 'status' ? 'nav-tab-active' : ''; ?>">🩺 <?php _e('System Status', 'syntekpro-animations'); ?></a>
             </h2>
 
@@ -3021,9 +3077,9 @@ gsap.to('.scroll-element', {
                     <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;">
                         <h3 style="margin:0 0 8px 0;">📘 <?php _e('Reference Links', 'syntekpro-animations'); ?></h3>
                         <ul style="margin:0 0 0 18px;line-height:1.7;">
-                            <li><a href="https://syntekpro.com/animations-docs" target="_blank" rel="noopener noreferrer"><?php _e('Full Documentation', 'syntekpro-animations'); ?></a></li>
-                            <li><a href="https://syntekpro.com/animations-dev-docs" target="_blank" rel="noopener noreferrer"><?php _e('Developer Docs', 'syntekpro-animations'); ?></a></li>
-                            <li><a href="https://syntekpro.com/animations-design-docs" target="_blank" rel="noopener noreferrer"><?php _e('Designer Docs', 'syntekpro-animations'); ?></a></li>
+                            <li><a href="https://plugins.syntekpro.com/animations" target="_blank" rel="noopener noreferrer"><?php _e('SyntekPro Animations', 'syntekpro-animations'); ?></a></li>
+                            <li><a href="https://plugins.syntekpro.com/docs" target="_blank" rel="noopener noreferrer"><?php _e('Documentation', 'syntekpro-animations'); ?></a></li>
+                            <li><a href="https://syntekpro.com" target="_blank" rel="noopener noreferrer"><?php _e('Main Website', 'syntekpro-animations'); ?></a></li>
                         </ul>
                     </div>
                 </div>
@@ -3033,8 +3089,13 @@ gsap.to('.scroll-element', {
                         <h3 style="margin:0 0 8px 0;">🧭 <?php _e('Support Channels', 'syntekpro-animations'); ?></h3>
                         <p style="margin:0 0 10px 0;color:#334155;"><?php _e('Get direct product support, release notes, and onboarding guidance.', 'syntekpro-animations'); ?></p>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <a class="button button-primary" style="background:#e53935;border-color:#e53935;" href="https://syntekpro.com/support" target="_blank" rel="noopener noreferrer"><?php _e('Open Support', 'syntekpro-animations'); ?></a>
-                            <a class="button" href="https://syntekpro.com/animations/changelog" target="_blank" rel="noopener noreferrer"><?php _e('View Changelog', 'syntekpro-animations'); ?></a>
+                            <a class="button button-primary" style="background:#e53935;border-color:#e53935;" href="https://plugins.syntekpro.com/support" target="_blank" rel="noopener noreferrer"><?php _e('Open Support', 'syntekpro-animations'); ?></a>
+                            <a class="button" href="https://plugins.syntekpro.com/docs" target="_blank" rel="noopener noreferrer"><?php _e('Open Docs', 'syntekpro-animations'); ?></a>
+                        </div>
+                        <div style="margin-top:10px;color:#334155;font-size:13px;line-height:1.7;">
+                            <strong><?php _e('Email:', 'syntekpro-animations'); ?></strong>
+                            <a href="mailto:support@syntekpro.com">support@syntekpro.com</a>,
+                            <a href="mailto:feedback@syntekpro.com">feedback@syntekpro.com</a>
                         </div>
                     </div>
                     <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:16px;">
@@ -3044,6 +3105,31 @@ gsap.to('.scroll-element', {
                             <li><?php _e('Describe exact reproduction steps.', 'syntekpro-animations'); ?></li>
                             <li><?php _e('Attach screenshots or short recordings where possible.', 'syntekpro-animations'); ?></li>
                         </ul>
+                    </div>
+                </div>
+            <?php elseif ($active_tab === 'other') : ?>
+                <div class="syntekpro-settings-section" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">
+                        <?php foreach ($other_plugins as $plugin) : ?>
+                            <a href="<?php echo esc_url($plugin['url']); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;transition:all .15s ease;">
+                                <img src="<?php echo esc_url($plugin['icon']); ?>" alt="<?php echo esc_attr($plugin['name']); ?>" style="width:42px;height:42px;object-fit:contain;border-radius:10px;background:#fff;border:1px solid #e5e7eb;padding:4px;" />
+                                <div>
+                                    <h3 style="margin:0 0 6px 0;font-size:15px;color:#0f172a;"><?php echo esc_html($plugin['name']); ?></h3>
+                                    <p style="margin:0;color:#475569;font-size:13px;line-height:1.55;"><?php echo esc_html($plugin['description']); ?></p>
+                                    <div style="margin-top:8px;color:#2563eb;font-size:12px;font-weight:600;"><?php echo esc_html(parse_url($plugin['url'], PHP_URL_HOST)); ?></div>
+                                </div>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <div style="margin-top:14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px;">
+                        <h3 style="margin:0 0 8px 0;color:#7c2d12;"><?php _e('SyntekPro Animations Links', 'syntekpro-animations'); ?></h3>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                            <a class="button" href="https://plugins.syntekpro.com/animations" target="_blank" rel="noopener noreferrer"><?php _e('Plugin Page', 'syntekpro-animations'); ?></a>
+                            <a class="button" href="https://plugins.syntekpro.com/docs" target="_blank" rel="noopener noreferrer"><?php _e('Documentation', 'syntekpro-animations'); ?></a>
+                            <a class="button" href="mailto:support@syntekpro.com"><?php _e('Email Support', 'syntekpro-animations'); ?></a>
+                            <a class="button" href="mailto:feedback@syntekpro.com"><?php _e('Send Feedback', 'syntekpro-animations'); ?></a>
+                        </div>
                     </div>
                 </div>
             <?php else : ?>
