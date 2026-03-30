@@ -19,6 +19,45 @@ class Syntekpro_Slider_Core {
         add_action('save_post_syntekpro_slider', array($this, 'save_slider_meta'));
     }
 
+    private function get_default_layer_order() {
+        return array('badge', 'title', 'description', 'button', 'caption');
+    }
+
+    private function normalize_layer_order($value) {
+        $allowed = $this->get_default_layer_order();
+
+        if (is_array($value)) {
+            $parts = $value;
+        } else {
+            $parts = array_filter(array_map('trim', explode(',', (string) $value)));
+        }
+
+        $normalized = array();
+        foreach ($parts as $part) {
+            $key = sanitize_key($part);
+            if (in_array($key, $allowed, true) && !in_array($key, $normalized, true)) {
+                $normalized[] = $key;
+            }
+        }
+
+        foreach ($allowed as $fallback) {
+            if (!in_array($fallback, $normalized, true)) {
+                $normalized[] = $fallback;
+            }
+        }
+
+        return $normalized;
+    }
+
+    private function sanitize_layer_animation($value, $default = 'fade-up') {
+        $allowed = array('none', 'fade-up', 'fade-down', 'fade-left', 'fade-right', 'zoom-in', 'zoom-out');
+        $safe = sanitize_key((string) $value);
+        if (!in_array($safe, $allowed, true)) {
+            return $default;
+        }
+        return $safe;
+    }
+
     /**
      * Register slider post type under the plugin menu.
      */
@@ -164,8 +203,19 @@ class Syntekpro_Slider_Core {
                     'badgeDelay' => 0,
                     'captionAnim' => 'fade-up',
                     'captionDelay' => 360,
+                    'titleAnimOut' => 'fade-down',
+                    'descAnimOut' => 'fade-down',
+                    'buttonAnimOut' => 'zoom-out',
+                    'badgeAnimOut' => 'fade-up',
+                    'captionAnimOut' => 'fade-down',
                     'layerDuration' => 720,
                     'layerStagger' => 70,
+                    'layerOrder' => 'badge,title,description,button,caption',
+                    'kenBurns' => false,
+                    'kenBurnsScaleStart' => 1.06,
+                    'kenBurnsScaleEnd' => 1.16,
+                    'kenBurnsDuration' => 9000,
+                    'kenBurnsDirection' => 'left-to-right',
                 )
             );
         }
@@ -224,28 +274,54 @@ class Syntekpro_Slider_Core {
             $badge_delay = isset($slide['badgeDelay']) ? absint($slide['badgeDelay']) : 0;
             $caption_anim = isset($slide['captionAnim']) ? sanitize_key($slide['captionAnim']) : 'fade-up';
             $caption_delay = isset($slide['captionDelay']) ? absint($slide['captionDelay']) : 360;
+            $title_anim_out = isset($slide['titleAnimOut']) ? $this->sanitize_layer_animation($slide['titleAnimOut'], 'fade-down') : 'fade-down';
+            $desc_anim_out = isset($slide['descAnimOut']) ? $this->sanitize_layer_animation($slide['descAnimOut'], 'fade-down') : 'fade-down';
+            $button_anim_out = isset($slide['buttonAnimOut']) ? $this->sanitize_layer_animation($slide['buttonAnimOut'], 'zoom-out') : 'zoom-out';
+            $badge_anim_out = isset($slide['badgeAnimOut']) ? $this->sanitize_layer_animation($slide['badgeAnimOut'], 'fade-up') : 'fade-up';
+            $caption_anim_out = isset($slide['captionAnimOut']) ? $this->sanitize_layer_animation($slide['captionAnimOut'], 'fade-down') : 'fade-down';
             $layer_duration = isset($slide['layerDuration']) ? absint($slide['layerDuration']) : 720;
             $layer_stagger = isset($slide['layerStagger']) ? absint($slide['layerStagger']) : 70;
+            $layer_order = $this->normalize_layer_order(isset($slide['layerOrder']) ? $slide['layerOrder'] : '');
+            $ken_burns = !empty($slide['kenBurns']);
+            $ken_burns_scale_start = isset($slide['kenBurnsScaleStart']) ? max(1, min(1.8, (float) $slide['kenBurnsScaleStart'])) : 1.06;
+            $ken_burns_scale_end = isset($slide['kenBurnsScaleEnd']) ? max(1, min(2.2, (float) $slide['kenBurnsScaleEnd'])) : 1.16;
+            $ken_burns_duration = isset($slide['kenBurnsDuration']) ? absint($slide['kenBurnsDuration']) : 9000;
+            $ken_burns_direction = isset($slide['kenBurnsDirection']) ? sanitize_key($slide['kenBurnsDirection']) : 'left-to-right';
+
+            $title_anim = $this->sanitize_layer_animation($title_anim, 'fade-up');
+            $desc_anim = $this->sanitize_layer_animation($desc_anim, 'fade-up');
+            $button_anim = $this->sanitize_layer_animation($button_anim, 'zoom-in');
+            $badge_anim = $this->sanitize_layer_animation($badge_anim, 'fade-down');
+            $caption_anim = $this->sanitize_layer_animation($caption_anim, 'fade-up');
+
+            $layer_fragments = array();
+            if ($badge !== '') {
+                $layer_fragments['badge'] = '<span class="sp-slide-badge sp-layer sp-layer-in-' . esc_attr($badge_anim) . ' sp-layer-out-' . esc_attr($badge_anim_out) . '" data-layer="badge" data-delay="' . esc_attr((string) $badge_delay) . '">' . esc_html($badge) . '</span>';
+            }
+            if ($title !== '') {
+                $layer_fragments['title'] = '<h3 class="sp-layer sp-layer-in-' . esc_attr($title_anim) . ' sp-layer-out-' . esc_attr($title_anim_out) . '" data-layer="title" data-delay="' . esc_attr((string) $title_delay) . '">' . esc_html($title) . '</h3>';
+            }
+            if ($desc !== '') {
+                $layer_fragments['description'] = '<p class="sp-layer sp-layer-in-' . esc_attr($desc_anim) . ' sp-layer-out-' . esc_attr($desc_anim_out) . '" data-layer="description" data-delay="' . esc_attr((string) $desc_delay) . '">' . esc_html($desc) . '</p>';
+            }
+            if ($btn_text !== '') {
+                $layer_fragments['button'] = '<a class="sp-slide-btn sp-layer sp-layer-in-' . esc_attr($button_anim) . ' sp-layer-out-' . esc_attr($button_anim_out) . '" data-layer="button" data-delay="' . esc_attr((string) $button_delay) . '" href="' . esc_url($btn_url) . '">' . esc_html($btn_text) . '</a>';
+            }
+            if ($caption !== '') {
+                $layer_fragments['caption'] = '<span class="sp-slide-caption sp-layer sp-layer-in-' . esc_attr($caption_anim) . ' sp-layer-out-' . esc_attr($caption_anim_out) . '" data-layer="caption" data-delay="' . esc_attr((string) $caption_delay) . '">' . esc_html($caption) . '</span>';
+            }
 
             $bg_style = (!empty($bg) && empty($settings['lazyLoad'])) ? ' style="background-image:url(' . esc_url($bg) . ');"' : '';
             $bg_data = (!empty($bg) && !empty($settings['lazyLoad'])) ? ' data-bg="' . esc_url($bg) . '"' : '';
-            $html .= '<article class="sp-slide" data-layer-duration="' . esc_attr((string) $layer_duration) . '" data-layer-stagger="' . esc_attr((string) $layer_stagger) . '"' . $bg_style . $bg_data . '>';
+            $html .= '<article class="sp-slide" data-layer-duration="' . esc_attr((string) $layer_duration) . '" data-layer-stagger="' . esc_attr((string) $layer_stagger) . '" data-kb-enabled="' . ($ken_burns ? 'true' : 'false') . '" data-kb-scale-start="' . esc_attr((string) $ken_burns_scale_start) . '" data-kb-scale-end="' . esc_attr((string) $ken_burns_scale_end) . '" data-kb-duration="' . esc_attr((string) $ken_burns_duration) . '" data-kb-direction="' . esc_attr($ken_burns_direction) . '">';
+            $html .= '<div class="sp-slide-bg"' . $bg_style . $bg_data . '></div>';
             $html .= '<div class="sp-slide-overlay"></div>';
             $html .= '<div class="sp-slide-content">';
-            if ($badge !== '') {
-                $html .= '<span class="sp-slide-badge sp-layer sp-layer-anim-' . esc_attr($badge_anim) . '" data-layer="badge" data-delay="' . esc_attr((string) $badge_delay) . '">' . esc_html($badge) . '</span>';
-            }
-            if ($title !== '') {
-                $html .= '<h3 class="sp-layer sp-layer-anim-' . esc_attr($title_anim) . '" data-layer="title" data-delay="' . esc_attr((string) $title_delay) . '">' . esc_html($title) . '</h3>';
-            }
-            if ($desc !== '') {
-                $html .= '<p class="sp-layer sp-layer-anim-' . esc_attr($desc_anim) . '" data-layer="description" data-delay="' . esc_attr((string) $desc_delay) . '">' . esc_html($desc) . '</p>';
-            }
-            if ($caption !== '') {
-                $html .= '<span class="sp-slide-caption sp-layer sp-layer-anim-' . esc_attr($caption_anim) . '" data-layer="caption" data-delay="' . esc_attr((string) $caption_delay) . '">' . esc_html($caption) . '</span>';
-            }
-            if ($btn_text !== '') {
-                $html .= '<a class="sp-slide-btn sp-layer sp-layer-anim-' . esc_attr($button_anim) . '" data-layer="button" data-delay="' . esc_attr((string) $button_delay) . '" href="' . esc_url($btn_url) . '">' . esc_html($btn_text) . '</a>';
+            foreach ($layer_order as $order_index => $layer_key) {
+                if (!isset($layer_fragments[$layer_key])) {
+                    continue;
+                }
+                $html .= str_replace(' data-layer="', ' data-order="' . esc_attr((string) $order_index) . '" data-layer="', $layer_fragments[$layer_key]);
             }
             $html .= '</div>';
             $html .= '</article>';
@@ -354,8 +430,19 @@ class Syntekpro_Slider_Core {
                     'badgeDelay' => 0,
                     'captionAnim' => 'fade-up',
                     'captionDelay' => 360,
+                    'titleAnimOut' => 'fade-down',
+                    'descAnimOut' => 'fade-down',
+                    'buttonAnimOut' => 'zoom-out',
+                    'badgeAnimOut' => 'fade-up',
+                    'captionAnimOut' => 'fade-down',
                     'layerDuration' => 720,
                     'layerStagger' => 70,
+                    'layerOrder' => 'badge,title,description,button,caption',
+                    'kenBurns' => false,
+                    'kenBurnsScaleStart' => 1.06,
+                    'kenBurnsScaleEnd' => 1.16,
+                    'kenBurnsDuration' => 9000,
+                    'kenBurnsDirection' => 'left-to-right',
                 ),
                 array(
                     'title' => 'Slide Two',
@@ -375,8 +462,19 @@ class Syntekpro_Slider_Core {
                     'badgeDelay' => 0,
                     'captionAnim' => 'fade-up',
                     'captionDelay' => 360,
+                    'titleAnimOut' => 'fade-down',
+                    'descAnimOut' => 'fade-left',
+                    'buttonAnimOut' => 'zoom-out',
+                    'badgeAnimOut' => 'fade-up',
+                    'captionAnimOut' => 'fade-down',
                     'layerDuration' => 720,
                     'layerStagger' => 70,
+                    'layerOrder' => 'badge,title,description,button,caption',
+                    'kenBurns' => false,
+                    'kenBurnsScaleStart' => 1.06,
+                    'kenBurnsScaleEnd' => 1.16,
+                    'kenBurnsDuration' => 9000,
+                    'kenBurnsDirection' => 'left-to-right',
                 ),
             );
         }
@@ -479,6 +577,10 @@ class Syntekpro_Slider_Core {
             .sp-slide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
             .sp-slide-grid .full { grid-column: 1 / -1; }
             .sp-layer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin-top: 6px; }
+            .sp-layer-order-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+            .sp-layer-order-item { background: #fff; border: 1px solid #dbe3ee; border-radius: 6px; padding: 6px 10px; cursor: move; display: flex; align-items: center; gap: 8px; }
+            .sp-layer-order-item.dragging { opacity: 0.55; }
+            .sp-layer-order-handle { color: #64748b; font-size: 12px; }
             .sp-image-row { display: flex; align-items: center; gap: 8px; }
             .sp-image-preview { width: 64px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #d1d5db; background: #fff; }
             .sp-slide-actions { margin-top: 8px; text-align: right; }
@@ -509,6 +611,45 @@ class Syntekpro_Slider_Core {
                     const clearBtn = card.querySelector('.sp-clear-image');
                     const imageInput = card.querySelector('.sp-image-input');
                     const imagePreview = card.querySelector('.sp-image-preview');
+                    const layerList = card.querySelector('.sp-layer-order-list');
+                    const layerOrderInput = card.querySelector('.sp-layer-order-input');
+
+                    function syncLayerOrder() {
+                        if (!layerList || !layerOrderInput) return;
+                        const keys = Array.from(layerList.querySelectorAll('.sp-layer-order-item')).map((item) => item.dataset.layerKey).filter(Boolean);
+                        layerOrderInput.value = keys.join(',');
+                    }
+
+                    function bindLayerDnD() {
+                        if (!layerList) return;
+                        let dragEl = null;
+                        layerList.querySelectorAll('.sp-layer-order-item').forEach((item) => {
+                            item.addEventListener('dragstart', () => {
+                                dragEl = item;
+                                item.classList.add('dragging');
+                            });
+                            item.addEventListener('dragend', () => {
+                                item.classList.remove('dragging');
+                                dragEl = null;
+                                syncLayerOrder();
+                            });
+                            item.addEventListener('dragover', (event) => {
+                                event.preventDefault();
+                            });
+                            item.addEventListener('drop', (event) => {
+                                event.preventDefault();
+                                if (!dragEl || dragEl === item) return;
+                                const rect = item.getBoundingClientRect();
+                                const before = event.clientY < rect.top + (rect.height / 2);
+                                if (before) {
+                                    layerList.insertBefore(dragEl, item);
+                                } else {
+                                    layerList.insertBefore(dragEl, item.nextSibling);
+                                }
+                                syncLayerOrder();
+                            });
+                        });
+                    }
 
                     if (removeBtn) {
                         removeBtn.addEventListener('click', function() {
@@ -539,6 +680,9 @@ class Syntekpro_Slider_Core {
                             imagePreview.src = '';
                         });
                     }
+
+                    bindLayerDnD();
+                    syncLayerOrder();
                 }
 
                 function addSlide() {
@@ -563,16 +707,32 @@ class Syntekpro_Slider_Core {
                                 </label>
                                 <label><span>Layer Duration (ms)</span><input type="number" min="100" max="3000" step="10" name="sp_slider_slides[${index}][layerDuration]" value="720"></label>
                                 <label><span>Layer Stagger (ms)</span><input type="number" min="0" max="1000" step="10" name="sp_slider_slides[${index}][layerStagger]" value="70"></label>
+                                <label><span>Ken Burns Duration (ms)</span><input type="number" min="2000" max="30000" step="100" name="sp_slider_slides[${index}][kenBurnsDuration]" value="9000"></label>
+                                <label><span>Ken Burns Scale Start</span><input type="number" min="1" max="1.8" step="0.01" name="sp_slider_slides[${index}][kenBurnsScaleStart]" value="1.06"></label>
+                                <label><span>Ken Burns Scale End</span><input type="number" min="1" max="2.2" step="0.01" name="sp_slider_slides[${index}][kenBurnsScaleEnd]" value="1.16"></label>
+                                <label><span>Ken Burns Direction</span><select name="sp_slider_slides[${index}][kenBurnsDirection]"><option value="left-to-right">Left to Right</option><option value="right-to-left">Right to Left</option><option value="top-to-bottom">Top to Bottom</option><option value="bottom-to-top">Bottom to Top</option><option value="center">Center</option></select></label>
+                                <label class="full"><span><input type="checkbox" name="sp_slider_slides[${index}][kenBurns]" value="1"> Enable Ken Burns on this slide</span></label>
                                 <div class="full">
                                     <span style="display:block;font-weight:600;margin-bottom:4px;">Layer Entrances</span>
                                     <div class="sp-layer-grid">
-                                        <strong>Layer</strong><strong>Animation</strong><strong>Delay (ms)</strong><strong>Preset</strong>
-                                        <span>Badge</span><input type="text" name="sp_slider_slides[${index}][badgeAnim]" value="fade-down"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][badgeDelay]" value="0"><span>fade-down</span>
-                                        <span>Title</span><input type="text" name="sp_slider_slides[${index}][titleAnim]" value="fade-up"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][titleDelay]" value="80"><span>fade-up</span>
-                                        <span>Description</span><input type="text" name="sp_slider_slides[${index}][descAnim]" value="fade-up"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][descDelay]" value="180"><span>fade-up</span>
-                                        <span>Button</span><input type="text" name="sp_slider_slides[${index}][buttonAnim]" value="zoom-in"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][buttonDelay]" value="300"><span>zoom-in</span>
-                                        <span>Caption</span><input type="text" name="sp_slider_slides[${index}][captionAnim]" value="fade-up"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][captionDelay]" value="360"><span>fade-up</span>
+                                        <strong>Layer</strong><strong>In</strong><strong>Out</strong><strong>Delay (ms)</strong>
+                                        <span>Badge</span><input type="text" name="sp_slider_slides[${index}][badgeAnim]" value="fade-down"><input type="text" name="sp_slider_slides[${index}][badgeAnimOut]" value="fade-up"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][badgeDelay]" value="0">
+                                        <span>Title</span><input type="text" name="sp_slider_slides[${index}][titleAnim]" value="fade-up"><input type="text" name="sp_slider_slides[${index}][titleAnimOut]" value="fade-down"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][titleDelay]" value="80">
+                                        <span>Description</span><input type="text" name="sp_slider_slides[${index}][descAnim]" value="fade-up"><input type="text" name="sp_slider_slides[${index}][descAnimOut]" value="fade-down"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][descDelay]" value="180">
+                                        <span>Button</span><input type="text" name="sp_slider_slides[${index}][buttonAnim]" value="zoom-in"><input type="text" name="sp_slider_slides[${index}][buttonAnimOut]" value="zoom-out"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][buttonDelay]" value="300">
+                                        <span>Caption</span><input type="text" name="sp_slider_slides[${index}][captionAnim]" value="fade-up"><input type="text" name="sp_slider_slides[${index}][captionAnimOut]" value="fade-down"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[${index}][captionDelay]" value="360">
                                     </div>
+                                </div>
+                                <div class="full">
+                                    <span style="display:block;font-weight:600;margin-bottom:4px;">Layer Order (Drag to Reorder)</span>
+                                    <input type="hidden" class="sp-layer-order-input" name="sp_slider_slides[${index}][layerOrder]" value="badge,title,description,button,caption">
+                                    <ul class="sp-layer-order-list">
+                                        <li class="sp-layer-order-item" draggable="true" data-layer-key="badge"><span class="sp-layer-order-handle">↕</span>Badge</li>
+                                        <li class="sp-layer-order-item" draggable="true" data-layer-key="title"><span class="sp-layer-order-handle">↕</span>Title</li>
+                                        <li class="sp-layer-order-item" draggable="true" data-layer-key="description"><span class="sp-layer-order-handle">↕</span>Description</li>
+                                        <li class="sp-layer-order-item" draggable="true" data-layer-key="button"><span class="sp-layer-order-handle">↕</span>Button</li>
+                                        <li class="sp-layer-order-item" draggable="true" data-layer-key="caption"><span class="sp-layer-order-handle">↕</span>Caption</li>
+                                    </ul>
                                 </div>
                             </div>
                             <div class="sp-slide-actions"><button type="button" class="button button-link-delete sp-remove-slide">Remove Slide</button></div>
@@ -607,8 +767,19 @@ class Syntekpro_Slider_Core {
         $badge_delay = isset($slide['badgeDelay']) ? absint($slide['badgeDelay']) : 0;
         $caption_anim = isset($slide['captionAnim']) ? $slide['captionAnim'] : 'fade-up';
         $caption_delay = isset($slide['captionDelay']) ? absint($slide['captionDelay']) : 360;
+        $title_anim_out = isset($slide['titleAnimOut']) ? $slide['titleAnimOut'] : 'fade-down';
+        $desc_anim_out = isset($slide['descAnimOut']) ? $slide['descAnimOut'] : 'fade-down';
+        $button_anim_out = isset($slide['buttonAnimOut']) ? $slide['buttonAnimOut'] : 'zoom-out';
+        $badge_anim_out = isset($slide['badgeAnimOut']) ? $slide['badgeAnimOut'] : 'fade-up';
+        $caption_anim_out = isset($slide['captionAnimOut']) ? $slide['captionAnimOut'] : 'fade-down';
         $layer_duration = isset($slide['layerDuration']) ? absint($slide['layerDuration']) : 720;
         $layer_stagger = isset($slide['layerStagger']) ? absint($slide['layerStagger']) : 70;
+        $layer_order = implode(',', $this->normalize_layer_order(isset($slide['layerOrder']) ? $slide['layerOrder'] : ''));
+        $ken_burns = !empty($slide['kenBurns']);
+        $ken_burns_scale_start = isset($slide['kenBurnsScaleStart']) ? (float) $slide['kenBurnsScaleStart'] : 1.06;
+        $ken_burns_scale_end = isset($slide['kenBurnsScaleEnd']) ? (float) $slide['kenBurnsScaleEnd'] : 1.16;
+        $ken_burns_duration = isset($slide['kenBurnsDuration']) ? absint($slide['kenBurnsDuration']) : 9000;
+        $ken_burns_direction = isset($slide['kenBurnsDirection']) ? $slide['kenBurnsDirection'] : 'left-to-right';
 
         echo '<div class="sp-slide-card" data-index="' . esc_attr((string) $index) . '">';
         echo '<h5 class="sp-slide-title">' . esc_html(sprintf(__('Slide %d', 'syntekpro-animations'), $index + 1)) . '</h5>';
@@ -632,16 +803,32 @@ class Syntekpro_Slider_Core {
 
         echo '<label><span>' . esc_html__('Layer Duration (ms)', 'syntekpro-animations') . '</span><input type="number" min="100" max="3000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][layerDuration]" value="' . esc_attr((string) $layer_duration) . '"></label>';
         echo '<label><span>' . esc_html__('Layer Stagger (ms)', 'syntekpro-animations') . '</span><input type="number" min="0" max="1000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][layerStagger]" value="' . esc_attr((string) $layer_stagger) . '"></label>';
+        echo '<label><span>' . esc_html__('Ken Burns Duration (ms)', 'syntekpro-animations') . '</span><input type="number" min="2000" max="30000" step="100" name="sp_slider_slides[' . esc_attr((string) $index) . '][kenBurnsDuration]" value="' . esc_attr((string) $ken_burns_duration) . '"></label>';
+        echo '<label><span>' . esc_html__('Ken Burns Scale Start', 'syntekpro-animations') . '</span><input type="number" min="1" max="1.8" step="0.01" name="sp_slider_slides[' . esc_attr((string) $index) . '][kenBurnsScaleStart]" value="' . esc_attr((string) $ken_burns_scale_start) . '"></label>';
+        echo '<label><span>' . esc_html__('Ken Burns Scale End', 'syntekpro-animations') . '</span><input type="number" min="1" max="2.2" step="0.01" name="sp_slider_slides[' . esc_attr((string) $index) . '][kenBurnsScaleEnd]" value="' . esc_attr((string) $ken_burns_scale_end) . '"></label>';
+        echo '<label><span>' . esc_html__('Ken Burns Direction', 'syntekpro-animations') . '</span><select name="sp_slider_slides[' . esc_attr((string) $index) . '][kenBurnsDirection]"><option value="left-to-right" ' . selected($ken_burns_direction, 'left-to-right', false) . '>Left to Right</option><option value="right-to-left" ' . selected($ken_burns_direction, 'right-to-left', false) . '>Right to Left</option><option value="top-to-bottom" ' . selected($ken_burns_direction, 'top-to-bottom', false) . '>Top to Bottom</option><option value="bottom-to-top" ' . selected($ken_burns_direction, 'bottom-to-top', false) . '>Bottom to Top</option><option value="center" ' . selected($ken_burns_direction, 'center', false) . '>Center</option></select></label>';
+        echo '<label class="full"><span><input type="checkbox" name="sp_slider_slides[' . esc_attr((string) $index) . '][kenBurns]" value="1" ' . checked($ken_burns, true, false) . '> ' . esc_html__('Enable Ken Burns on this slide', 'syntekpro-animations') . '</span></label>';
 
         echo '<div class="full">';
         echo '<span style="display:block;font-weight:600;margin-bottom:4px;">' . esc_html__('Layer Entrances', 'syntekpro-animations') . '</span>';
         echo '<div class="sp-layer-grid">';
-        echo '<strong>' . esc_html__('Layer', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Animation', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Delay (ms)', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Preset', 'syntekpro-animations') . '</strong>';
-        echo '<span>' . esc_html__('Badge', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeAnim]" value="' . esc_attr($badge_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeDelay]" value="' . esc_attr((string) $badge_delay) . '"><span>fade-down</span>';
-        echo '<span>' . esc_html__('Title', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][titleAnim]" value="' . esc_attr($title_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][titleDelay]" value="' . esc_attr((string) $title_delay) . '"><span>fade-up</span>';
-        echo '<span>' . esc_html__('Description', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][descAnim]" value="' . esc_attr($desc_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][descDelay]" value="' . esc_attr((string) $desc_delay) . '"><span>fade-up</span>';
-        echo '<span>' . esc_html__('Button', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][buttonAnim]" value="' . esc_attr($button_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][buttonDelay]" value="' . esc_attr((string) $button_delay) . '"><span>zoom-in</span>';
-        echo '<span>' . esc_html__('Caption', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][captionAnim]" value="' . esc_attr($caption_anim) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][captionDelay]" value="' . esc_attr((string) $caption_delay) . '"><span>fade-up</span>';
+        echo '<strong>' . esc_html__('Layer', 'syntekpro-animations') . '</strong><strong>' . esc_html__('In', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Out', 'syntekpro-animations') . '</strong><strong>' . esc_html__('Delay (ms)', 'syntekpro-animations') . '</strong>';
+        echo '<span>' . esc_html__('Badge', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeAnim]" value="' . esc_attr($badge_anim) . '"><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeAnimOut]" value="' . esc_attr($badge_anim_out) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][badgeDelay]" value="' . esc_attr((string) $badge_delay) . '">';
+        echo '<span>' . esc_html__('Title', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][titleAnim]" value="' . esc_attr($title_anim) . '"><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][titleAnimOut]" value="' . esc_attr($title_anim_out) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][titleDelay]" value="' . esc_attr((string) $title_delay) . '">';
+        echo '<span>' . esc_html__('Description', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][descAnim]" value="' . esc_attr($desc_anim) . '"><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][descAnimOut]" value="' . esc_attr($desc_anim_out) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][descDelay]" value="' . esc_attr((string) $desc_delay) . '">';
+        echo '<span>' . esc_html__('Button', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][buttonAnim]" value="' . esc_attr($button_anim) . '"><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][buttonAnimOut]" value="' . esc_attr($button_anim_out) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][buttonDelay]" value="' . esc_attr((string) $button_delay) . '">';
+        echo '<span>' . esc_html__('Caption', 'syntekpro-animations') . '</span><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][captionAnim]" value="' . esc_attr($caption_anim) . '"><input type="text" name="sp_slider_slides[' . esc_attr((string) $index) . '][captionAnimOut]" value="' . esc_attr($caption_anim_out) . '"><input type="number" min="0" max="4000" step="10" name="sp_slider_slides[' . esc_attr((string) $index) . '][captionDelay]" value="' . esc_attr((string) $caption_delay) . '">';
+        echo '</div>';
+        echo '</div>';
+
+        echo '<div class="full">';
+        echo '<span style="display:block;font-weight:600;margin-bottom:4px;">' . esc_html__('Layer Order (Drag to Reorder)', 'syntekpro-animations') . '</span>';
+        echo '<input type="hidden" class="sp-layer-order-input" name="sp_slider_slides[' . esc_attr((string) $index) . '][layerOrder]" value="' . esc_attr($layer_order) . '">';
+        echo '<ul class="sp-layer-order-list">';
+        foreach ($this->normalize_layer_order($layer_order) as $layer_key) {
+            echo '<li class="sp-layer-order-item" draggable="true" data-layer-key="' . esc_attr($layer_key) . '"><span class="sp-layer-order-handle">↕</span>' . esc_html(ucfirst($layer_key)) . '</li>';
+        }
+        echo '</ul>';
         echo '</div>';
         echo '</div>';
 
@@ -739,12 +926,23 @@ class Syntekpro_Slider_Core {
                 'badgeDelay' => isset($slide['badgeDelay']) ? absint($slide['badgeDelay']) : 0,
                 'captionAnim' => isset($slide['captionAnim']) ? sanitize_key($slide['captionAnim']) : 'fade-up',
                 'captionDelay' => isset($slide['captionDelay']) ? absint($slide['captionDelay']) : 360,
+                'titleAnimOut' => isset($slide['titleAnimOut']) ? sanitize_key($slide['titleAnimOut']) : 'fade-down',
+                'descAnimOut' => isset($slide['descAnimOut']) ? sanitize_key($slide['descAnimOut']) : 'fade-down',
+                'buttonAnimOut' => isset($slide['buttonAnimOut']) ? sanitize_key($slide['buttonAnimOut']) : 'zoom-out',
+                'badgeAnimOut' => isset($slide['badgeAnimOut']) ? sanitize_key($slide['badgeAnimOut']) : 'fade-up',
+                'captionAnimOut' => isset($slide['captionAnimOut']) ? sanitize_key($slide['captionAnimOut']) : 'fade-down',
                 'layerDuration' => isset($slide['layerDuration']) ? absint($slide['layerDuration']) : 720,
                 'layerStagger' => isset($slide['layerStagger']) ? absint($slide['layerStagger']) : 70,
+                'layerOrder' => isset($slide['layerOrder']) ? sanitize_text_field($slide['layerOrder']) : 'badge,title,description,button,caption',
+                'kenBurns' => !empty($slide['kenBurns']),
+                'kenBurnsScaleStart' => isset($slide['kenBurnsScaleStart']) ? (float) $slide['kenBurnsScaleStart'] : 1.06,
+                'kenBurnsScaleEnd' => isset($slide['kenBurnsScaleEnd']) ? (float) $slide['kenBurnsScaleEnd'] : 1.16,
+                'kenBurnsDuration' => isset($slide['kenBurnsDuration']) ? absint($slide['kenBurnsDuration']) : 9000,
+                'kenBurnsDirection' => isset($slide['kenBurnsDirection']) ? sanitize_key($slide['kenBurnsDirection']) : 'left-to-right',
             );
 
-            $allowed_layer_anims = array('none', 'fade-up', 'fade-down', 'fade-left', 'fade-right', 'zoom-in');
-            foreach (array('titleAnim', 'descAnim', 'buttonAnim', 'badgeAnim', 'captionAnim') as $layer_key) {
+            $allowed_layer_anims = array('none', 'fade-up', 'fade-down', 'fade-left', 'fade-right', 'zoom-in', 'zoom-out');
+            foreach (array('titleAnim', 'descAnim', 'buttonAnim', 'badgeAnim', 'captionAnim', 'titleAnimOut', 'descAnimOut', 'buttonAnimOut', 'badgeAnimOut', 'captionAnimOut') as $layer_key) {
                 if (!in_array($safe_slide[$layer_key], $allowed_layer_anims, true)) {
                     $safe_slide[$layer_key] = 'fade-up';
                 }
@@ -757,6 +955,13 @@ class Syntekpro_Slider_Core {
             $safe_slide['buttonDelay'] = min(4000, $safe_slide['buttonDelay']);
             $safe_slide['badgeDelay'] = min(4000, $safe_slide['badgeDelay']);
             $safe_slide['captionDelay'] = min(4000, $safe_slide['captionDelay']);
+            $safe_slide['layerOrder'] = implode(',', $this->normalize_layer_order($safe_slide['layerOrder']));
+            $safe_slide['kenBurnsScaleStart'] = max(1, min(1.8, $safe_slide['kenBurnsScaleStart']));
+            $safe_slide['kenBurnsScaleEnd'] = max(1, min(2.2, $safe_slide['kenBurnsScaleEnd']));
+            $safe_slide['kenBurnsDuration'] = max(2000, min(30000, $safe_slide['kenBurnsDuration']));
+            if (!in_array($safe_slide['kenBurnsDirection'], array('left-to-right', 'right-to-left', 'top-to-bottom', 'bottom-to-top', 'center'), true)) {
+                $safe_slide['kenBurnsDirection'] = 'left-to-right';
+            }
 
             if ($safe_slide['title'] === '' && $safe_slide['badge'] === '' && $safe_slide['caption'] === '' && $safe_slide['description'] === '' && $safe_slide['buttonText'] === '' && $safe_slide['backgroundImage'] === '') {
                 continue;

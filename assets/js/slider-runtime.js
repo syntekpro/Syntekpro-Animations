@@ -34,12 +34,70 @@
         var counter = withCounter ? root.querySelector('.sp-slider-counter') : null;
         var thumbs = withThumbs ? Array.prototype.slice.call(root.querySelectorAll('.sp-slider-thumb')) : [];
 
+        function kenBurnsTransform(scale, direction, phase) {
+            var tx = '0%';
+            var ty = '0%';
+            if (direction === 'left-to-right') {
+                tx = phase === 'start' ? '-4%' : '4%';
+            } else if (direction === 'right-to-left') {
+                tx = phase === 'start' ? '4%' : '-4%';
+            } else if (direction === 'top-to-bottom') {
+                ty = phase === 'start' ? '-3%' : '3%';
+            } else if (direction === 'bottom-to-top') {
+                ty = phase === 'start' ? '3%' : '-3%';
+            }
+            return 'translate3d(' + tx + ', ' + ty + ', 0) scale(' + scale + ')';
+        }
+
+        function setKenBurns(slide, active) {
+            if (!slide) return;
+            var bgEl = slide.querySelector('.sp-slide-bg');
+            if (!bgEl) return;
+
+            var enabled = slide.getAttribute('data-kb-enabled') === 'true';
+            if (!enabled) {
+                bgEl.style.transition = 'none';
+                bgEl.style.transform = 'translate3d(0,0,0) scale(1)';
+                return;
+            }
+
+            var direction = slide.getAttribute('data-kb-direction') || 'left-to-right';
+            var duration = parseInt(slide.getAttribute('data-kb-duration') || '9000', 10);
+            var startScale = parseFloat(slide.getAttribute('data-kb-scale-start') || '1.06');
+            var endScale = parseFloat(slide.getAttribute('data-kb-scale-end') || '1.16');
+
+            if (!active) {
+                bgEl.style.transition = 'none';
+                bgEl.style.transform = kenBurnsTransform(startScale, direction, 'start');
+                return;
+            }
+
+            bgEl.style.transition = 'none';
+            bgEl.style.transform = kenBurnsTransform(startScale, direction, 'start');
+            requestAnimationFrame(function() {
+                bgEl.style.transition = 'transform ' + duration + 'ms linear';
+                bgEl.style.transform = kenBurnsTransform(endScale, direction, 'end');
+            });
+        }
+
         function clearLayerState(slide) {
             if (!slide) return;
             slide.querySelectorAll('.sp-layer').forEach(function(layer) {
                 layer.classList.remove('is-layer-active');
+                layer.classList.remove('is-layer-exit');
                 layer.style.transitionDuration = '';
                 layer.style.transitionDelay = '';
+            });
+        }
+
+        function exitLayers(slide) {
+            if (!slide) return;
+            var baseDuration = parseInt(slide.getAttribute('data-layer-duration') || '720', 10);
+            slide.querySelectorAll('.sp-layer').forEach(function(layer) {
+                layer.style.transitionDuration = baseDuration + 'ms';
+                layer.style.transitionDelay = '0ms';
+                layer.classList.remove('is-layer-active');
+                layer.classList.add('is-layer-exit');
             });
         }
 
@@ -48,13 +106,18 @@
 
             var baseDuration = parseInt(slide.getAttribute('data-layer-duration') || '720', 10);
             var stagger = parseInt(slide.getAttribute('data-layer-stagger') || '70', 10);
-            var layers = Array.prototype.slice.call(slide.querySelectorAll('.sp-layer'));
+            var layers = Array.prototype.slice.call(slide.querySelectorAll('.sp-layer')).sort(function(a, b) {
+                var ao = parseInt(a.getAttribute('data-order') || '0', 10);
+                var bo = parseInt(b.getAttribute('data-order') || '0', 10);
+                return ao - bo;
+            });
 
             layers.forEach(function(layer, idx) {
                 var customDelay = parseInt(layer.getAttribute('data-delay') || '0', 10);
                 var totalDelay = Math.max(0, customDelay + (idx * stagger));
                 layer.style.transitionDuration = baseDuration + 'ms';
                 layer.style.transitionDelay = totalDelay + 'ms';
+                layer.classList.remove('is-layer-exit');
                 layer.classList.remove('is-layer-active');
 
                 requestAnimationFrame(function() {
@@ -67,9 +130,11 @@
             if (!withLazy || !slides[i]) {
                 return;
             }
-            var bg = slides[i].getAttribute('data-bg');
-            if (bg && !slides[i].style.backgroundImage) {
-                slides[i].style.backgroundImage = 'url(' + bg + ')';
+            var bgEl = slides[i].querySelector('.sp-slide-bg');
+            if (!bgEl) return;
+            var bg = bgEl.getAttribute('data-bg');
+            if (bg && !bgEl.style.backgroundImage) {
+                bgEl.style.backgroundImage = 'url(' + bg + ')';
             }
         }
 
@@ -134,19 +199,23 @@
                 slides.forEach(function(slide, i) {
                     if (i === index) {
                         slide.classList.add('is-active');
+                        setKenBurns(slide, true);
                         animateLayers(slide);
                     } else {
+                        setKenBurns(slide, false);
+                        exitLayers(slide);
                         slide.classList.remove('is-active');
-                        clearLayerState(slide);
                     }
                 });
             } else {
                 track.style.transform = 'translateX(' + (-index * 100) + '%)';
                 slides.forEach(function(slide, i) {
                     if (i === index) {
+                        setKenBurns(slide, true);
                         animateLayers(slide);
                     } else {
-                        clearLayerState(slide);
+                        setKenBurns(slide, false);
+                        exitLayers(slide);
                     }
                 });
             }
