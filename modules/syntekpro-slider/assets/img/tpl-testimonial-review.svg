@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#fdfbfb"/>
+      <stop offset="100%" stop-color="#ebedee"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="avatar" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.06)"/>
+    </filter>
+  </defs>
+  <rect width="400" height="200" fill="url(#bg)"/>
+  <!-- Card -->
+  <rect x="66" y="16" width="268" height="168" rx="8" fill="#fff" filter="url(#shadow)"/>
+  <!-- Left accent stripe -->
+  <rect x="66" y="16" width="2.5" height="168" rx="8" fill="url(#accent)"/>
+  <!-- Quote mark -->
+  <text x="86" y="42" font-family="Georgia,serif" font-size="44" fill="rgba(99,102,241,0.12)" font-weight="800">"</text>
+  <!-- Stars -->
+  <text x="86" y="54" font-family="system-ui,sans-serif" font-size="8" fill="#f59e0b">★★★★★</text>
+  <!-- Quote text -->
+  <text x="86" y="70" font-family="system-ui,sans-serif" font-size="6" fill="#374151">SyntekPro Slider completely changed our website.</text>
+  <text x="86" y="80" font-family="system-ui,sans-serif" font-size="6" fill="#374151">The animations are buttery smooth, the builder</text>
+  <text x="86" y="90" font-family="system-ui,sans-serif" font-size="6" fill="#374151">is intuitive, and our bounce rate dropped by 35%.</text>
+  <!-- Divider -->
+  <line x1="86" y1="108" x2="314" y2="108" stroke="#e5e7eb" stroke-width="0.5"/>
+  <!-- Avatar circle -->
+  <circle cx="100" cy="130" r="10" fill="url(#avatar)"/>
+  <text x="100" y="133" font-family="system-ui,sans-serif" font-size="6" fill="#fff" font-weight="700" text-anchor="middle">SM</text>
+  <!-- Author -->
+  <text x="116" y="127" font-family="system-ui,sans-serif" font-size="6" fill="#111827" font-weight="700">Sarah Mitchell</text>
+  <text x="116" y="136" font-family="system-ui,sans-serif" font-size="4.5" fill="#9ca3af">Head of Marketing, TechVenture Inc.</text>
+  <!-- Company logo placeholder -->
+  <rect x="280" y="122" width="30" height="14" rx="2" fill="rgba(0,0,0,0.04)" stroke="rgba(0,0,0,0.08)" stroke-width="0.3"/>
+  <text x="295" y="131" font-family="system-ui,sans-serif" font-size="3.5" fill="rgba(0,0,0,0.2)" text-anchor="middle">LOGO</text>
+  <rect x="0" y="0" width="400" height="200" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1" rx="4"/>
+</svg>

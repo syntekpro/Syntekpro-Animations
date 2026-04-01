@@ -1,14 +1,15 @@
 # Syntekpro Animations
 
-Version: 2.4.3
+Version: 1.5.0
 Requires: WordPress 5.8+, PHP 7.4+
 
-Professional animation and slider toolkit for WordPress with visual builders, presets, timeline controls, and flexible frontend runtime features.
+Professional animation and slider toolkit for WordPress with visual builders, presets, timeline controls, and flexible frontend runtime features. As of 1.5.0, SyntekPro Slider is merged as an internal module.
 
 ## Highlights
 
 - 50+ animation presets with free and Get+ tiers
 - Visual builders for animations, timelines, and slider content
+- Embedded SyntekPro Slider module with shared runtime inside Animations
 - Shortcodes for animation wrappers, sequences, and sliders
 - GitHub release update notifications for installed plugin sites
 - License-aware Get+ feature controls
@@ -52,8 +53,8 @@ To publish an update:
 
 1. Update version metadata in plugin files.
 2. Commit and push to main.
-3. Create and push a version tag (example: `v2.4.3`).
-4. Publish a GitHub Release with a plugin zip asset named like `syntekpro-animations-2.4.3.zip`.
+3. Create and push a version tag (example: `v1.5.0`).
+4. Publish a GitHub Release with a plugin zip asset named like `syntekpro-animations-1.5.0.zip`.
 
 Installed sites will detect the release during routine WordPress update checks.
 

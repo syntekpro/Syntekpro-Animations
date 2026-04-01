@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f0c29"/>
+      <stop offset="50%" stop-color="#302b63"/>
+      <stop offset="100%" stop-color="#24243e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="85%" cy="20%">
+      <stop offset="0%" stop-color="rgba(124,58,237,0.4)"/>
+      <stop offset="70%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="200" fill="url(#bg)"/>
+  <rect width="400" height="200" fill="url(#glow)"/>
+  <rect x="26" y="42" width="17" height="2" rx="1" fill="#7c3aed"/>
+  <text x="48" y="44" font-family="system-ui,sans-serif" font-size="5" fill="#a78bfa" font-weight="700" letter-spacing="1.5">AWARD-WINNING DIGITAL AGENCY</text>
+  <text x="26" y="62" font-family="system-ui,sans-serif" font-size="16" fill="#fff" font-weight="800">We Craft Digital</text>
+  <text x="26" y="80" font-family="system-ui,sans-serif" font-size="16" fill="#fff" font-weight="800">Experiences That Matter</text>
+  <text x="26" y="98" font-family="system-ui,sans-serif" font-size="5.5" fill="#c4b5fd">From brand strategy to full-stack development</text>
+  <text x="26" y="106" font-family="system-ui,sans-serif" font-size="5.5" fill="#c4b5fd">we build products that users love.</text>
+  <rect x="26" y="120" width="64" height="18" rx="3" fill="#7c3aed"/>
+  <text x="38" y="132" font-family="system-ui,sans-serif" font-size="5.5" fill="#fff" font-weight="600">Start a Project</text>
+  <rect x="96" y="120" width="64" height="18" rx="3" fill="transparent" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
+  <text x="104" y="132" font-family="system-ui,sans-serif" font-size="5.5" fill="#c4b5fd" font-weight="600">View Our Work</text>
+  <rect x="300" y="110" width="60" height="28" rx="4" fill="rgba(255,255,255,0.08)"/>
+  <text x="310" y="127" font-family="system-ui,sans-serif" font-size="5" fill="rgba(255,255,255,0.7)" text-anchor="start">250+ Projects</text>
+  <text x="316" y="134" font-family="system-ui,sans-serif" font-size="4.5" fill="rgba(255,255,255,0.5)" text-anchor="start">Delivered</text>
+  <rect x="0" y="0" width="400" height="200" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1" rx="4"/>
+</svg>

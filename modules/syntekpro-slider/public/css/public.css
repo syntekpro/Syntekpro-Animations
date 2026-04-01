@@ -1,0 +1,428 @@
+/* ==========================================================================
+   SyntekPro Slider — Frontend Public CSS
+   Includes: slider layout, all transitions, layer animations, responsive
+   ========================================================================== */
+
+/* ── Custom properties ───────────────────────────────────────────────────── */
+.spslider-wrapper {
+    --sp-speed:   700ms;
+    --sp-easing:  ease-in-out;
+    position: relative;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ── Wrapper & container ─────────────────────────────────────────────────── */
+.spslider-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: default;
+    user-select: none;
+}
+.spslider-container:focus-visible {
+    outline: 3px solid #6366f1;
+    outline-offset: 3px;
+}
+
+/* ── Track ───────────────────────────────────────────────────────────────── */
+.spslider-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* ── Slides ──────────────────────────────────────────────────────────────── */
+.spslider-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+.spslider-slide:not(.active) { visibility: hidden; }
+
+/* Background video */
+.spslider-bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Overlay */
+.spslider-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Slide link */
+.spslider-slide-link {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: block;
+}
+
+/* Layers wrap */
+.spslider-layers-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+.spslider-layer { pointer-events: auto; }
+
+/* ── Arrows ──────────────────────────────────────────────────────────────── */
+.spslider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 30;
+    background: rgba(0,0,0,.4);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    transition: background .2s, transform .2s;
+    outline: none;
+}
+.spslider-arrow:hover  { background: rgba(0,0,0,.7); }
+.spslider-arrow:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
+.spslider-arrow svg    { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.spslider-prev { left: 16px; }
+.spslider-next { right: 16px; }
+
+/* ── Dots ────────────────────────────────────────────────────────────────── */
+.spslider-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 30;
+}
+.spslider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.5);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background .2s, transform .2s;
+    outline: none;
+}
+.spslider-dot.active  { background: #fff; transform: scale(1.3); }
+.spslider-dot:hover   { background: rgba(255,255,255,.8); }
+.spslider-dot:focus-visible { outline: 2px solid #6366f1; }
+
+/* ── Scaling modes ───────────────────────────────────────────────────────── */
+.spslider-scale-auto     { width: 100%; }
+.spslider-scale-fixed    { /* width set inline */ }
+.spslider-scale-fullwidth { width: 100vw; margin-left: calc(50% - 50vw); }
+.spslider-scale-fullscreen .spslider-container { height: 100vh !important; }
+
+/* ── Ken Burns effect ────────────────────────────────────────────────────── */
+.spslider-slide.kenburns-active .spslider-slide-bg-img,
+.spslider-slide.kenburns-active { animation: spslider-kenburns 8s ease-out forwards; }
+@keyframes spslider-kenburns {
+    from { transform: scale(1); }
+    to   { transform: scale(1.15); }
+}
+.spslider-kenburns-out { animation: spslider-kenburns-out 8s ease-out forwards; }
+@keyframes spslider-kenburns-out {
+    from { transform: scale(1.15); }
+    to   { transform: scale(1); }
+}
+
+/* ── Slide transitions ───────────────────────────────────────────────────── */
+
+/* --- Fade --- */
+.spslider-trans-fade .spslider-slide { transition: opacity var(--sp-speed) var(--sp-easing); opacity: 0; }
+.spslider-trans-fade .spslider-slide.active   { opacity: 1; }
+.spslider-trans-fade .spslider-slide.entering { opacity: 0; animation: none; }
+.spslider-trans-fade .spslider-slide.leaving  { opacity: 0; }
+
+/* --- Slide --- */
+.spslider-trans-slide .spslider-slide { transition: transform var(--sp-speed) var(--sp-easing); }
+.spslider-trans-slide .spslider-slide.enter-left  { transform: translateX(100%); visibility:visible; }
+.spslider-trans-slide .spslider-slide.enter-right { transform: translateX(-100%); visibility:visible; }
+.spslider-trans-slide .spslider-slide.active       { transform: translateX(0); }
+.spslider-trans-slide .spslider-slide.leaving-left  { transform: translateX(-100%); }
+.spslider-trans-slide .spslider-slide.leaving-right { transform: translateX(100%); }
+
+/* --- Zoom --- */
+.spslider-trans-zoom .spslider-slide { transition: transform var(--sp-speed) var(--sp-easing), opacity var(--sp-speed); }
+.spslider-trans-zoom .spslider-slide.enter-left  { transform: scale(.8); opacity:0; visibility:visible; }
+.spslider-trans-zoom .spslider-slide.active       { transform: scale(1); opacity:1; }
+.spslider-trans-zoom .spslider-slide.leaving-left { transform: scale(1.15); opacity:0; }
+
+/* --- Crossfade --- */
+.spslider-trans-crossfade .spslider-slide {
+    transition: opacity var(--sp-speed) var(--sp-easing);
+    opacity: 0;
+}
+.spslider-trans-crossfade .spslider-slide.active   { opacity: 1; }
+.spslider-trans-crossfade .spslider-slide.entering { opacity: 0; visibility:visible; }
+
+/* --- Parallax --- */
+.spslider-trans-parallax .spslider-slide { transition: transform var(--sp-speed) var(--sp-easing); }
+.spslider-trans-parallax .spslider-slide.enter-left  { transform: translateX(100%); visibility:visible; }
+.spslider-trans-parallax .spslider-slide.enter-right { transform: translateX(-100%); visibility:visible; }
+.spslider-trans-parallax .spslider-slide.active      { transform: translateX(0); }
+.spslider-trans-parallax .spslider-slide.leaving-left  { transform: translateX(-30%); }
+.spslider-trans-parallax .spslider-slide.leaving-right { transform: translateX(30%); }
+
+/* --- 3D Cube --- */
+.spslider-trans-cube3d { perspective: 1200px; }
+.spslider-trans-cube3d .spslider-track { transform-style: preserve-3d; }
+.spslider-trans-cube3d .spslider-slide { transition: transform var(--sp-speed) var(--sp-easing); backface-visibility: hidden; }
+.spslider-trans-cube3d .spslider-slide.enter-left   { transform: rotateY(-90deg) translateZ(50%); visibility:visible; }
+.spslider-trans-cube3d .spslider-slide.enter-right  { transform: rotateY(90deg)  translateZ(50%); visibility:visible; }
+.spslider-trans-cube3d .spslider-slide.active        { transform: rotateY(0)  translateZ(0); }
+.spslider-trans-cube3d .spslider-slide.leaving-left  { transform: rotateY(90deg)  translateZ(50%); }
+.spslider-trans-cube3d .spslider-slide.leaving-right { transform: rotateY(-90deg) translateZ(50%); }
+
+/* --- Flip --- */
+.spslider-trans-flip { perspective: 1200px; }
+.spslider-trans-flip .spslider-slide { transition: transform var(--sp-speed) var(--sp-easing); backface-visibility: hidden; }
+.spslider-trans-flip .spslider-slide.entering { transform: rotateY(180deg); visibility:visible; }
+.spslider-trans-flip .spslider-slide.active    { transform: rotateY(0); }
+.spslider-trans-flip .spslider-slide.leaving   { transform: rotateY(-180deg); }
+
+/* ── Layer animation keyframes ───────────────────────────────────────────── */
+
+/* Fade */
+@keyframes sp-anim-fade-in       { from { opacity:0; }             to { opacity:1; } }
+@keyframes sp-anim-fade-out      { from { opacity:1; }             to { opacity:0; } }
+
+/* Slide from left */
+@keyframes sp-anim-slide-left-in  { from { opacity:0; transform:translateX(-var(--sp-dist,40px)); } to { opacity:1; transform:translateX(0); } }
+@keyframes sp-anim-slide-left-out { from { opacity:1; transform:translateX(0);  }             to { opacity:0; transform:translateX(var(--sp-dist,40px)); } }
+
+/* Slide from right */
+@keyframes sp-anim-slide-right-in  { from { opacity:0; transform:translateX(var(--sp-dist,40px)); }  to { opacity:1; transform:translateX(0); } }
+@keyframes sp-anim-slide-right-out { from { opacity:1; transform:translateX(0); }                    to { opacity:0; transform:translateX(calc(-1 * var(--sp-dist,40px))); } }
+
+/* Slide from top */
+@keyframes sp-anim-slide-up-in  { from { opacity:0; transform:translateY(var(--sp-dist,40px)); }  to { opacity:1; transform:translateY(0); } }
+@keyframes sp-anim-slide-up-out { from { opacity:1; transform:translateY(0); }                    to { opacity:0; transform:translateY(calc(-1 * var(--sp-dist,40px))); } }
+
+/* Slide from bottom */
+@keyframes sp-anim-slide-down-in  { from { opacity:0; transform:translateY(calc(-1 * var(--sp-dist,40px))); } to { opacity:1; transform:translateY(0); } }
+@keyframes sp-anim-slide-down-out { from { opacity:1; transform:translateY(0); }                               to { opacity:0; transform:translateY(var(--sp-dist,40px)); } }
+
+/* Zoom in */
+@keyframes sp-anim-zoom-in   { from { opacity:0; transform:scale(.7); }    to { opacity:1; transform:scale(1); } }
+@keyframes sp-anim-zoom-out  { from { opacity:1; transform:scale(1); }     to { opacity:0; transform:scale(1.3); } }
+
+/* Zoom out (effect) */
+@keyframes sp-anim-zoom-out-in  { from { opacity:0; transform:scale(1.3); } to { opacity:1; transform:scale(1); } }
+@keyframes sp-anim-zoom-out-out { from { opacity:1; transform:scale(1); }   to { opacity:0; transform:scale(.7); } }
+
+/* Rotate */
+@keyframes sp-anim-rotate-in    { from { opacity:0; transform:rotate(-20deg) scale(.8); } to { opacity:1; transform:rotate(0) scale(1); } }
+@keyframes sp-anim-rotate-out   { from { opacity:1; transform:rotate(0) scale(1); }       to { opacity:0; transform:rotate(20deg) scale(.8); } }
+
+/* Flip X */
+@keyframes sp-anim-flip-x-in    { from { opacity:0; transform:scaleX(0); } to { opacity:1; transform:scaleX(1); } }
+@keyframes sp-anim-flip-x-out   { from { opacity:1; transform:scaleX(1); } to { opacity:0; transform:scaleX(0); } }
+
+/* Flip Y */
+@keyframes sp-anim-flip-y-in    { from { opacity:0; transform:scaleY(0); } to { opacity:1; transform:scaleY(1); } }
+@keyframes sp-anim-flip-y-out   { from { opacity:1; transform:scaleY(1); } to { opacity:0; transform:scaleY(0); } }
+
+/* Bounce */
+@keyframes sp-anim-bounce-in    { 0%{opacity:0;transform:scale(.3)} 50%{transform:scale(1.05)} 70%{transform:scale(.9)} 100%{opacity:1;transform:scale(1)} }
+@keyframes sp-anim-bounce-out   { 0%{transform:scale(1); opacity:1;} 100%{transform:scale(.3); opacity:0;} }
+
+/* ── Layer animation classes applied by JS ───────────────────────────────── */
+.spslider-layer { transition: opacity .1s; }
+.spslider-layer.sp-anim-hidden { opacity: 0 !important; pointer-events: none; }
+.spslider-layer.sp-anim-visible { pointer-events: auto; }
+
+/* ── Hover effects ───────────────────────────────────────────────────────── */
+.spslider-hover-scale       { transition: transform .25s ease !important; }
+.spslider-hover-scale:hover { transform: scale(1.06) !important; }
+.spslider-hover-glow:hover  { filter: drop-shadow(0 0 12px rgba(99,102,241,.8)); }
+.spslider-hover-reveal      { overflow: hidden; }
+.spslider-hover-reveal::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:rgba(99,102,241,.18);
+    transform:translateX(-100%);
+    transition:transform .3s ease;
+}
+.spslider-hover-reveal:hover::after { transform:translateX(0); }
+
+/* Button hover background handled via JS data-hover-bg */
+.spslider-button-layer { transition: background .2s, transform .15s !important; }
+
+/* ── Layer types ─────────────────────────────────────────────────────────── */
+.spslider-text-layer   { margin: 0; display: block; }
+.spslider-image-layer  { display: block; }
+.spslider-video-layer  { display: block; }
+.spslider-shape-layer  { display: block; }
+.spslider-button-layer { display:inline-flex; align-items:center; justify-content:center; }
+
+/* ── Fluid scaling of font sizes ─────────────────────────────────────────── */
+.spslider-scale-auto .spslider-text-layer,
+.spslider-scale-fullwidth .spslider-text-layer {
+    font-size: clamp(10px, 3vw, inherit);
+}
+
+/* ── Touch drag indicator ────────────────────────────────────────────────── */
+.spslider-dragging { cursor: grabbing !important; }
+
+/* ── Progress bar (optional autoplay indicator) ──────────────────────────── */
+.spslider-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(99,102,241,.8);
+    width: 0%;
+    z-index: 40;
+    transition: width 0s linear;
+}
+
+/* ── Pause icon (autoplay paused state) ──────────────────────────────────── */
+.spslider-paused-indicator {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: rgba(0,0,0,.5);
+    color: #fff;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    font-size:14px;
+}
+.spslider-container.is-paused .spslider-paused-indicator { display: flex; }
+
+/* ── Accessible: reduce motion ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .spslider-slide,
+    .spslider-layer,
+    .spslider-arrow,
+    .spslider-dot { transition: none !important; animation: none !important; }
+}
+
+/* ── Responsive overrides ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .spslider-arrow { width: 36px; height: 36px; }
+    .spslider-arrow svg { width: 16px; height: 16px; }
+    .spslider-dots { bottom: 10px; }
+}
+@media (max-width: 480px) {
+    .spslider-arrow { display: none; }
+}
+
+/* ── Parallax layers ─────────────────────────────────────────────────────── */
+.spslider-parallax-active { will-change: transform; }
+
+/* ── Loading placeholder ─────────────────────────────────────────────────── */
+.spslider-container.loading { background: #0d0d1a; }
+.spslider-container.loading::after {
+    content: '';
+    display: block;
+    width: 36px; height: 36px;
+    border: 3px solid rgba(255,255,255,.15);
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: sp-spin .7s linear infinite;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+}
+@keyframes sp-spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+/* ── Countdown layer ─────────────────────────────────────────────────────── */
+.spslider-countdown-layer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+    font-variant-numeric: tabular-nums;
+}
+.spslider-countdown-layer span {
+    display: inline-block;
+    min-width: 2ch;
+}
+.spslider-countdown-label {
+    margin-top: 4px;
+    opacity: .85;
+}
+
+/* ── Icon layer ──────────────────────────────────────────────────────────── */
+.spslider-icon-layer {
+    line-height: 1;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Lottie layer ────────────────────────────────────────────────────────── */
+.spslider-lottie-layer {
+    display: block;
+}
+
+/* ── HTML layer ──────────────────────────────────────────────────────────── */
+.spslider-html-layer {
+    display: block;
+    overflow: hidden;
+}
+
+/* ── Screen reader only ──────────────────────────────────────────────────── */
+.spslider-sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* ── High contrast mode adjustments ──────────────────────────────────────── */
+@media (forced-colors: active) {
+    .spslider-arrow { border: 2px solid ButtonText; }
+    .spslider-dot { border: 2px solid ButtonText; }
+    .spslider-dot.active { background: Highlight; }
+}
+
+/* ── Print: hide slider navigation ───────────────────────────────────────── */
+@media print {
+    .spslider-arrow,
+    .spslider-dots,
+    .spslider-progress-bar,
+    .spslider-paused-indicator { display: none !important; }
+    .spslider-slide:not(.active) { display: none !important; }
+}

@@ -1,6 +1,6 @@
 # 📖 SYNTEKPRO ANIMATIONS - COMPLETE GUIDE
 
-**Version 2.4.3** | Professional Animation Engine for WordPress
+**Version 1.5.0** | Professional Animation Engine for WordPress
 
 ---
 
@@ -69,7 +69,7 @@ This plugin distribution now uses GitHub Releases as its update source.
 Release flow:
 1. Bump plugin version metadata.
 2. Push code updates.
-3. Push a version tag (for example `v2.4.3`).
+3. Push a version tag (for example `v1.5.0`).
 4. Publish a GitHub Release with a plugin zip asset.
 
 Installed sites will receive native WordPress update notifications when a newer release is detected.

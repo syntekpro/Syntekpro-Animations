@@ -10,6 +10,22 @@ All notable changes to this project will be documented in this file.
 
 ### Notes
 
+## [1.5.0] - 2026-04-02
+
+### Added
+- Merged SyntekPro Slider into SyntekPro Animations as an embedded module under `modules/syntekpro-slider`.
+- Added `includes/class-slider-merge.php` merge loader that prefers the internal module and falls back to sibling Slider plugin path when needed.
+- Added duplicate-load protection so embedded runtime is skipped when standalone Slider plugin is already active.
+- Added embedded module bootstrap and mirrored merge files in `dist/syntekpro-animations` for release parity.
+
+### Changed
+- Bumped SyntekPro Animations plugin version metadata to `1.5.0`.
+- Bumped embedded slider runtime constant defaults to `1.5.0`.
+- Updated release documentation references for the new 1.5.0 release.
+
+### Notes
+- This is the merge release: slider capabilities now ship with SyntekPro Animations and can run without separate standalone Slider activation.
+
 ## [2.4.3] - 2026-03-31
 
 ### Added

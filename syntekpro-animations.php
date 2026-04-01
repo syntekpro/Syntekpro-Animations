@@ -3,7 +3,7 @@
  * Plugin Name: Syntekpro Animations
  * Plugin URI: https://syntekpro.com/animations
  * Description: Professional high-performance animation engine for WordPress. Create stunning scroll-triggered animations, timeline sequences, and visual effects with our advanced animation framework. Free version includes 30+ animations, Get+ unlocks timeline builder, text effects, SVG morphing, and premium features.
- * Version: 2.4.3
+ * Version: 1.5.0
  * Author: Syntekpro
  * Author URI: https://syntekpro.com
  * License: GPL v2 or later
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SYNTEKPRO_ANIM_VERSION', '2.4.3');
+define('SYNTEKPRO_ANIM_VERSION', '1.5.0');
 define('SYNTEKPRO_ANIM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SYNTEKPRO_ANIM_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('SYNTEKPRO_ANIM_PLUGIN_FILE', __FILE__);
@@ -63,6 +63,7 @@ class Syntekpro_Animations {
         require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/class-help-system.php';
         require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/class-slider-core.php';
         require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/class-slider-advanced.php';
+        require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/class-slider-merge.php';
         require_once SYNTEKPRO_ANIM_PLUGIN_DIR . 'includes/class-github-updater.php';
         
         // Load block system for new modular blocks
@@ -76,6 +77,10 @@ class Syntekpro_Animations {
 
         // Enable GitHub-based update checks for installed sites.
         new Syntekpro_Animations_GitHub_Updater(SYNTEKPRO_ANIM_PLUGIN_FILE);
+
+        // Merge SyntekPro Slider runtime into this plugin.
+        $slider_merge = new Syntekpro_Slider_Merge();
+        $slider_merge->bootstrap();
     }
     
     /**
